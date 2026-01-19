@@ -1,0 +1,13 @@
+# requirements.txt - ADD THESE PACKAGES
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.2.0
+djangorestframework-simplejwt==5.3.0
+cryptography==41.0.7
+scikit-learn==1.3.2
+pandas==2.1.3
+numpy==1.24.3
+joblib==1.3.2
+psycopg2-binary==2.9.9
+Pillow==10.1.0
+python-dateutil==2.8.2
