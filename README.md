@@ -1,5 +1,4 @@
-# Create clean README without external links
-@'
+
 # 🎓 Edu2Job - AI-Powered Career Prediction Platform
 
 Edu2Job is an intelligent web application that predicts suitable job roles based on user's education, skills, certifications, and experience using machine learning algorithms.
@@ -63,3 +62,4 @@ Edu2Job is an intelligent web application that predicts suitable job roles based
 ```bash
 git clone https://github.com/Harini2harini/Edu2Job.git
 cd Edu2Job
+
