@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 from decouple import config
+import dj_database_url
 from cryptography.fernet import Fernet
 
 # Initialize environ
@@ -80,15 +81,12 @@ WSGI_APPLICATION = 'edu2job_backend.wsgi.application'
 
 # Database - SQLite configuration
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'edu2job.db',
-        'OPTIONS': {
-            'timeout': 20,  # Increase timeout for better performance
-        }
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
