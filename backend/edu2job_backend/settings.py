@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import environ
+from decouple import config
 from cryptography.fernet import Fernet
 
 # Initialize environ
@@ -13,10 +14,10 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-your-secret-key-here-123')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=True)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']  # Change this temporarily for deployment
 
