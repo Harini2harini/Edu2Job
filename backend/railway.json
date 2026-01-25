@@ -8,6 +8,6 @@
     "startCommand": "python manage.py migrate && gunicorn edu2job_backend.wsgi:application --bind 0.0.0.0:$PORT",
     "healthcheckPath": "/admin/",
     "healthcheckTimeout": 30,
-    "healthcheckEnabled": false  # Try this if available
+    "healthcheckEnabled": false  
   }
 }
