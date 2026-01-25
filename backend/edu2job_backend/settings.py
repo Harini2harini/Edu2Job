@@ -18,7 +18,7 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-your-secret-key-here-123
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '192.168.1.*']
+ALLOWED_HOSTS = ['*']  # Change this temporarily for deployment
 
 # Application definition
 INSTALLED_APPS = [
@@ -135,7 +135,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://localhost:5173",  # Added for Vite/React
+    "http://localhost:5173", 
+     "https://edu2-job-kohl.vercel.app", 
 ]
 
 CORS_ALLOW_METHODS = [
