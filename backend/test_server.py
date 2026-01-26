@@ -1,24 +1,7 @@
-import os
-import sys
-import django
-from django.core.wsgi import get_wsgi_application
+from django.http import HttpResponse
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edu2job_backend.settings')
+def test_view(request):
+    return HttpResponse("✅ Edu2Job Backend is WORKING!")
 
-try:
-    django.setup()
-    print("✅ Django setup successful!")
-    
-    # Try to import your apps
-    from django.apps import apps
-    for app in ['users', 'profiles', 'predictions', 'admin_panel']:
-        try:
-            apps.get_app_config(app)
-            print(f"✅ App '{app}' found")
-        except:
-            print(f"❌ App '{app}' NOT FOUND")
-            
-except Exception as e:
-    print(f"❌ Django setup failed: {e}")
-    import traceback
-    traceback.print_exc()
+def api_test(request):
+    return HttpResponse('{"status": "ok", "message": "API is live"}', content_type='application/json')
