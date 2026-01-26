@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     # Local apps
     'users',
     'profiles',
-    #'predictions', 
-    #'admin_panel',
+    'predictions', 
+    'admin_panel',
 ]
 
 MIDDLEWARE = [
