@@ -11,7 +11,7 @@ urlpatterns = [
      path('', lambda request: JsonResponse({'status': 'ok', 'service': 'Edu2Job Backend'})),
     path('admin/', admin.site.urls),
     # API URLs
-    # path('api/auth/', include('users.urls')),
+     path('api/auth/', include('users.urls')),
      #path('api/profile/', include('profiles.urls')),
      #path('api/admin/', include('admin_panel.urls')),
      #path('api/predictions/',include('predictions.urls')),
