@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',  # Added for API documentation
     
-    # Local apps'users','profiles','predictions',    'admin_panel',
+    # Local apps
+    'users',
+    'profiles',
+    'predictions', 
+    'admin_panel',
 ]
 
 MIDDLEWARE = [
