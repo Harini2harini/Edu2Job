@@ -139,6 +139,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5173", 
      "https://edu2-job-kohl.vercel.app", 
+     "https://edu2job-production-03c4.up.railway.app",
 ]
 
 CORS_ALLOW_METHODS = [
