@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'drf_yasg',  # Added for API documentation
     
     # Local apps
-    #'users',
+    'users',
     #'profiles',
     #'predictions', 
     #'admin_panel',
