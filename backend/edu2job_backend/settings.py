@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'users',
-    #'profiles',
+    'profiles',
     #'predictions', 
     #'admin_panel',
 ]
