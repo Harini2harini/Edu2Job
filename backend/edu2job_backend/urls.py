@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 from django.http import JsonResponse
 
 urlpatterns = [
+     path('', lambda request: JsonResponse({'status': 'ok', 'service': 'Edu2Job Backend'})),
     path('admin/', admin.site.urls),
     
     # API URLs
