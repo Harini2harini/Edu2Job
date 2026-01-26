@@ -20,7 +20,11 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']  # Change this temporarily for deployment
+ALLOWED_HOSTS = [ '*',
+    'edu2job-production-03c4.up.railway.app',
+    'edu2job-production-03c4.up.railway.app:8080',
+    'localhost',
+    '127.0.0.1',]  # Change this temporarily for deployment
 
 # Application definition
 INSTALLED_APPS = [
