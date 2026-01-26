@@ -11,7 +11,7 @@ class JobRoleSerializer(serializers.ModelSerializer):
 
 class JobSkillSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Skill
+        model = JobSkill
         fields = '__all__'
 
 class PredictionHistorySerializer(serializers.ModelSerializer):
