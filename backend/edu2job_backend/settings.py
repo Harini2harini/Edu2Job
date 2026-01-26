@@ -23,6 +23,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = [ '*',
     'edu2job-production-03c4.up.railway.app',
     'edu2job-production-03c4.up.railway.app:8080',
+    'edu2job-production-9d2e.up.railway.app',
     'localhost',
     '127.0.0.1',]  # Change this temporarily for deployment
 
@@ -144,6 +145,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
      "https://edu2-job-kohl.vercel.app", 
      "https://edu2job-production-03c4.up.railway.app",
+    "https://edu2job-production-9d2e.up.railway.app",  # NEW DOMAIN
 ]
 
 CORS_ALLOW_METHODS = [
