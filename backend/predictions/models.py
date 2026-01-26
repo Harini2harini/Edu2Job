@@ -92,7 +92,7 @@ class JobRole(models.Model):
     def __str__(self):
         return self.name
 
-class Skill(models.Model):
+class JobSkill(models.Model):
     name = models.CharField(max_length=100, unique=True)
     category = models.CharField(max_length=100)  # Technical, Soft, Domain-specific
     importance_score = models.FloatField(default=0)  # Overall importance across jobs
