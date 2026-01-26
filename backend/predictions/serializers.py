@@ -1,6 +1,6 @@
 # predictions/serializers.py (Complete File)
 from rest_framework import serializers
-from .models import PredictionHistory, MLModelVersion, JobRole, Skill, PredictionFeedback
+from .models import PredictionHistory, MLModelVersion, JobRole, JobSkill, PredictionFeedback
 from users.serializers import UserProfileSerializer
 import uuid
 
@@ -9,7 +9,7 @@ class JobRoleSerializer(serializers.ModelSerializer):
         model = JobRole
         fields = '__all__'
 
-class SkillSerializer(serializers.ModelSerializer):
+class JobSkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
         fields = '__all__'
