@@ -1,3 +1,20 @@
+
+from django.http import JsonResponse
+import time
+
+# Add this function
+def root_health_check(request):
+    return JsonResponse({
+        "status": "healthy",
+        "service": "edu2job-backend",
+        "timestamp": time.time()
+    })
+
+urlpatterns = [
+    path('', root_health_check),  # ADD THIS LINE - ROOT endpoint
+    path('admin/', admin.site.urls),
+    # ... keep everything else the same
+]
 # edu2job_backend/urls.py
 from django.contrib import admin
 from django.urls import path, include
