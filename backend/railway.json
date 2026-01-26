@@ -4,9 +4,11 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python manage.py migrate && gunicorn edu2job_backend.wsgi:application --bind 0.0.0.0:$PORT",
-    "healthcheckPath": "/",
-    "healthcheckTimeout": 60,
-    "restartPolicyType": "NEVER"
+    "startCommand": "python manage.py migrate && gunicorn edu2job_backend.wsgi:application --bind 0.0.0.0:$PORT --timeout 120 --keep-alive 5",
+    "healthcheckPath": "/health/",
+    "healthcheckTimeout": 10,
+    "healthcheckInterval": 30,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 5
   }
 }
