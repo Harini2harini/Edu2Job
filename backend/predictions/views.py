@@ -13,7 +13,7 @@ from django.db.models import Count, Avg, Max, Min
 from collections import Counter
 from datetime import datetime, timedelta
 
-from .models import PredictionHistory, MLModelVersion, JobRole, Skill, PredictionFeedback
+from .models import PredictionHistory, MLModelVersion, JobRole, JobSkill, PredictionFeedback
 from .serializers import (
     PredictionHistorySerializer, PredictionInputSerializer,
     MLModelVersionSerializer, RetrainModelSerializer, JobRoleSerializer,
