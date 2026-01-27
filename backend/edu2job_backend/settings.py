@@ -20,7 +20,8 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [ '*',
+ALLOWED_HOSTS = [
+    '.railway.app', 
     'edu2job-production-4b92.up.railway.app',
     'localhost',
     '127.0.0.1',]  # Change this temporarily for deployment
@@ -306,3 +307,8 @@ if not DEBUG and not IS_RAILWAY:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://edu2job-production-4b92.up.railway.app',
+    'https://*.railway.app',
+]
