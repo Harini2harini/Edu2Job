@@ -145,11 +145,11 @@ const DashboardHome = () => {
             <div className="flex items-center space-x-2">
               <FaCalendar className="text-white/60" />
               <span className="text-white/80">
-                {new Date().toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })}
               </span>
             </div>
@@ -180,10 +180,9 @@ const DashboardHome = () => {
               ) : stat.trend === 'down' ? (
                 <FaArrowDown className="w-4 h-4 text-red-500 mr-1" />
               ) : null}
-              <span className={`text-sm ${
-                stat.trend === 'up' ? 'text-green-600' :
-                stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'
-              }`}>
+              <span className={`text-sm ${stat.trend === 'up' ? 'text-green-600' :
+                  stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'
+                }`}>
                 {stat.change}
               </span>
             </div>
@@ -210,11 +209,10 @@ const DashboardHome = () => {
                     {activity.user_name} • {new Date(activity.created_at).toLocaleTimeString()}
                   </p>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  activity.activity_type === 'login' ? 'bg-green-100 text-green-800' :
-                  activity.activity_type === 'prediction' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
+                <span className={`px-2 py-1 text-xs rounded-full ${activity.activity_type === 'login' ? 'bg-green-100 text-green-800' :
+                    activity.activity_type === 'prediction' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                  }`}>
                   {activity.activity_type}
                 </span>
               </div>
@@ -237,11 +235,10 @@ const DashboardHome = () => {
                   <span className="font-medium text-gray-800">
                     {prediction.user_name}
                   </span>
-                  <span className={`text-sm px-2 py-1 rounded-full ${
-                    prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                    prediction.status === 'flagged' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`text-sm px-2 py-1 rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
+                      prediction.status === 'flagged' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }`}>
                     {prediction.status}
                   </span>
                 </div>
@@ -271,7 +268,7 @@ const DashboardHome = () => {
             <p className="font-medium text-gray-900">Train New Model</p>
             <p className="text-sm text-gray-600 mt-1">Start model training</p>
           </button>
-          
+
           <button className="p-4 border border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all text-center">
             <div className="p-3 bg-green-100 rounded-lg inline-block mb-3">
               <FaUpload className="w-6 h-6 text-green-600" />
@@ -279,7 +276,7 @@ const DashboardHome = () => {
             <p className="font-medium text-gray-900">Upload Dataset</p>
             <p className="text-sm text-gray-600 mt-1">Add training data</p>
           </button>
-          
+
           <button className="p-4 border border-gray-200 rounded-xl hover:border-red-500 hover:bg-red-50 transition-all text-center">
             <div className="p-3 bg-red-100 rounded-lg inline-block mb-3">
               <FaFlag className="w-6 h-6 text-red-600" />
@@ -287,7 +284,7 @@ const DashboardHome = () => {
             <p className="font-medium text-gray-900">Review Flags</p>
             <p className="text-sm text-gray-600 mt-1">Check flagged predictions</p>
           </button>
-          
+
           <button className="p-4 border border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center">
             <div className="p-3 bg-purple-100 rounded-lg inline-block mb-3">
               <FaDatabase className="w-6 h-6 text-purple-600" />
@@ -326,14 +323,14 @@ const UserManagement = () => {
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.name.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesRole = filterRole === 'all' || user.role === filterRole;
-    const matchesStatus = filterStatus === 'all' || 
+    const matchesStatus = filterStatus === 'all' ||
       (filterStatus === 'active' ? user.is_active : !user.is_active);
-    
+
     return matchesSearch && matchesRole && matchesStatus;
   });
 
@@ -354,7 +351,7 @@ const UserManagement = () => {
       await axios.patch(`${API_URL}/admin/users/${userId}/`, {
         is_active: !currentStatus
       });
-      setUsers(users.map(u => 
+      setUsers(users.map(u =>
         u.id === userId ? { ...u, is_active: !currentStatus } : u
       ));
     } catch (error) {
@@ -479,21 +476,19 @@ const UserManagement = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
                       {userItem.role.charAt(0).toUpperCase() + userItem.role.slice(1)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleToggleStatus(userItem.id, userItem.is_active)}
-                      className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                        userItem.is_active
+                      className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${userItem.is_active
                           ? 'bg-green-100 text-green-800 hover:bg-green-200'
                           : 'bg-red-100 text-red-800 hover:bg-red-200'
-                      }`}
+                        }`}
                     >
                       {userItem.is_active ? (
                         <>
@@ -656,7 +651,7 @@ const ModelManagement = () => {
         random_state: 42,
         description: ''
       });
-      
+
       setTimeout(() => {
         fetchData();
       }, 5000);
@@ -696,7 +691,7 @@ const ModelManagement = () => {
         dataset_file: null,
         target_column: ''
       });
-      
+
       fetchData();
     } catch (error) {
       console.error('Error uploading dataset:', error);
@@ -781,22 +776,20 @@ const ModelManagement = () => {
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('models')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'models'
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'models'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
+              }`}
           >
             <FaRobot className="inline mr-2" />
             ML Models ({models.length})
           </button>
           <button
             onClick={() => setActiveTab('datasets')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'datasets'
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'datasets'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
+              }`}
           >
             <FaDatabase className="inline mr-2" />
             Training Datasets ({datasets.length})
@@ -820,17 +813,16 @@ const ModelManagement = () => {
                         <p className="text-xs text-gray-500">v{model.version}</p>
                       </div>
                     </div>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
-                      model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs rounded-full ${model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
+                        model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {model.status}
                     </span>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-4">{model.description}</p>
-                  
+
                   {/* Performance Metrics */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -945,15 +937,14 @@ const ModelManagement = () => {
                         <p className="text-xs text-gray-500">{dataset.dataset_type.toUpperCase()}</p>
                       </div>
                     </div>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      dataset.is_validated ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs rounded-full ${dataset.is_validated ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {dataset.is_validated ? 'Validated' : 'Pending'}
                     </span>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-4">{dataset.description}</p>
-                  
+
                   {/* Dataset Stats */}
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
@@ -1050,7 +1041,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={uploadForm.name}
-                    onChange={(e) => setUploadForm({...uploadForm, name: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter dataset name"
                   />
@@ -1062,7 +1053,7 @@ const ModelManagement = () => {
                   </label>
                   <textarea
                     value={uploadForm.description}
-                    onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     rows="3"
                     placeholder="Describe the dataset content"
@@ -1082,7 +1073,7 @@ const ModelManagement = () => {
                           {(uploadForm.dataset_file.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                         <button
-                          onClick={() => setUploadForm({...uploadForm, dataset_file: null})}
+                          onClick={() => setUploadForm({ ...uploadForm, dataset_file: null })}
                           className="text-red-600 hover:text-red-800 text-sm"
                         >
                           Remove File
@@ -1162,7 +1153,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={trainingForm.model_name}
-                    onChange={(e) => setTrainingForm({...trainingForm, model_name: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, model_name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., Job Prediction v2.0"
                   />
@@ -1174,7 +1165,7 @@ const ModelManagement = () => {
                   </label>
                   <select
                     value={trainingForm.dataset_id}
-                    onChange={(e) => setTrainingForm({...trainingForm, dataset_id: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, dataset_id: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
                     <option value="">Select a dataset</option>
@@ -1193,7 +1184,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={trainingForm.target_column}
-                    onChange={(e) => setTrainingForm({...trainingForm, target_column: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, target_column: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., job_role"
                   />
@@ -1206,7 +1197,7 @@ const ModelManagement = () => {
                     </label>
                     <select
                       value={trainingForm.model_type}
-                      onChange={(e) => setTrainingForm({...trainingForm, model_type: e.target.value})}
+                      onChange={(e) => setTrainingForm({ ...trainingForm, model_type: e.target.value })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
                       <option value="random_forest">Random Forest</option>
@@ -1226,7 +1217,7 @@ const ModelManagement = () => {
                       min="0.1"
                       max="0.5"
                       value={trainingForm.test_size}
-                      onChange={(e) => setTrainingForm({...trainingForm, test_size: parseFloat(e.target.value)})}
+                      onChange={(e) => setTrainingForm({ ...trainingForm, test_size: parseFloat(e.target.value) })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
@@ -1238,7 +1229,7 @@ const ModelManagement = () => {
                   </label>
                   <textarea
                     value={trainingForm.description}
-                    onChange={(e) => setTrainingForm({...trainingForm, description: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, description: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     rows="3"
                     placeholder="Describe what this model will be used for..."
@@ -1315,12 +1306,12 @@ const PredictionLogs = () => {
   };
 
   const filteredPredictions = predictions.filter(prediction => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       prediction.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       JSON.stringify(prediction.prediction_result).toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || prediction.status === filterStatus;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -1330,8 +1321,8 @@ const PredictionLogs = () => {
         flag_reason: 'admin_review',
         flag_details: 'Flagged by admin for manual review'
       });
-      
-      setPredictions(predictions.map(p => 
+
+      setPredictions(predictions.map(p =>
         p.id === predictionId ? { ...p, status: 'flagged', is_flagged: true } : p
       ));
     } catch (error) {
@@ -1463,15 +1454,15 @@ const PredictionLogs = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
-                      {prediction.prediction_result?.job_role || 
-                       prediction.prediction_result?.top_prediction ||
-                       'No prediction data'}
+                      {prediction.prediction_result?.job_role ||
+                        prediction.prediction_result?.top_prediction ||
+                        'No prediction data'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-24 bg-gray-200 rounded-full h-2 mr-3">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full"
                           style={{ width: `${(prediction.confidence_score || 0) * 100}%` }}
                         ></div>
@@ -1484,11 +1475,10 @@ const PredictionLogs = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {getStatusIcon(prediction.status)}
-                      <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${
-                        prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                        prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
+                          prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {prediction.status?.charAt(0).toUpperCase() + prediction.status?.slice(1) || 'Unknown'}
                       </span>
                     </div>
@@ -1527,8 +1517,8 @@ const PredictionLogs = () => {
             <FaDatabase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No predictions found</h3>
             <p className="text-gray-500">
-              {searchTerm || filterStatus !== 'all' 
-                ? 'Try changing your filters' 
+              {searchTerm || filterStatus !== 'all'
+                ? 'Try changing your filters'
                 : 'No prediction logs available. Try generating sample data.'}
             </p>
           </div>
@@ -1561,12 +1551,12 @@ const SystemLogs = () => {
   };
 
   const filteredLogs = logs.filter(log => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       log.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
       log.source?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesLevel = filterLevel === 'all' || log.level === filterLevel;
-    
+
     return matchesSearch && matchesLevel;
   });
 
@@ -1680,9 +1670,8 @@ const SystemLogs = () => {
                   key={log.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className={`hover:bg-gray-50 ${
-                    log.level === 'error' || log.level === 'critical' ? 'bg-red-50' : ''
-                  }`}
+                  className={`hover:bg-gray-50 ${log.level === 'error' || log.level === 'critical' ? 'bg-red-50' : ''
+                    }`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -1782,25 +1771,23 @@ const Settings = () => {
                 <input
                   type="text"
                   value={settings.site_name}
-                  onChange={(e) => setSettings({...settings, site_name: e.target.value})}
+                  onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900">Maintenance Mode</p>
                   <p className="text-sm text-gray-600">Temporarily disable the system for maintenance</p>
                 </div>
                 <button
-                  onClick={() => setSettings({...settings, maintenance_mode: !settings.maintenance_mode})}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                    settings.maintenance_mode ? 'bg-red-600' : 'bg-gray-200'
-                  }`}
+                  onClick={() => setSettings({ ...settings, maintenance_mode: !settings.maintenance_mode })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${settings.maintenance_mode ? 'bg-red-600' : 'bg-gray-200'
+                    }`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                    settings.maintenance_mode ? 'translate-x-6' : 'translate-x-1'
-                  }`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.maintenance_mode ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
                 </button>
               </div>
 
@@ -1810,14 +1797,12 @@ const Settings = () => {
                   <p className="text-sm text-gray-600">Allow new users to register on the platform</p>
                 </div>
                 <button
-                  onClick={() => setSettings({...settings, allow_registrations: !settings.allow_registrations})}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                    settings.allow_registrations ? 'bg-green-600' : 'bg-gray-200'
-                  }`}
+                  onClick={() => setSettings({ ...settings, allow_registrations: !settings.allow_registrations })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${settings.allow_registrations ? 'bg-green-600' : 'bg-gray-200'
+                    }`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                    settings.allow_registrations ? 'translate-x-6' : 'translate-x-1'
-                  }`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.allow_registrations ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
                 </button>
               </div>
             </div>
@@ -1837,7 +1822,7 @@ const Settings = () => {
                   max="1"
                   step="0.1"
                   value={settings.prediction_threshold}
-                  onChange={(e) => setSettings({...settings, prediction_threshold: parseFloat(e.target.value)})}
+                  onChange={(e) => setSettings({ ...settings, prediction_threshold: parseFloat(e.target.value) })}
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-gray-600 mt-1">
@@ -1862,7 +1847,7 @@ const Settings = () => {
                   min="1"
                   max="500"
                   value={settings.max_file_size}
-                  onChange={(e) => setSettings({...settings, max_file_size: parseInt(e.target.value)})}
+                  onChange={(e) => setSettings({ ...settings, max_file_size: parseInt(e.target.value) })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -1879,14 +1864,12 @@ const Settings = () => {
                   <p className="text-sm text-gray-600">Receive email alerts for system events</p>
                 </div>
                 <button
-                  onClick={() => setSettings({...settings, email_notifications: !settings.email_notifications})}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                    settings.email_notifications ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
+                  onClick={() => setSettings({ ...settings, email_notifications: !settings.email_notifications })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${settings.email_notifications ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                    settings.email_notifications ? 'translate-x-6' : 'translate-x-1'
-                  }`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.email_notifications ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
                 </button>
               </div>
             </div>
@@ -1938,7 +1921,7 @@ const NotificationsDropdown = ({ notifications, onClose, onMarkAllRead, onMarkAs
     const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-    
+
     if (diffInMinutes < 1) return 'Just now';
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
@@ -2030,7 +2013,7 @@ const NotificationsDropdown = ({ notifications, onClose, onMarkAllRead, onMarkAs
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
+
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -2056,7 +2039,7 @@ const AdminDashboard = () => {
       navigate('/login');
       return;
     }
-    
+
     fetchNotifications();
     setLoading(false);
   }, [user, navigate]);
@@ -2135,7 +2118,7 @@ const AdminDashboard = () => {
   const markAllNotificationsAsRead = async () => {
     try {
       await Promise.all(
-        notifications.map(notification => 
+        notifications.map(notification =>
           axios.post(`${API_URL}/admin/notifications/${notification.id}/mark-read/`)
         )
       );
@@ -2200,7 +2183,7 @@ const AdminDashboard = () => {
               >
                 {mobileMenuOpen ? <FaTimes /> : <FaBars />}
               </button>
-              
+
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <FaUserShield className="text-2xl text-primary" />
@@ -2262,7 +2245,7 @@ const AdminDashboard = () => {
                       <p className="font-semibold text-gray-900">{user?.name}</p>
                       <p className="text-sm text-gray-600">{user?.email}</p>
                     </div>
-                    
+
                     <div className="border-t border-gray-200 pt-2">
                       <button
                         onClick={handleLogout}
@@ -2301,7 +2284,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex-1 overflow-y-auto py-4">
                 <nav className="space-y-1 px-4">
                   {navigationItems.map((item) => (
@@ -2311,11 +2294,10 @@ const AdminDashboard = () => {
                         setActiveTab(item.id);
                         setMobileMenuOpen(false);
                       }}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === item.id
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === item.id
                           ? 'bg-primary text-white'
                           : 'text-gray-700 hover:bg-gray-100'
-                      }`}
+                        }`}
                     >
                       {item.icon}
                       <span className="font-medium">{item.label}</span>
@@ -2342,11 +2324,10 @@ const AdminDashboard = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === item.id
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === item.id
                       ? 'bg-primary text-white'
                       : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                    }`}
                   title={!sidebarOpen ? item.label : ''}
                 >
                   {item.icon}
@@ -2362,7 +2343,7 @@ const AdminDashboard = () => {
                 </button>
               ))}
             </nav>
-            
+
             <div className="mt-8 px-4">
               <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
                 <h3 className="font-semibold text-gray-900 mb-2">Quick Stats</h3>

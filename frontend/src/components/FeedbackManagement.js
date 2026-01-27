@@ -217,7 +217,7 @@ const FeedbackManagement = () => {
   });
   const [analytics, setAnalytics] = useState(null);
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchFeedback();
@@ -254,7 +254,7 @@ const FeedbackManagement = () => {
         itemsPerPage: response.data.page_size || 10,
         totalPages: response.data.total_pages || 1
       });
-      
+
       toast.success(`Loaded ${feedbackData.length} feedback items`);
     } catch (error) {
       console.error('Error fetching feedback:', error);
@@ -339,7 +339,7 @@ const FeedbackManagement = () => {
       const isHelpful = Math.random() > 0.3;
       const wouldRecommend = Math.random() > 0.4;
       const source = sources[Math.floor(Math.random() * sources.length)];
-      
+
       sampleData.push({
         id: `feedback-${i}`,
         user_name: user.name,
@@ -382,9 +382,9 @@ const FeedbackManagement = () => {
     reviewed_rate: 56.8,
     response_rate: 34.2,
     daily_average: 1.7,
-    rating_distribution: {1: 4, 2: 6, 3: 10, 4: 15, 5: 15},
-    source_distribution: {prediction: 35, api: 8, manual: 5, import: 2},
-    daily_feedback: Array.from({length: 30}, (_, i) => ({
+    rating_distribution: { 1: 4, 2: 6, 3: 10, 4: 15, 5: 15 },
+    source_distribution: { prediction: 35, api: 8, manual: 5, import: 2 },
+    daily_feedback: Array.from({ length: 30 }, (_, i) => ({
       date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       count: Math.floor(Math.random() * 5) + 1,
       average_rating: 3.5 + Math.random() * 1.5
@@ -399,7 +399,7 @@ const FeedbackManagement = () => {
       { word: 'detailed', count: 9, sentiment: 'positive' },
       { word: 'interface', count: 7, sentiment: 'neutral' }
     ],
-    sentiment_over_time: Array.from({length: 7}, (_, i) => ({
+    sentiment_over_time: Array.from({ length: 7 }, (_, i) => ({
       date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       positive: Math.floor(Math.random() * 10) + 5,
       neutral: Math.floor(Math.random() * 5) + 2,
@@ -430,7 +430,7 @@ const FeedbackManagement = () => {
     let filtered = [...feedback];
 
     // Apply active tab filters
-    switch(activeTab) {
+    switch (activeTab) {
       case 'unreviewed':
         filtered = filtered.filter(fb => !fb.is_reviewed);
         break;
@@ -476,7 +476,7 @@ const FeedbackManagement = () => {
     // Apply search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      filtered = filtered.filter(fb => 
+      filtered = filtered.filter(fb =>
         fb.comment?.toLowerCase().includes(searchLower) ||
         fb.user_email?.toLowerCase().includes(searchLower) ||
         fb.user_name?.toLowerCase().includes(searchLower) ||
@@ -489,8 +489,8 @@ const FeedbackManagement = () => {
     // Apply sorting
     filtered.sort((a, b) => {
       let aValue, bValue;
-      
-      switch(sortBy) {
+
+      switch (sortBy) {
         case 'rating':
           aValue = a.rating;
           bValue = b.rating;
@@ -523,7 +523,7 @@ const FeedbackManagement = () => {
     const totalPages = Math.ceil(filtered.length / pagination.itemsPerPage);
     const startIndex = (pagination.currentPage - 1) * pagination.itemsPerPage;
     const endIndex = startIndex + pagination.itemsPerPage;
-    
+
     setFilteredFeedback(filtered.slice(startIndex, endIndex));
     setPagination(prev => ({
       ...prev,
@@ -540,10 +540,10 @@ const FeedbackManagement = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-        
+
         setFeedback(feedback.filter(fb => fb.id !== feedbackId));
         toast.success('Feedback deleted successfully');
-        
+
         if (selectedFeedback?.id === feedbackId) {
           setSelectedFeedback(null);
         }
@@ -563,7 +563,7 @@ const FeedbackManagement = () => {
     if (window.confirm(`Delete ${selectedItems.length} selected feedback items?`)) {
       try {
         await Promise.all(
-          selectedItems.map(id => 
+          selectedItems.map(id =>
             axios.delete(`${API_URL}/admin/feedback/${id}/`, {
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -571,7 +571,7 @@ const FeedbackManagement = () => {
             })
           )
         );
-        
+
         setFeedback(feedback.filter(fb => !selectedItems.includes(fb.id)));
         setSelectedItems([]);
         toast.success(`${selectedItems.length} feedback items deleted`);
@@ -589,15 +589,15 @@ const FeedbackManagement = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      
-      setFeedback(feedback.map(fb => 
+
+      setFeedback(feedback.map(fb =>
         fb.id === feedbackId ? { ...fb, ...updates, ...response.data } : fb
       ));
-      
+
       if (selectedFeedback?.id === feedbackId) {
         setSelectedFeedback({ ...selectedFeedback, ...updates, ...response.data });
       }
-      
+
       toast.success('Feedback updated successfully');
       return true;
     } catch (error) {
@@ -608,12 +608,12 @@ const FeedbackManagement = () => {
   };
 
   const markAsReviewed = async (feedbackId) => {
-    const success = await updateFeedback(feedbackId, { 
+    const success = await updateFeedback(feedbackId, {
       is_reviewed: true,
       reviewed_by: 'Admin User',
       reviewed_at: new Date().toISOString()
     });
-    
+
     if (success) {
       toast.success('Feedback marked as reviewed');
     }
@@ -633,11 +633,11 @@ const FeedbackManagement = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      
+
       toast.success('Reply sent successfully');
       setShowReplyModal(false);
       setReplyMessage('');
-      
+
       // Update feedback with reply info
       updateFeedback(feedbackId, {
         replied_at: new Date().toISOString(),
@@ -658,7 +658,7 @@ const FeedbackManagement = () => {
         },
         responseType: 'blob'
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -666,7 +666,7 @@ const FeedbackManagement = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      
+
       toast.success(`Feedback exported as ${format.toUpperCase()}`);
     } catch (error) {
       console.error('Error exporting feedback:', error);
@@ -677,7 +677,7 @@ const FeedbackManagement = () => {
   };
 
   const toggleRowExpand = (feedbackId) => {
-    setExpandedRows(prev => 
+    setExpandedRows(prev =>
       prev.includes(feedbackId)
         ? prev.filter(id => id !== feedbackId)
         : [...prev, feedbackId]
@@ -708,15 +708,15 @@ const FeedbackManagement = () => {
 
     try {
       await Promise.all(
-        selectedItems.map(id => 
-          updateFeedback(id, { 
+        selectedItems.map(id =>
+          updateFeedback(id, {
             is_reviewed: true,
             reviewed_by: 'Admin User',
             reviewed_at: new Date().toISOString()
           })
         )
       );
-      
+
       toast.success(`${selectedItems.length} items marked as reviewed`);
       setSelectedItems([]);
     } catch (error) {
@@ -731,15 +731,14 @@ const FeedbackManagement = () => {
       lg: 'w-5 h-5',
       xl: 'w-6 h-6'
     };
-    
+
     return (
       <div className="flex">
         {[1, 2, 3, 4, 5].map((star) => (
           <FaStar
             key={star}
-            className={`${sizeClasses[size]} ${
-              star <= rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
-            }`}
+            className={`${sizeClasses[size]} ${star <= rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
+              }`}
           />
         ))}
       </div>
@@ -868,20 +867,18 @@ const FeedbackManagement = () => {
                 setActiveTab(tab.id);
                 if (tab.id === 'analytics') setShowStats(true);
               }}
-              className={`flex items-center space-x-2 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 transition-colors ${
-                activeTab === tab.id
+              className={`flex items-center space-x-2 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 transition-colors ${activeTab === tab.id
                   ? 'border-primary text-primary bg-primary/5'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
+                }`}
             >
               <tab.icon />
               <span>{tab.label}</span>
               {tab.count !== undefined && (
-                <span className={`px-2 py-0.5 text-xs rounded-full ${
-                  activeTab === tab.id
+                <span className={`px-2 py-0.5 text-xs rounded-full ${activeTab === tab.id
                     ? 'bg-primary text-white'
                     : 'bg-gray-200 text-gray-700'
-                }`}>
+                  }`}>
                   {tab.count}
                 </span>
               )}
@@ -960,9 +957,8 @@ const FeedbackManagement = () => {
                   <div>
                     <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
                     <div className="text-gray-600">{stat.label}</div>
-                    <div className={`flex items-center mt-2 text-sm ${
-                      stat.trendUp ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <div className={`flex items-center mt-2 text-sm ${stat.trendUp ? 'text-green-600' : 'text-red-600'
+                      }`}>
                       {stat.trendUp ? <FaArrowUp /> : <FaArrowDown />}
                       <span className="ml-1">{stat.trend}</span>
                     </div>
@@ -983,7 +979,7 @@ const FeedbackManagement = () => {
                 const count = stats.rating_distribution[rating] || 0;
                 const percentage = (count / stats.total_feedback * 100) || 0;
                 const color = rating >= 4 ? 'green' : rating >= 3 ? 'yellow' : 'red';
-                
+
                 return (
                   <div key={rating} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
@@ -995,7 +991,7 @@ const FeedbackManagement = () => {
                       <span className="font-medium">{percentage.toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         className={`h-full rounded-full bg-${color}-500`}
                         style={{ width: `${percentage}%` }}
                       ></div>
@@ -1041,11 +1037,10 @@ const FeedbackManagement = () => {
               {analytics.top_keywords.map((keyword, index) => (
                 <div
                   key={index}
-                  className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
-                    keyword.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
-                    keyword.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}
+                  className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${keyword.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+                      keyword.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }`}
                 >
                   <span className="font-medium">{keyword.word}</span>
                   <span className="text-sm opacity-75">({keyword.count})</span>
@@ -1063,8 +1058,8 @@ const FeedbackManagement = () => {
                 </div>
                 <div className="text-2xl font-bold text-gray-900 mt-2">
                   {typeof value === 'number' ? value.toFixed(1) : value}
-                  {metric === 'average_time_spent' ? 's' : 
-                   metric === 'completion_rate' || metric === 'returning_users' ? '%' : ''}
+                  {metric === 'average_time_spent' ? 's' :
+                    metric === 'completion_rate' || metric === 'returning_users' ? '%' : ''}
                 </div>
               </div>
             ))}
@@ -1082,7 +1077,7 @@ const FeedbackManagement = () => {
                       <span>{percentage}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         className="h-full bg-primary rounded-full"
                         style={{ width: `${percentage}%` }}
                       ></div>
@@ -1096,7 +1091,7 @@ const FeedbackManagement = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Geographic Distribution</h3>
               <div className="space-y-2">
                 {Object.entries(analytics.geographic_distribution)
-                  .sort(([,a], [,b]) => b - a)
+                  .sort(([, a], [, b]) => b - a)
                   .map(([country, percentage]) => (
                     <div key={country} className="flex items-center justify-between">
                       <span className="text-sm">{country}</span>
@@ -1404,7 +1399,7 @@ const FeedbackManagement = () => {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                <div 
+                                <div
                                   className="h-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-500 rounded-full"
                                   style={{ width: `${fb.accuracy_match * 20}%` }}
                                 ></div>
@@ -1499,8 +1494,8 @@ const FeedbackManagement = () => {
                               className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-50"
                               title={expandedRows.includes(fb.id) ? 'Collapse' : 'Expand'}
                             >
-                              {expandedRows.includes(fb.id) ? 
-                                <FaChevronUp className="w-4 h-4" /> : 
+                              {expandedRows.includes(fb.id) ?
+                                <FaChevronUp className="w-4 h-4" /> :
                                 <FaChevronDown className="w-4 h-4" />
                               }
                             </button>
@@ -1545,11 +1540,10 @@ const FeedbackManagement = () => {
                           <button
                             key={i}
                             onClick={() => setPagination(prev => ({ ...prev, currentPage: pageNum }))}
-                            className={`px-3 py-1 rounded-lg ${
-                              pagination.currentPage === pageNum
+                            className={`px-3 py-1 rounded-lg ${pagination.currentPage === pageNum
                                 ? 'bg-primary text-white'
                                 : 'border border-gray-300'
-                            }`}
+                              }`}
                           >
                             {pageNum}
                           </button>
@@ -1746,8 +1740,8 @@ const FeedbackManagement = () => {
                         <div>
                           {renderStars(selectedFeedback.rating, 'lg')}
                           <div className="text-sm text-gray-600 mt-1">
-                            {selectedFeedback.rating >= 4 ? 'Excellent' : 
-                             selectedFeedback.rating >= 3 ? 'Good' : 'Needs Improvement'}
+                            {selectedFeedback.rating >= 4 ? 'Excellent' :
+                              selectedFeedback.rating >= 3 ? 'Good' : 'Needs Improvement'}
                           </div>
                         </div>
                       </div>
@@ -1759,14 +1753,14 @@ const FeedbackManagement = () => {
                         <div className="text-3xl font-bold text-gray-900">{selectedFeedback.accuracy_match}/5</div>
                         <div className="flex-1">
                           <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
+                            <div
                               className="h-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-500 rounded-full"
                               style={{ width: `${selectedFeedback.accuracy_match * 20}%` }}
                             ></div>
                           </div>
                           <div className="text-sm text-gray-600 mt-1">
-                            {selectedFeedback.accuracy_match >= 4 ? 'Very Accurate' : 
-                             selectedFeedback.accuracy_match >= 3 ? 'Moderately Accurate' : 'Not Accurate'}
+                            {selectedFeedback.accuracy_match >= 4 ? 'Very Accurate' :
+                              selectedFeedback.accuracy_match >= 3 ? 'Moderately Accurate' : 'Not Accurate'}
                           </div>
                         </div>
                       </div>
@@ -1981,12 +1975,11 @@ const FeedbackManagement = () => {
                       {[1, 2, 3, 4, 5].map((rating) => (
                         <button
                           key={rating}
-                          onClick={() => setEditingFeedback({...editingFeedback, rating})}
-                          className={`text-2xl ${
-                            rating <= editingFeedback.rating 
-                              ? 'text-yellow-500 fill-current' 
+                          onClick={() => setEditingFeedback({ ...editingFeedback, rating })}
+                          className={`text-2xl ${rating <= editingFeedback.rating
+                              ? 'text-yellow-500 fill-current'
                               : 'text-gray-300'
-                          }`}
+                            }`}
                         >
                           <FaStar />
                         </button>
@@ -2005,7 +1998,7 @@ const FeedbackManagement = () => {
                       step="1"
                       value={editingFeedback.accuracy_match}
                       onChange={(e) => setEditingFeedback({
-                        ...editingFeedback, 
+                        ...editingFeedback,
                         accuracy_match: parseInt(e.target.value)
                       })}
                       className="w-full"
@@ -2023,7 +2016,7 @@ const FeedbackManagement = () => {
                         type="checkbox"
                         checked={editingFeedback.helpful}
                         onChange={(e) => setEditingFeedback({
-                          ...editingFeedback, 
+                          ...editingFeedback,
                           helpful: e.target.checked
                         })}
                         className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -2036,7 +2029,7 @@ const FeedbackManagement = () => {
                         type="checkbox"
                         checked={editingFeedback.would_recommend}
                         onChange={(e) => setEditingFeedback({
-                          ...editingFeedback, 
+                          ...editingFeedback,
                           would_recommend: e.target.checked
                         })}
                         className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -2049,7 +2042,7 @@ const FeedbackManagement = () => {
                         type="checkbox"
                         checked={editingFeedback.is_reviewed}
                         onChange={(e) => setEditingFeedback({
-                          ...editingFeedback, 
+                          ...editingFeedback,
                           is_reviewed: e.target.checked
                         })}
                         className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -2065,7 +2058,7 @@ const FeedbackManagement = () => {
                     <textarea
                       value={editingFeedback.comment || ''}
                       onChange={(e) => setEditingFeedback({
-                        ...editingFeedback, 
+                        ...editingFeedback,
                         comment: e.target.value
                       })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -2091,7 +2084,7 @@ const FeedbackManagement = () => {
                         is_reviewed: editingFeedback.is_reviewed,
                         comment: editingFeedback.comment
                       });
-                      
+
                       if (success) {
                         setShowEditModal(false);
                         setEditingFeedback(null);

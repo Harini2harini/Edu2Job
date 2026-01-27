@@ -25,7 +25,7 @@ const PredictionLogs = () => {
     end: ''
   });
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchPredictions();
@@ -43,16 +43,16 @@ const PredictionLogs = () => {
   };
 
   const filteredPredictions = predictions.filter(prediction => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       prediction.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       JSON.stringify(prediction.prediction_result).toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || prediction.status === filterStatus;
-    
-    const matchesDate = (!dateRange.start && !dateRange.end) || 
+
+    const matchesDate = (!dateRange.start && !dateRange.end) ||
       (!dateRange.start || new Date(prediction.created_at) >= new Date(dateRange.start)) &&
       (!dateRange.end || new Date(prediction.created_at) <= new Date(dateRange.end));
-    
+
     return matchesSearch && matchesStatus && matchesDate;
   });
 
@@ -62,8 +62,8 @@ const PredictionLogs = () => {
         flag_reason: 'admin_review',
         flag_details: 'Flagged by admin for manual review'
       });
-      
-      setPredictions(predictions.map(p => 
+
+      setPredictions(predictions.map(p =>
         p.id === predictionId ? { ...p, status: 'flagged', is_flagged: true } : p
       ));
     } catch (error) {
@@ -77,8 +77,8 @@ const PredictionLogs = () => {
         status: 'resolved',
         reviewed_by: 'admin'
       });
-      
-      setPredictions(predictions.map(p => 
+
+      setPredictions(predictions.map(p =>
         p.id === predictionId ? { ...p, status: 'resolved' } : p
       ));
     } catch (error) {
@@ -88,9 +88,9 @@ const PredictionLogs = () => {
 
   const exportPredictions = () => {
     const dataStr = JSON.stringify(predictions, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `predictions_export_${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -185,7 +185,7 @@ const PredictionLogs = () => {
               <input
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
@@ -197,7 +197,7 @@ const PredictionLogs = () => {
               <input
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
@@ -255,9 +255,9 @@ const PredictionLogs = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">
-                        {prediction.prediction_result?.job_role || 
-                         prediction.prediction_result?.top_prediction ||
-                         'No prediction data'}
+                        {prediction.prediction_result?.job_role ||
+                          prediction.prediction_result?.top_prediction ||
+                          'No prediction data'}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
                         Model: {prediction.model_name || 'Default'}
@@ -266,7 +266,7 @@ const PredictionLogs = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-24 bg-gray-200 rounded-full h-2 mr-3">
-                          <div 
+                          <div
                             className="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full"
                             style={{ width: `${prediction.confidence_score || 0}%` }}
                           ></div>
@@ -279,11 +279,10 @@ const PredictionLogs = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {getStatusIcon(prediction.status)}
-                        <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${
-                          prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                          prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
+                            prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {prediction.status?.charAt(0).toUpperCase() + prediction.status?.slice(1) || 'Unknown'}
                         </span>
                       </div>
@@ -332,8 +331,8 @@ const PredictionLogs = () => {
               <FaDatabase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No predictions found</h3>
               <p className="text-gray-500">
-                {searchTerm || dateRange.start || dateRange.end || filterStatus !== 'all' 
-                  ? 'Try changing your filters' 
+                {searchTerm || dateRange.start || dateRange.end || filterStatus !== 'all'
+                  ? 'Try changing your filters'
                   : 'No prediction logs available'}
               </p>
             </div>
@@ -380,10 +379,10 @@ const PredictionLogs = () => {
             <div className="space-y-4">
               {['success', 'flagged', 'failed'].map((status) => {
                 const count = filteredPredictions.filter(p => p.status === status).length;
-                const percentage = filteredPredictions.length > 0 
-                  ? (count / filteredPredictions.length * 100).toFixed(1) 
+                const percentage = filteredPredictions.length > 0
+                  ? (count / filteredPredictions.length * 100).toFixed(1)
                   : 0;
-                
+
                 return (
                   <div key={status} className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -391,12 +390,11 @@ const PredictionLogs = () => {
                       <span>{count} ({percentage}%)</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-full rounded-full ${
-                          status === 'success' ? 'bg-green-500' :
-                          status === 'flagged' ? 'bg-yellow-500' :
-                          'bg-red-500'
-                        }`}
+                      <div
+                        className={`h-full rounded-full ${status === 'success' ? 'bg-green-500' :
+                            status === 'flagged' ? 'bg-yellow-500' :
+                              'bg-red-500'
+                          }`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>

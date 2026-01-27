@@ -9,7 +9,7 @@ import {
   FaShare,
   FaPlus,
   FaFilter,
- FaBriefcase,
+  FaBriefcase,
   FaUserFriends,
   FaChartLine,
   FaLightbulb,
@@ -27,7 +27,7 @@ const Community = () => {
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     loadPosts();
@@ -118,18 +118,18 @@ const Community = () => {
                 <input
                   type="text"
                   value={newPost.title}
-                  onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+                  onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
                   className="input-field"
                   placeholder="Post title (optional)"
                 />
-                
+
                 <textarea
                   value={newPost.content}
-                  onChange={(e) => setNewPost({...newPost, content: e.target.value})}
+                  onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
                   className="input-field min-h-[120px]"
                   placeholder="What's on your mind? Share career insights, ask questions, or post job opportunities..."
                 />
-                
+
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
                     {categories.map((cat) => (
@@ -142,7 +142,7 @@ const Community = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={handleCreatePost}
                     className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
@@ -183,26 +183,25 @@ const Community = () => {
                             </p>
                           </div>
                         </div>
-                        
-                        <div className={`px-3 py-1 rounded-full text-sm ${
-                          post.category === 'career_advice' ? 'bg-yellow-100 text-yellow-800' :
-                          post.category === 'interview_tips' ? 'bg-blue-100 text-blue-800' :
-                          post.category === 'skill_development' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
+
+                        <div className={`px-3 py-1 rounded-full text-sm ${post.category === 'career_advice' ? 'bg-yellow-100 text-yellow-800' :
+                            post.category === 'interview_tips' ? 'bg-blue-100 text-blue-800' :
+                              post.category === 'skill_development' ? 'bg-green-100 text-green-800' :
+                                'bg-gray-100 text-gray-800'
+                          }`}>
                           {post.category.replace('_', ' ')}
                         </div>
                       </div>
-                      
+
                       {post.title && (
                         <h2 className="text-xl font-bold text-gray-900 mt-4">{post.title}</h2>
                       )}
                     </div>
-                    
+
                     {/* Post Content */}
                     <div className="p-6">
                       <p className="text-gray-700 whitespace-pre-line">{post.content}</p>
-                      
+
                       {/* Tags */}
                       {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-4">
@@ -218,7 +217,7 @@ const Community = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Post Actions */}
                     <div className="px-6 py-4 border-t border-gray-200">
                       <div className="flex items-center justify-between">
@@ -230,18 +229,18 @@ const Community = () => {
                             <FaThumbsUp />
                             <span>{post.likes_count || 0} Likes</span>
                           </button>
-                          
+
                           <button className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
                             <FaComment />
                             <span>{post.comments_count || 0} Comments</span>
                           </button>
-                          
+
                           <button className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
                             <FaShare />
                             <span>Share</span>
                           </button>
                         </div>
-                        
+
                         <button className="text-sm text-primary hover:text-primary-dark font-medium">
                           Read More
                         </button>
@@ -273,24 +272,22 @@ const Community = () => {
                 <FaFilter className="text-primary" />
                 <h3 className="font-bold text-gray-800">Categories</h3>
               </div>
-              
+
               <div className="space-y-2">
                 <button
                   onClick={() => setActiveFilter('all')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                    activeFilter === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-50'
-                  }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-50'
+                    }`}
                 >
                   All Topics
                 </button>
-                
+
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setActiveFilter(cat.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      activeFilter === cat.id ? 'bg-primary text-white' : 'hover:bg-gray-50'
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeFilter === cat.id ? 'bg-primary text-white' : 'hover:bg-gray-50'
+                      }`}
                   >
                     <div className={activeFilter === cat.id ? 'text-white' : cat.color.split(' ')[1]}>
                       {cat.icon}
@@ -300,11 +297,11 @@ const Community = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Trending Topics */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <h3 className="font-bold text-gray-800 mb-4">Trending Topics</h3>
-              
+
               <div className="space-y-3">
                 {['AI Career Paths', 'Remote Work Tips', 'Tech Interviews', 'Resume Building', 'Salary Negotiation'].map((topic, index) => (
                   <div key={index} className="p-3 border border-gray-200 rounded-lg hover:border-primary transition-colors">
@@ -316,33 +313,33 @@ const Community = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Community Stats */}
             <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-lg p-6 text-white">
               <h3 className="font-bold text-xl mb-4">Community Stats</h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span>Total Members</span>
                   <span className="font-bold">1,234</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>Active Discussions</span>
                   <span className="font-bold">89</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>Posts Today</span>
                   <span className="font-bold">24</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>Expert Contributors</span>
                   <span className="font-bold">45</span>
                 </div>
               </div>
-              
+
               <div className="mt-6 pt-6 border-t border-white/20">
                 <button className="w-full py-3 bg-white text-primary rounded-lg font-bold hover:bg-gray-100 transition-colors">
                   Join Community

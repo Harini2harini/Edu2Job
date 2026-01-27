@@ -42,7 +42,7 @@ const Profile = () => {
   const [completion, setCompletion] = useState(0);
   const fileInputRef = useRef(null);
   const certificateFileInputRef = useRef(null);
-  
+
   // Form states - UPDATED: Single name field instead of first_name and last_name
   const [personalInfo, setPersonalInfo] = useState({
     name: '', // Single name field
@@ -61,14 +61,14 @@ const Profile = () => {
     profile_picture: null,
     profile_picture_url: ''
   });
-  
+
   // COMPREHENSIVE DEGREE OPTIONS (Mapped to backend values)
   // Backend expects: 'high_school', 'diploma', 'bachelor', 'master', 'phd', 'other'
   const degreeOptions = [
     // Basic Levels
     { value: 'high_school', label: 'High School/Secondary School', category: 'School' },
     { value: 'diploma', label: 'Diploma', category: 'Undergraduate' },
-    
+
     // Bachelor's Degrees
     { value: 'bachelor', label: 'Bachelor of Engineering (B.E.)', category: 'Undergraduate' },
     { value: 'bachelor', label: 'Bachelor of Technology (B.Tech)', category: 'Undergraduate' },
@@ -81,7 +81,7 @@ const Profile = () => {
     { value: 'bachelor', label: 'Bachelor of Pharmacy (B.Pharm)', category: 'Undergraduate' },
     { value: 'bachelor', label: 'Bachelor of Laws (LLB)', category: 'Undergraduate' },
     { value: 'bachelor', label: 'Bachelor of Medicine, Bachelor of Surgery (MBBS)', category: 'Undergraduate' },
-    
+
     // Master's Degrees
     { value: 'master', label: 'Master of Engineering (M.E.)', category: 'Postgraduate' },
     { value: 'master', label: 'Master of Technology (M.Tech)', category: 'Postgraduate' },
@@ -95,12 +95,12 @@ const Profile = () => {
     { value: 'master', label: 'Master of Laws (LLM)', category: 'Postgraduate' },
     { value: 'master', label: 'Master of Surgery (MS)', category: 'Postgraduate' },
     { value: 'master', label: 'Doctor of Medicine (MD)', category: 'Postgraduate' },
-    
+
     // Doctoral Degrees
     { value: 'phd', label: 'Doctor of Philosophy (PhD)', category: 'Doctorate' },
     { value: 'phd', label: 'Doctor of Science (D.Sc)', category: 'Doctorate' },
     { value: 'phd', label: 'Doctor of Literature (D.Litt)', category: 'Doctorate' },
-    
+
     // Other Degrees
     { value: 'other', label: 'Other Degree', category: 'Other' },
   ];
@@ -220,19 +220,19 @@ const Profile = () => {
     'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes',
     'Machine Learning', 'Data Analysis', 'Data Visualization',
     'Git', 'REST APIs', 'GraphQL', 'DevOps', 'CI/CD',
-    
+
     // Soft Skills
     'Communication', 'Leadership', 'Teamwork', 'Problem Solving',
     'Critical Thinking', 'Time Management', 'Adaptability',
     'Creativity', 'Work Ethic', 'Interpersonal Skills',
-    
+
     // Business Skills
     'Project Management', 'Agile/Scrum', 'Strategic Planning',
     'Business Analysis', 'Financial Analysis', 'Marketing Strategy',
-    
+
     // Language Skills
     'English', 'Hindi', 'Spanish', 'French', 'German', 'Japanese',
-    
+
     'Other'
   ];
 
@@ -266,7 +266,7 @@ const Profile = () => {
     customDegree: '', // For "Other" option
     customInstitution: '' // For "Other" institution
   });
-  
+
   const [newSkill, setNewSkill] = useState({
     name: '',
     category: 'technical', // Changed to match backend expectations
@@ -274,14 +274,14 @@ const Profile = () => {
     years_of_experience: 0,
     customSkill: '' // For "Other" skill option
   });
-  
+
   const [newCertification, setNewCertification] = useState({
     name: '',
     issuing_organization: '',
     issue_date: '',
     certificate_file: null
   });
-  
+
   const [newWorkExperience, setNewWorkExperience] = useState({
     title: '',
     company: '',
@@ -294,13 +294,13 @@ const Profile = () => {
     description: '',
     achievements: ''
   });
-  
+
   const [newResume, setNewResume] = useState({
     title: '',
     file: null
   });
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   // Load profile data
   const loadProfileData = async () => {
@@ -308,14 +308,14 @@ const Profile = () => {
       setLoading(true);
       const response = await axios.get(`${API_URL}/profile/profile/complete/`);
       setProfileData(response.data);
-      
+
       // Set personal info from profile
       if (response.data.profile) {
         // Extract first_name and last_name if they exist, otherwise use name field
         const profile = response.data.profile;
-        const fullName = profile.name || 
-                        (profile.first_name && profile.last_name ? `${profile.first_name} ${profile.last_name}` : '');
-        
+        const fullName = profile.name ||
+          (profile.first_name && profile.last_name ? `${profile.first_name} ${profile.last_name}` : '');
+
         setPersonalInfo({
           name: fullName, // Single name field
           date_of_birth: profile.date_of_birth || '',
@@ -334,7 +334,7 @@ const Profile = () => {
           profile_picture_url: profile.profile_picture || ''
         });
       }
-      
+
       // Load completion percentage
       const completionResponse = await axios.get(`${API_URL}/profile/profile/completion/`);
       setCompletion(completionResponse.data.overall_completion);
@@ -352,13 +352,13 @@ const Profile = () => {
   const handlePersonalInfoSave = async () => {
     try {
       setSaving(true);
-      
+
       // Check if we're creating or updating
       const hasProfileId = profileData.profile && profileData.profile.id;
-      
+
       // Create FormData for file upload
       const formData = new FormData();
-      
+
       // Add all personal info fields
       Object.keys(personalInfo).forEach(key => {
         if (key === 'profile_picture' && personalInfo[key]) {
@@ -371,10 +371,10 @@ const Profile = () => {
           formData.append(key, personalInfo[key] || '');
         }
       });
-      
+
       // Log what we're sending (for debugging)
       console.log('Saving personal info:', Object.fromEntries(formData));
-      
+
       let response;
       if (hasProfileId) {
         // Update existing profile
@@ -391,19 +391,19 @@ const Profile = () => {
           },
         });
       }
-      
+
       console.log('Save response:', response.data);
-      
+
       await loadProfileData(); // Reload data
       alert('Personal information saved successfully!');
     } catch (error) {
       console.error('Error saving personal info:', error.response?.data || error.message);
-      
+
       // Better error handling to show validation errors
       if (error.response?.data) {
         const errorData = error.response.data;
         let errorMessage = 'Failed to save personal information:\n';
-        
+
         // Handle field-specific errors
         Object.keys(errorData).forEach(field => {
           if (Array.isArray(errorData[field])) {
@@ -412,7 +412,7 @@ const Profile = () => {
             errorMessage += `${field}: ${errorData[field]}\n`;
           }
         });
-        
+
         alert(errorMessage);
       } else {
         alert(`Failed to save personal information: ${error.message}`);
@@ -425,28 +425,28 @@ const Profile = () => {
   const handleAddEducation = async () => {
     try {
       setSaving(true);
-      
+
       // Validate required fields
       if (!newEducation.degree || !newEducation.institution || !newEducation.graduation_year) {
         alert('Please fill in all required fields (Degree, Institution, and Graduation Year)');
         setSaving(false);
         return;
       }
-      
+
       // Validate GPA range if provided
       if (newEducation.gpa && (parseFloat(newEducation.gpa) < 0 || parseFloat(newEducation.gpa) > 10)) {
         alert('GPA must be between 0 and 10');
         setSaving(false);
         return;
       }
-      
+
       // Validate percentage range if provided
       if (newEducation.percentage && (parseFloat(newEducation.percentage) < 0 || parseFloat(newEducation.percentage) > 100)) {
         alert('Percentage must be between 0 and 100');
         setSaving(false);
         return;
       }
-      
+
       // Validate graduation year
       const currentYear = new Date().getFullYear();
       if (parseInt(newEducation.graduation_year) < 1900 || parseInt(newEducation.graduation_year) > currentYear + 5) {
@@ -454,7 +454,7 @@ const Profile = () => {
         setSaving(false);
         return;
       }
-      
+
       // Prepare education data
       const educationData = {
         degree: newEducation.degree, // This should be one of: 'high_school', 'diploma', 'bachelor', 'master', 'phd', 'other'
@@ -466,13 +466,13 @@ const Profile = () => {
         honors: newEducation.honors || '',
         additional_certifications: newEducation.additional_certifications || ''
       };
-      
+
       // Log what we're sending (for debugging)
       console.log('Adding education:', educationData);
-      
+
       const response = await axios.post(`${API_URL}/profile/educations/`, educationData);
       console.log('Education response:', response.data);
-      
+
       // Reset form
       setNewEducation({
         degree: 'bachelor',
@@ -487,13 +487,13 @@ const Profile = () => {
         customDegree: '',
         customInstitution: ''
       });
-      
+
       document.getElementById('addEducationModal').close();
       await loadProfileData();
       alert('Education added successfully!');
     } catch (error) {
       console.error('Error adding education:', error.response?.data || error.message);
-      
+
       // Better error handling
       if (error.response?.data) {
         let errorMessage = 'Failed to add education:\n';
@@ -514,7 +514,7 @@ const Profile = () => {
   const handleAddSkill = async () => {
     try {
       setSaving(true);
-      
+
       // Validate required fields
       const skillName = newSkill.name === 'Other' ? newSkill.customSkill : newSkill.name;
       if (!skillName || skillName.trim() === '') {
@@ -522,7 +522,7 @@ const Profile = () => {
         setSaving(false);
         return;
       }
-      
+
       // Prepare skill data according to backend expectations
       const skillData = {
         name: skillName,
@@ -530,9 +530,9 @@ const Profile = () => {
         level: newSkill.level, // Should be one of: 'beginner', 'intermediate', 'advanced', 'expert'
         years_of_experience: newSkill.years_of_experience || 0
       };
-      
+
       console.log('Adding skill:', skillData);
-      
+
       // Try different API endpoints if needed
       let response;
       try {
@@ -542,9 +542,9 @@ const Profile = () => {
         console.log('Trying alternative endpoint...');
         response = await axios.post(`${API_URL}/skills/`, skillData);
       }
-      
+
       console.log('Skill response:', response.data);
-      
+
       // Reset form
       setNewSkill({
         name: '',
@@ -553,17 +553,17 @@ const Profile = () => {
         years_of_experience: 0,
         customSkill: ''
       });
-      
+
       document.getElementById('addSkillModal').close();
       await loadProfileData();
       alert('Skill added successfully!');
     } catch (error) {
       console.error('Error adding skill:', error.response?.data || error.message);
-      
+
       // Better error handling
       if (error.response?.data) {
         let errorMessage = 'Failed to add skill:\n';
-        
+
         if (typeof error.response.data === 'object') {
           Object.keys(error.response.data).forEach(field => {
             if (Array.isArray(error.response.data[field])) {
@@ -577,7 +577,7 @@ const Profile = () => {
         } else if (error.response.data.detail) {
           errorMessage = error.response.data.detail;
         }
-        
+
         alert(errorMessage);
       } else {
         alert(`Failed to add skill: ${error.message}`);
@@ -590,16 +590,16 @@ const Profile = () => {
   const handleAddCertification = async () => {
     try {
       setSaving(true);
-      
+
       // Validate required fields
       if (!newCertification.name || !newCertification.issuing_organization) {
         alert('Please fill in all required fields (Certification Name and Issuing Organization)');
         setSaving(false);
         return;
       }
-      
+
       const formData = new FormData();
-      
+
       // Add certification data
       formData.append('name', newCertification.name);
       formData.append('issuing_organization', newCertification.issuing_organization);
@@ -609,17 +609,17 @@ const Profile = () => {
       if (newCertification.certificate_file) {
         formData.append('certificate_file', newCertification.certificate_file);
       }
-      
+
       console.log('Adding certification:', Object.fromEntries(formData));
-      
+
       const response = await axios.post(`${API_URL}/profile/certifications/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       console.log('Certification response:', response.data);
-      
+
       setNewCertification({
         name: '',
         issuing_organization: '',
@@ -640,19 +640,19 @@ const Profile = () => {
   const handleAddWorkExperience = async () => {
     try {
       setSaving(true);
-      
+
       // Validate required fields
       if (!newWorkExperience.title || !newWorkExperience.company || !newWorkExperience.start_date) {
         alert('Please fill in all required fields (Title, Company, and Start Date)');
         setSaving(false);
         return;
       }
-      
+
       console.log('Adding work experience:', newWorkExperience);
-      
+
       const response = await axios.post(`${API_URL}/profile/work-experiences/`, newWorkExperience);
       console.log('Work experience response:', response.data);
-      
+
       setNewWorkExperience({
         title: '',
         company: '',
@@ -681,23 +681,23 @@ const Profile = () => {
       alert('Please select a file');
       return;
     }
-    
+
     try {
       setSaving(true);
       const formData = new FormData();
       formData.append('title', newResume.title || 'My Resume');
       formData.append('file', newResume.file);
-      
+
       console.log('Uploading resume:', Object.fromEntries(formData));
-      
+
       const response = await axios.post(`${API_URL}/profile/resumes/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       console.log('Resume response:', response.data);
-      
+
       setNewResume({ title: '', file: null });
       document.getElementById('uploadResumeModal').close();
       await loadProfileData();
@@ -749,13 +749,13 @@ const Profile = () => {
         alert('Please select an image file');
         return;
       }
-      
+
       // Check file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('Image size should be less than 5MB');
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPersonalInfo({
@@ -792,13 +792,13 @@ const Profile = () => {
   // Helper function to get degree display label from value
   const getDegreeDisplayLabel = (degreeValue, educations) => {
     if (!educations) return '';
-    
+
     // Find matching degree option
     const degreeOption = degreeOptions.find(opt => opt.value === degreeValue);
     if (degreeOption) {
       return degreeOption.label;
     }
-    
+
     // If not found in predefined options, return the value itself
     return degreeValue;
   };
@@ -810,12 +810,12 @@ const Profile = () => {
     if (degreeOption) {
       return degreeOption.label;
     }
-    
+
     // If "other" degree with custom name, use that
     if (education.degree === 'other' && education.field_of_study) {
       return education.field_of_study;
     }
-    
+
     // Fallback to the degree value
     return education.degree;
   };
@@ -865,7 +865,7 @@ const Profile = () => {
                   </div>
                   <div className="w-32">
                     <div className="h-3 bg-white/20 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-white rounded-full transition-all duration-300"
                         style={{ width: `${completion}%` }}
                       ></div>
@@ -884,11 +884,10 @@ const Profile = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium whitespace-nowrap transition-all ${
-                  activeTab === tab.id
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium whitespace-nowrap transition-all ${activeTab === tab.id
                     ? 'bg-primary text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
+                  }`}
               >
                 {tab.icon}
                 <span>{tab.name}</span>
@@ -909,15 +908,15 @@ const Profile = () => {
                 className="bg-white rounded-xl shadow-lg p-6"
               >
                 <h2 className="text-xl font-bold text-gray-800 mb-6">Personal Information</h2>
-                
+
                 {/* Profile Picture Upload */}
                 <div className="flex flex-col items-center mb-8">
                   <div className="relative">
                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
                       {personalInfo.profile_picture_url ? (
-                        <img 
-                          src={personalInfo.profile_picture_url} 
-                          alt="Profile" 
+                        <img
+                          src={personalInfo.profile_picture_url}
+                          alt="Profile"
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -944,7 +943,7 @@ const Profile = () => {
                     Click the camera icon to upload profile picture
                   </p>
                 </div>
-                
+
                 <div className="space-y-6">
                   {/* Single Name Field */}
                   <div>
@@ -954,7 +953,7 @@ const Profile = () => {
                     <input
                       type="text"
                       value={personalInfo.name}
-                      onChange={(e) => setPersonalInfo({...personalInfo, name: e.target.value})}
+                      onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Enter your full name"
                       required
@@ -969,18 +968,18 @@ const Profile = () => {
                       <input
                         type="date"
                         value={personalInfo.date_of_birth}
-                        onChange={(e) => setPersonalInfo({...personalInfo, date_of_birth: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, date_of_birth: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Gender
                       </label>
                       <select
                         value={personalInfo.gender}
-                        onChange={(e) => setPersonalInfo({...personalInfo, gender: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, gender: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                       >
                         <option value="">Select Gender</option>
@@ -1000,12 +999,12 @@ const Profile = () => {
                       <input
                         type="text"
                         value={personalInfo.nationality}
-                        onChange={(e) => setPersonalInfo({...personalInfo, nationality: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, nationality: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="Your nationality"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Postal Code
@@ -1013,26 +1012,26 @@ const Profile = () => {
                       <input
                         type="text"
                         value={personalInfo.postal_code}
-                        onChange={(e) => setPersonalInfo({...personalInfo, postal_code: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, postal_code: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="Postal code"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Address
                     </label>
                     <textarea
                       value={personalInfo.address}
-                      onChange={(e) => setPersonalInfo({...personalInfo, address: e.target.value})}
+                      onChange={(e) => setPersonalInfo({ ...personalInfo, address: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       rows="2"
                       placeholder="Your address"
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1041,12 +1040,12 @@ const Profile = () => {
                       <input
                         type="text"
                         value={personalInfo.city}
-                        onChange={(e) => setPersonalInfo({...personalInfo, city: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, city: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="City"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Country
@@ -1054,13 +1053,13 @@ const Profile = () => {
                       <input
                         type="text"
                         value={personalInfo.country}
-                        onChange={(e) => setPersonalInfo({...personalInfo, country: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, country: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="Country"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1069,12 +1068,12 @@ const Profile = () => {
                       <input
                         type="url"
                         value={personalInfo.linkedin_url}
-                        onChange={(e) => setPersonalInfo({...personalInfo, linkedin_url: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, linkedin_url: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="https://linkedin.com/in/username"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         GitHub URL
@@ -1082,12 +1081,12 @@ const Profile = () => {
                       <input
                         type="url"
                         value={personalInfo.github_url}
-                        onChange={(e) => setPersonalInfo({...personalInfo, github_url: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, github_url: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="https://github.com/username"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Portfolio URL
@@ -1095,39 +1094,39 @@ const Profile = () => {
                       <input
                         type="url"
                         value={personalInfo.portfolio_url}
-                        onChange={(e) => setPersonalInfo({...personalInfo, portfolio_url: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, portfolio_url: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         placeholder="https://yourportfolio.com"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Professional Summary
                     </label>
                     <textarea
                       value={personalInfo.professional_summary}
-                      onChange={(e) => setPersonalInfo({...personalInfo, professional_summary: e.target.value})}
+                      onChange={(e) => setPersonalInfo({ ...personalInfo, professional_summary: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       rows="4"
                       placeholder="Brief summary of your professional background..."
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Career Objective
                     </label>
                     <textarea
                       value={personalInfo.career_objective}
-                      onChange={(e) => setPersonalInfo({...personalInfo, career_objective: e.target.value})}
+                      onChange={(e) => setPersonalInfo({ ...personalInfo, career_objective: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       rows="3"
                       placeholder="Your career goals and objectives..."
                     />
                   </div>
-                  
+
                   <button
                     onClick={handlePersonalInfoSave}
                     disabled={saving}
@@ -1166,7 +1165,7 @@ const Profile = () => {
                     <span>Add Education</span>
                   </button>
                 </div>
-                
+
                 {/* Education List */}
                 <div className="space-y-4">
                   {profileData.educations.map((edu) => (
@@ -1189,18 +1188,18 @@ const Profile = () => {
                                   </span>
                                 </div>
                               </div>
-                              
+
                               {edu.field_of_study && edu.field_of_study !== edu.degree && (
                                 <p className="text-gray-700 mt-1">
                                   <span className="font-medium">Field of Study:</span> {edu.field_of_study}
                                 </p>
                               )}
-                              
+
                               <p className="text-gray-600 mt-1 flex items-center gap-2">
                                 <FaBuilding className="text-gray-400 text-sm" />
                                 {edu.institution}
                               </p>
-                              
+
                               <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-600">
                                 {edu.gpa && (
                                   <div className="flex items-center gap-2">
@@ -1215,14 +1214,14 @@ const Profile = () => {
                                   </div>
                                 )}
                               </div>
-                              
+
                               {edu.additional_certifications && (
                                 <div className="mt-3">
                                   <h4 className="text-sm font-medium text-gray-700 mb-1">Additional Certifications:</h4>
                                   <p className="text-sm text-gray-600">{edu.additional_certifications}</p>
                                 </div>
                               )}
-                              
+
                               {edu.honors && (
                                 <div className="mt-3 p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded-r">
                                   <div className="flex items-center gap-2 mb-1">
@@ -1248,7 +1247,7 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {profileData.educations.length === 0 && (
                     <div className="text-center py-12 px-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1288,7 +1287,7 @@ const Profile = () => {
                     <span>Add Skill</span>
                   </button>
                 </div>
-                
+
                 {/* Skills List */}
                 <div className="space-y-4">
                   {profileData.skills.map((skill) => (
@@ -1296,29 +1295,26 @@ const Profile = () => {
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                              skill.category === 'technical' ? 'bg-blue-100' :
-                              skill.category === 'soft' ? 'bg-green-100' :
-                              skill.category === 'business' ? 'bg-purple-100' :
-                              skill.category === 'language' ? 'bg-yellow-100' : 'bg-gray-100'
-                            }`}>
-                              <FaTools className={`${
-                                skill.category === 'technical' ? 'text-blue-600' :
-                                skill.category === 'soft' ? 'text-green-600' :
-                                skill.category === 'business' ? 'text-purple-600' :
-                                skill.category === 'language' ? 'text-yellow-600' : 'text-gray-600'
-                              }`} />
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${skill.category === 'technical' ? 'bg-blue-100' :
+                                skill.category === 'soft' ? 'bg-green-100' :
+                                  skill.category === 'business' ? 'bg-purple-100' :
+                                    skill.category === 'language' ? 'bg-yellow-100' : 'bg-gray-100'
+                              }`}>
+                              <FaTools className={`${skill.category === 'technical' ? 'text-blue-600' :
+                                  skill.category === 'soft' ? 'text-green-600' :
+                                    skill.category === 'business' ? 'text-purple-600' :
+                                      skill.category === 'language' ? 'text-yellow-600' : 'text-gray-600'
+                                }`} />
                             </div>
                             <div className="flex-1">
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <h3 className="font-bold text-gray-800 text-lg">{skill.name}</h3>
                                 <div className="flex items-center gap-3">
-                                  <span className={`px-3 py-1 text-sm rounded-full ${
-                                    skill.level === 'expert' ? 'bg-green-100 text-green-800' :
-                                    skill.level === 'advanced' ? 'bg-blue-100 text-blue-800' :
-                                    skill.level === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-gray-100 text-gray-800'
-                                  }`}>
+                                  <span className={`px-3 py-1 text-sm rounded-full ${skill.level === 'expert' ? 'bg-green-100 text-green-800' :
+                                      skill.level === 'advanced' ? 'bg-blue-100 text-blue-800' :
+                                        skill.level === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                                          'bg-gray-100 text-gray-800'
+                                    }`}>
                                     {skill.level.charAt(0).toUpperCase() + skill.level.slice(1)}
                                   </span>
                                   <span className="text-sm text-gray-500 capitalize">
@@ -1326,14 +1322,14 @@ const Profile = () => {
                                   </span>
                                 </div>
                               </div>
-                              
+
                               {skill.years_of_experience > 0 && (
                                 <div className="mt-3">
                                   <div className="flex items-center gap-2">
                                     <span className="text-sm font-medium text-gray-700">Experience:</span>
                                     <div className="flex items-center gap-1">
                                       <div className="w-full max-w-xs bg-gray-200 rounded-full h-2">
-                                        <div 
+                                        <div
                                           className="h-full bg-primary rounded-full"
                                           style={{ width: `${Math.min(skill.years_of_experience * 20, 100)}%` }}
                                         ></div>
@@ -1361,7 +1357,7 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {profileData.skills.length === 0 && (
                     <div className="text-center py-12 px-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1401,7 +1397,7 @@ const Profile = () => {
                     <span>Add Certification</span>
                   </button>
                 </div>
-                
+
                 {/* Certifications List */}
                 <div className="space-y-4">
                   {profileData.certifications.map((cert) => (
@@ -1416,12 +1412,12 @@ const Profile = () => {
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <h3 className="font-bold text-gray-800 text-lg">{cert.name}</h3>
                               </div>
-                              
+
                               <p className="text-gray-600 mt-1 flex items-center gap-2">
                                 <FaBuilding className="text-gray-400 text-sm" />
                                 {cert.issuing_organization}
                               </p>
-                              
+
                               <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-600">
                                 {cert.issue_date && (
                                   <div className="flex items-center gap-2">
@@ -1430,7 +1426,7 @@ const Profile = () => {
                                   </div>
                                 )}
                               </div>
-                              
+
                               <div className="flex flex-wrap items-center gap-3 mt-4">
                                 {cert.certificate_file && (
                                   <>
@@ -1467,7 +1463,7 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {profileData.certifications.length === 0 && (
                     <div className="text-center py-12 px-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1507,7 +1503,7 @@ const Profile = () => {
                     <span>Add Experience</span>
                   </button>
                 </div>
-                
+
                 {/* Work Experience List */}
                 <div className="space-y-4">
                   {profileData.work_experiences.map((exp) => (
@@ -1522,13 +1518,12 @@ const Profile = () => {
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <h3 className="font-bold text-gray-800 text-lg">{exp.title}</h3>
                                 <div className="flex items-center gap-2">
-                                  <span className={`px-3 py-1 text-sm rounded-full ${
-                                    exp.employment_type === 'full_time' ? 'bg-blue-100 text-blue-800' :
-                                    exp.employment_type === 'part_time' ? 'bg-yellow-100 text-yellow-800' :
-                                    exp.employment_type === 'contract' ? 'bg-orange-100 text-orange-800' :
-                                    exp.employment_type === 'internship' ? 'bg-green-100 text-green-800' :
-                                    'bg-gray-100 text-gray-800'
-                                  }`}>
+                                  <span className={`px-3 py-1 text-sm rounded-full ${exp.employment_type === 'full_time' ? 'bg-blue-100 text-blue-800' :
+                                      exp.employment_type === 'part_time' ? 'bg-yellow-100 text-yellow-800' :
+                                        exp.employment_type === 'contract' ? 'bg-orange-100 text-orange-800' :
+                                          exp.employment_type === 'internship' ? 'bg-green-100 text-green-800' :
+                                            'bg-gray-100 text-gray-800'
+                                    }`}>
                                     {exp.employment_type.replace('_', ' ')}
                                   </span>
                                   {exp.remote && (
@@ -1538,7 +1533,7 @@ const Profile = () => {
                                   )}
                                 </div>
                               </div>
-                              
+
                               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
                                 <p className="text-gray-600 flex items-center gap-2">
                                   <FaBuilding className="text-gray-400 text-sm" />
@@ -1551,22 +1546,22 @@ const Profile = () => {
                                   </p>
                                 )}
                               </div>
-                              
+
                               <div className="flex items-center gap-2 mt-3">
                                 <FaCalendar className="text-gray-400 text-sm" />
                                 <span className="text-sm text-gray-600">
-                                  {new Date(exp.start_date).toLocaleDateString()} - 
+                                  {new Date(exp.start_date).toLocaleDateString()} -
                                   {exp.currently_working ? ' Present' : ` ${new Date(exp.end_date).toLocaleDateString()}`}
                                 </span>
                               </div>
-                              
+
                               {exp.description && (
                                 <div className="mt-4">
                                   <h4 className="text-sm font-semibold text-gray-700 mb-2">Description:</h4>
                                   <p className="text-gray-600 text-sm leading-relaxed">{exp.description}</p>
                                 </div>
                               )}
-                              
+
                               {exp.achievements && (
                                 <div className="mt-4">
                                   <h4 className="text-sm font-semibold text-gray-700 mb-2">Key Achievements:</h4>
@@ -1593,7 +1588,7 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {profileData.work_experiences.length === 0 && (
                     <div className="text-center py-12 px-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1633,7 +1628,7 @@ const Profile = () => {
                     <span>Upload Resume</span>
                   </button>
                 </div>
-                
+
                 {/* Resumes List */}
                 <div className="space-y-4">
                   {profileData.resumes.map((resume) => (
@@ -1659,7 +1654,7 @@ const Profile = () => {
                                   Uploaded: {new Date(resume.uploaded_at).toLocaleDateString()}
                                 </div>
                               </div>
-                              
+
                               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-600">
                                 <span className="flex items-center gap-2">
                                   <span className="font-medium">Size:</span>
@@ -1677,17 +1672,16 @@ const Profile = () => {
                           <button
                             onClick={() => handleSetPrimaryResume(resume.id)}
                             disabled={resume.is_primary}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                              resume.is_primary 
-                                ? 'text-yellow-600 bg-yellow-50 cursor-default' 
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${resume.is_primary
+                                ? 'text-yellow-600 bg-yellow-50 cursor-default'
                                 : 'text-gray-600 hover:text-yellow-600 hover:bg-yellow-50'
-                            }`}
+                              }`}
                             title={resume.is_primary ? 'Primary Resume' : 'Set as Primary'}
                           >
                             <FaStar className="text-sm" />
                             <span className="hidden sm:inline">Primary</span>
                           </button>
-                          
+
                           <button
                             onClick={() => handleViewResume(resume.file)}
                             className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
@@ -1696,7 +1690,7 @@ const Profile = () => {
                             <FaEye className="text-sm" />
                             <span className="hidden sm:inline">View</span>
                           </button>
-                          
+
                           <button
                             onClick={() => handleDownloadResume(resume.file, resume.title)}
                             className="flex items-center gap-2 px-3 py-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
@@ -1705,7 +1699,7 @@ const Profile = () => {
                             <FaDownload className="text-sm" />
                             <span className="hidden sm:inline">Download</span>
                           </button>
-                          
+
                           <button
                             onClick={() => handleDeleteItem('resumes', resume.id)}
                             className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
@@ -1718,7 +1712,7 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {profileData.resumes.length === 0 && (
                     <div className="text-center py-12 px-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1746,15 +1740,15 @@ const Profile = () => {
           <div>
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <h2 className="text-lg font-bold text-gray-800 mb-4">Profile Summary</h2>
-              
+
               <div className="space-y-4">
                 <div className="flex flex-col items-center gap-3">
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
                       {personalInfo.profile_picture_url ? (
-                        <img 
-                          src={personalInfo.profile_picture_url} 
-                          alt="Profile" 
+                        <img
+                          src={personalInfo.profile_picture_url}
+                          alt="Profile"
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -1771,7 +1765,7 @@ const Profile = () => {
                     <p className="text-sm text-gray-600">{user?.email}</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Education</span>
@@ -1779,28 +1773,28 @@ const Profile = () => {
                       {profileData.educations.length} added
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Skills</span>
                     <span className="font-medium">
                       {profileData.skills.length} added
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Certifications</span>
                     <span className="font-medium">
                       {profileData.certifications.length} added
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Work Experience</span>
                     <span className="font-medium">
                       {profileData.work_experiences.length} added
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Resumes</span>
                     <span className="font-medium">
@@ -1808,11 +1802,11 @@ const Profile = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="pt-4 border-t border-gray-200">
                   <div className="text-sm text-gray-600 mb-2">Profile Strength</div>
                   <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300"
                       style={{ width: `${completion}%` }}
                     ></div>
@@ -1826,11 +1820,11 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h2>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={() => setActiveTab('resume')}
@@ -1847,7 +1841,7 @@ const Profile = () => {
                   </div>
                   <FaArrowRight className="text-gray-400" />
                 </button>
-                
+
                 <button
                   onClick={() => loadProfileData()}
                   className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
@@ -1862,7 +1856,7 @@ const Profile = () => {
                     </div>
                   </div>
                 </button>
-                
+
                 <button
                   onClick={() => window.print()}
                   className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
@@ -1882,9 +1876,9 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      
+
       {/* MODALS */}
-      
+
       {/* Add Education Modal */}
       <dialog id="addEducationModal" className="modal">
         <div className="modal-box max-w-2xl bg-white p-0 overflow-hidden">
@@ -1893,14 +1887,14 @@ const Profile = () => {
               <h3 className="text-xl font-bold text-gray-800">Add Education Details</h3>
               <p className="text-sm text-gray-600 mt-1">Enter your academic information (saved automatically)</p>
             </div>
-            <button 
+            <button
               onClick={() => document.getElementById('addEducationModal').close()}
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
           </div>
-          
+
           <div className="p-6 max-h-[70vh] overflow-y-auto">
             <div className="space-y-6">
               {/* Degree Selection */}
@@ -1911,7 +1905,7 @@ const Profile = () => {
                 <div className="relative">
                   <select
                     value={newEducation.degree}
-                    onChange={(e) => setNewEducation({...newEducation, degree: e.target.value})}
+                    onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white appearance-none"
                     required
                   >
@@ -1920,7 +1914,7 @@ const Profile = () => {
                     <optgroup label="School Level">
                       <option value="high_school">High School/Secondary School</option>
                     </optgroup>
-                    
+
                     {/* Undergraduate */}
                     <optgroup label="Undergraduate Degrees">
                       <option value="diploma">Diploma</option>
@@ -1936,7 +1930,7 @@ const Profile = () => {
                       <option value="bachelor">Bachelor of Laws (LLB)</option>
                       <option value="bachelor">Bachelor of Medicine, Bachelor of Surgery (MBBS)</option>
                     </optgroup>
-                    
+
                     {/* Postgraduate */}
                     <optgroup label="Postgraduate Degrees">
                       <option value="master">Master of Engineering (M.E.)</option>
@@ -1952,14 +1946,14 @@ const Profile = () => {
                       <option value="master">Master of Surgery (MS)</option>
                       <option value="master">Doctor of Medicine (MD)</option>
                     </optgroup>
-                    
+
                     {/* Doctorate */}
                     <optgroup label="Doctoral Degrees">
                       <option value="phd">Doctor of Philosophy (PhD)</option>
                       <option value="phd">Doctor of Science (D.Sc)</option>
                       <option value="phd">Doctor of Literature (D.Litt)</option>
                     </optgroup>
-                    
+
                     {/* Other */}
                     <optgroup label="Other">
                       <option value="other">Other Degree</option>
@@ -1967,18 +1961,18 @@ const Profile = () => {
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
-                
+
                 {/* Custom degree input if "Other" is selected */}
                 {newEducation.degree === 'other' && (
                   <div className="mt-2">
                     <input
                       type="text"
                       value={newEducation.customDegree || ''}
-                      onChange={(e) => setNewEducation({...newEducation, customDegree: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, customDegree: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Enter your custom degree name"
                     />
@@ -1988,7 +1982,7 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Specialization Selection */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -2000,7 +1994,7 @@ const Profile = () => {
                       onChange={(e) => {
                         const field = e.target.value;
                         if (field && field !== 'custom') {
-                          setNewEducation({...newEducation, specialization: field});
+                          setNewEducation({ ...newEducation, specialization: field });
                         }
                       }}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
@@ -2020,14 +2014,14 @@ const Profile = () => {
                     <input
                       type="text"
                       value={newEducation.specialization}
-                      onChange={(e) => setNewEducation({...newEducation, specialization: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, specialization: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Or type your specialization"
                     />
                   </div>
                 </div>
               </div>
-              
+
               {/* Institution */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -2036,7 +2030,7 @@ const Profile = () => {
                 <div className="relative">
                   <select
                     value={newEducation.institution}
-                    onChange={(e) => setNewEducation({...newEducation, institution: e.target.value})}
+                    onChange={(e) => setNewEducation({ ...newEducation, institution: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white appearance-none"
                     required
                   >
@@ -2047,18 +2041,18 @@ const Profile = () => {
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
-                
+
                 {/* Custom institution input if "Other" is selected */}
                 {newEducation.institution === 'Other' && (
                   <div className="mt-2">
                     <input
                       type="text"
                       value={newEducation.customInstitution || ''}
-                      onChange={(e) => setNewEducation({...newEducation, customInstitution: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, customInstitution: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Enter your institution name"
                       required
@@ -2066,7 +2060,7 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Academic Performance */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
@@ -2080,7 +2074,7 @@ const Profile = () => {
                       min="0"
                       max="10"
                       value={newEducation.gpa}
-                      onChange={(e) => setNewEducation({...newEducation, gpa: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, gpa: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="8.75"
                     />
@@ -2090,7 +2084,7 @@ const Profile = () => {
                   </div>
                   <div className="text-xs text-gray-500">Enter CGPA if applicable</div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Percentage (%)
@@ -2102,7 +2096,7 @@ const Profile = () => {
                       min="0"
                       max="100"
                       value={newEducation.percentage}
-                      onChange={(e) => setNewEducation({...newEducation, percentage: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, percentage: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="85.5"
                     />
@@ -2112,7 +2106,7 @@ const Profile = () => {
                   </div>
                   <div className="text-xs text-gray-500">Enter percentage if applicable</div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Year of Graduation *
@@ -2121,7 +2115,7 @@ const Profile = () => {
                     <input
                       type="number"
                       value={newEducation.graduation_year}
-                      onChange={(e) => setNewEducation({...newEducation, graduation_year: e.target.value})}
+                      onChange={(e) => setNewEducation({ ...newEducation, graduation_year: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="2024"
                       min="1900"
@@ -2134,7 +2128,7 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Additional Certifications */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -2142,7 +2136,7 @@ const Profile = () => {
                 </label>
                 <textarea
                   value={newEducation.additional_certifications}
-                  onChange={(e) => setNewEducation({...newEducation, additional_certifications: e.target.value})}
+                  onChange={(e) => setNewEducation({ ...newEducation, additional_certifications: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   rows="3"
                   placeholder="List any additional certifications, workshops, or training programs completed during this degree..."
@@ -2151,7 +2145,7 @@ const Profile = () => {
                   Separate certifications with commas or new lines
                 </div>
               </div>
-              
+
               {/* Honors/Distinctions */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -2159,13 +2153,13 @@ const Profile = () => {
                 </label>
                 <textarea
                   value={newEducation.honors}
-                  onChange={(e) => setNewEducation({...newEducation, honors: e.target.value})}
+                  onChange={(e) => setNewEducation({ ...newEducation, honors: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   rows="3"
                   placeholder="Any honors, awards, scholarships, or distinctions received..."
                 />
               </div>
-              
+
               {/* Data Persistence Note */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="flex items-start gap-3">
@@ -2181,9 +2175,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-            <button 
+            <button
               onClick={() => {
                 setNewEducation({
                   degree: 'bachelor',
@@ -2217,13 +2211,13 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Modal backdrop */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
       </dialog>
-      
+
       {/* Add Skill Modal */}
       <dialog id="addSkillModal" className="modal">
         <div className="modal-box max-w-2xl bg-white p-0 overflow-hidden">
@@ -2232,14 +2226,14 @@ const Profile = () => {
               <h3 className="text-xl font-bold text-gray-800">Add Skill</h3>
               <p className="text-sm text-gray-600 mt-1">Add your professional skills</p>
             </div>
-            <button 
+            <button
               onClick={() => document.getElementById('addSkillModal').close()}
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
           </div>
-          
+
           <div className="p-6 max-h-[70vh] overflow-y-auto">
             <div className="space-y-6">
               {/* Skill Selection */}
@@ -2250,7 +2244,7 @@ const Profile = () => {
                 <div className="relative">
                   <select
                     value={newSkill.name}
-                    onChange={(e) => setNewSkill({...newSkill, name: e.target.value})}
+                    onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white appearance-none"
                     required
                   >
@@ -2261,18 +2255,18 @@ const Profile = () => {
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
-                
+
                 {/* Custom skill input if "Other" is selected */}
                 {newSkill.name === 'Other' && (
                   <div className="mt-2">
                     <input
                       type="text"
                       value={newSkill.customSkill || ''}
-                      onChange={(e) => setNewSkill({...newSkill, customSkill: e.target.value})}
+                      onChange={(e) => setNewSkill({ ...newSkill, customSkill: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Enter your custom skill name"
                       required
@@ -2280,7 +2274,7 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -2288,7 +2282,7 @@ const Profile = () => {
                   </label>
                   <select
                     value={newSkill.category}
-                    onChange={(e) => setNewSkill({...newSkill, category: e.target.value})}
+                    onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                   >
                     {skillCategoryOptions.map((option) => (
@@ -2298,14 +2292,14 @@ const Profile = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Level
                   </label>
                   <select
                     value={newSkill.level}
-                    onChange={(e) => setNewSkill({...newSkill, level: e.target.value})}
+                    onChange={(e) => setNewSkill({ ...newSkill, level: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                   >
                     {skillLevelOptions.map((option) => (
@@ -2315,7 +2309,7 @@ const Profile = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Years of Experience
@@ -2326,7 +2320,7 @@ const Profile = () => {
                     max="50"
                     step="0.5"
                     value={newSkill.years_of_experience}
-                    onChange={(e) => setNewSkill({...newSkill, years_of_experience: parseFloat(e.target.value) || 0})}
+                    onChange={(e) => setNewSkill({ ...newSkill, years_of_experience: parseFloat(e.target.value) || 0 })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="e.g., 3.5"
                   />
@@ -2334,9 +2328,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-            <button 
+            <button
               onClick={() => document.getElementById('addSkillModal').close()}
               className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
@@ -2356,13 +2350,13 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Modal backdrop */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
       </dialog>
-      
+
       {/* Add Certification Modal */}
       <dialog id="addCertificationModal" className="modal">
         <div className="modal-box max-w-2xl bg-white p-0 overflow-hidden">
@@ -2371,14 +2365,14 @@ const Profile = () => {
               <h3 className="text-xl font-bold text-gray-800">Add Certification</h3>
               <p className="text-sm text-gray-600 mt-1">Add your professional certifications</p>
             </div>
-            <button 
+            <button
               onClick={() => document.getElementById('addCertificationModal').close()}
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
           </div>
-          
+
           <div className="p-6 max-h-[70vh] overflow-y-auto">
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2389,13 +2383,13 @@ const Profile = () => {
                   <input
                     type="text"
                     value={newCertification.name}
-                    onChange={(e) => setNewCertification({...newCertification, name: e.target.value})}
+                    onChange={(e) => setNewCertification({ ...newCertification, name: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="e.g., AWS Certified Solutions Architect"
                     required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Issuing Organization *
@@ -2403,14 +2397,14 @@ const Profile = () => {
                   <input
                     type="text"
                     value={newCertification.issuing_organization}
-                    onChange={(e) => setNewCertification({...newCertification, issuing_organization: e.target.value})}
+                    onChange={(e) => setNewCertification({ ...newCertification, issuing_organization: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="e.g., Amazon Web Services"
                     required
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Issue Date
@@ -2418,11 +2412,11 @@ const Profile = () => {
                 <input
                   type="date"
                   value={newCertification.issue_date}
-                  onChange={(e) => setNewCertification({...newCertification, issue_date: e.target.value})}
+                  onChange={(e) => setNewCertification({ ...newCertification, issue_date: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Certificate File (Optional)
@@ -2459,7 +2453,7 @@ const Profile = () => {
                             </div>
                           </div>
                           <button
-                            onClick={() => setNewCertification({...newCertification, certificate_file: null})}
+                            onClick={() => setNewCertification({ ...newCertification, certificate_file: null })}
                             className="text-gray-400 hover:text-gray-600"
                           >
                             <FaTimes />
@@ -2472,9 +2466,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-            <button 
+            <button
               onClick={() => document.getElementById('addCertificationModal').close()}
               className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
@@ -2494,13 +2488,13 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Modal backdrop */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
       </dialog>
-      
+
       {/* Add Work Experience Modal */}
       <dialog id="addWorkExperienceModal" className="modal">
         <div className="modal-box max-w-3xl bg-white p-0 overflow-hidden">
@@ -2509,14 +2503,14 @@ const Profile = () => {
               <h3 className="text-xl font-bold text-gray-800">Add Work Experience</h3>
               <p className="text-sm text-gray-600 mt-1">Add your professional work experience</p>
             </div>
-            <button 
+            <button
               onClick={() => document.getElementById('addWorkExperienceModal').close()}
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
           </div>
-          
+
           <div className="p-6 max-h-[70vh] overflow-y-auto">
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2527,13 +2521,13 @@ const Profile = () => {
                   <input
                     type="text"
                     value={newWorkExperience.title}
-                    onChange={(e) => setNewWorkExperience({...newWorkExperience, title: e.target.value})}
+                    onChange={(e) => setNewWorkExperience({ ...newWorkExperience, title: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="e.g., Software Engineer"
                     required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Company *
@@ -2541,14 +2535,14 @@ const Profile = () => {
                   <input
                     type="text"
                     value={newWorkExperience.company}
-                    onChange={(e) => setNewWorkExperience({...newWorkExperience, company: e.target.value})}
+                    onChange={(e) => setNewWorkExperience({ ...newWorkExperience, company: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="Company name"
                     required
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -2556,7 +2550,7 @@ const Profile = () => {
                   </label>
                   <select
                     value={newWorkExperience.employment_type}
-                    onChange={(e) => setNewWorkExperience({...newWorkExperience, employment_type: e.target.value})}
+                    onChange={(e) => setNewWorkExperience({ ...newWorkExperience, employment_type: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                   >
                     <option value="full_time">Full-time</option>
@@ -2566,7 +2560,7 @@ const Profile = () => {
                     <option value="freelance">Freelance</option>
                   </select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Location
@@ -2574,12 +2568,12 @@ const Profile = () => {
                   <input
                     type="text"
                     value={newWorkExperience.location}
-                    onChange={(e) => setNewWorkExperience({...newWorkExperience, location: e.target.value})}
+                    onChange={(e) => setNewWorkExperience({ ...newWorkExperience, location: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     placeholder="e.g., New York, NY"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Remote Work
@@ -2589,7 +2583,7 @@ const Profile = () => {
                       type="checkbox"
                       id="remoteWork"
                       checked={newWorkExperience.remote}
-                      onChange={(e) => setNewWorkExperience({...newWorkExperience, remote: e.target.checked})}
+                      onChange={(e) => setNewWorkExperience({ ...newWorkExperience, remote: e.target.checked })}
                       className="w-5 h-5 text-primary rounded focus:ring-primary"
                     />
                     <label htmlFor="remoteWork" className="ml-3 text-sm text-gray-700">
@@ -2598,7 +2592,7 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -2607,12 +2601,12 @@ const Profile = () => {
                   <input
                     type="date"
                     value={newWorkExperience.start_date}
-                    onChange={(e) => setNewWorkExperience({...newWorkExperience, start_date: e.target.value})}
+                    onChange={(e) => setNewWorkExperience({ ...newWorkExperience, start_date: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     End Date
@@ -2621,7 +2615,7 @@ const Profile = () => {
                     <input
                       type="date"
                       value={newWorkExperience.end_date}
-                      onChange={(e) => setNewWorkExperience({...newWorkExperience, end_date: e.target.value})}
+                      onChange={(e) => setNewWorkExperience({ ...newWorkExperience, end_date: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all disabled:bg-gray-50 disabled:text-gray-500"
                       disabled={newWorkExperience.currently_working}
                     />
@@ -2630,7 +2624,7 @@ const Profile = () => {
                         type="checkbox"
                         id="currentlyWorking"
                         checked={newWorkExperience.currently_working}
-                        onChange={(e) => setNewWorkExperience({...newWorkExperience, currently_working: e.target.checked})}
+                        onChange={(e) => setNewWorkExperience({ ...newWorkExperience, currently_working: e.target.checked })}
                         className="w-5 h-5 text-primary rounded focus:ring-primary"
                       />
                       <label htmlFor="currentlyWorking" className="ml-3 text-sm text-gray-700">
@@ -2640,27 +2634,27 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Job Description
                 </label>
                 <textarea
                   value={newWorkExperience.description}
-                  onChange={(e) => setNewWorkExperience({...newWorkExperience, description: e.target.value})}
+                  onChange={(e) => setNewWorkExperience({ ...newWorkExperience, description: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   rows="4"
                   placeholder="Describe your responsibilities, projects, and achievements in this role..."
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Key Achievements
                 </label>
                 <textarea
                   value={newWorkExperience.achievements}
-                  onChange={(e) => setNewWorkExperience({...newWorkExperience, achievements: e.target.value})}
+                  onChange={(e) => setNewWorkExperience({ ...newWorkExperience, achievements: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   rows="3"
                   placeholder="List your notable accomplishments, projects, or awards..."
@@ -2671,9 +2665,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-            <button 
+            <button
               onClick={() => document.getElementById('addWorkExperienceModal').close()}
               className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
@@ -2693,13 +2687,13 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Modal backdrop */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
       </dialog>
-      
+
       {/* Upload Resume Modal */}
       <dialog id="uploadResumeModal" className="modal">
         <div className="modal-box max-w-xl bg-white p-0 overflow-hidden">
@@ -2708,14 +2702,14 @@ const Profile = () => {
               <h3 className="text-xl font-bold text-gray-800">Upload Resume</h3>
               <p className="text-sm text-gray-600 mt-1">Upload your resume in PDF, DOC, or DOCX format</p>
             </div>
-            <button 
+            <button
               onClick={() => document.getElementById('uploadResumeModal').close()}
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
           </div>
-          
+
           <div className="p-6">
             <div className="space-y-6">
               <div className="space-y-2">
@@ -2725,12 +2719,12 @@ const Profile = () => {
                 <input
                   type="text"
                   value={newResume.title}
-                  onChange={(e) => setNewResume({...newResume, title: e.target.value})}
+                  onChange={(e) => setNewResume({ ...newResume, title: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="e.g., Updated Resume 2024, Software Engineer Resume"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Resume File *
@@ -2768,7 +2762,7 @@ const Profile = () => {
                             </div>
                           </div>
                           <button
-                            onClick={() => setNewResume({...newResume, file: null})}
+                            onClick={() => setNewResume({ ...newResume, file: null })}
                             className="text-gray-400 hover:text-gray-600"
                           >
                             <FaTimes />
@@ -2781,9 +2775,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-            <button 
+            <button
               onClick={() => document.getElementById('uploadResumeModal').close()}
               className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
@@ -2803,7 +2797,7 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Modal backdrop */}
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

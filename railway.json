@@ -5,8 +5,9 @@
     "buildCommand": "pip install -r requirements.txt"
   },
   "deploy": {
-    "startCommand": "python manage.py migrate && gunicorn edu2job_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120",
+    "startCommand": "cd backend && python manage.py migrate && gunicorn edu2job_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120",
     "healthcheckPath": "/health/",
-    "healthcheckTimeout": 20
+    "serviceName": "edu2job-backend",
+    "healthcheckTimeout": 30
   }
 }

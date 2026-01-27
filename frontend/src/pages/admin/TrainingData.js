@@ -83,7 +83,7 @@ const TrainingData = () => {
         dataset_file: null,
         target_column: ''
       });
-      
+
       fetchDatasets();
     } catch (error) {
       console.error('Error uploading dataset:', error);
@@ -147,7 +147,7 @@ const TrainingData = () => {
         <FaUpload className="w-16 h-16 text-green-400 mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Upload Training Dataset</h3>
         <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-          Upload CSV, JSON, or Excel files containing your training data. 
+          Upload CSV, JSON, or Excel files containing your training data.
           Supported formats: .csv, .json, .xlsx, .xls
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -191,19 +191,18 @@ const TrainingData = () => {
                       <p className="text-xs text-gray-500 uppercase">{dataset.dataset_type}</p>
                     </div>
                   </div>
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    dataset.is_validated 
-                      ? 'bg-green-100 text-green-800' 
+                  <span className={`px-2 py-1 text-xs rounded-full ${dataset.is_validated
+                      ? 'bg-green-100 text-green-800'
                       : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                    }`}>
                     {dataset.is_validated ? 'Validated' : 'Pending'}
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                   {dataset.description || 'No description provided'}
                 </p>
-                
+
                 {/* Dataset Stats */}
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
@@ -336,11 +335,10 @@ const TrainingData = () => {
                       {showDetails.column_names.map((col, index) => (
                         <span
                           key={index}
-                          className={`px-3 py-1 rounded-full text-sm ${
-                            col === showDetails.target_column
+                          className={`px-3 py-1 rounded-full text-sm ${col === showDetails.target_column
                               ? 'bg-primary text-white'
                               : 'bg-gray-100 text-gray-700'
-                          }`}
+                            }`}
                         >
                           {col}
                         </span>
@@ -397,7 +395,7 @@ const TrainingData = () => {
                   <input
                     type="text"
                     value={uploadForm.name}
-                    onChange={(e) => setUploadForm({...uploadForm, name: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter dataset name"
                   />
@@ -409,7 +407,7 @@ const TrainingData = () => {
                   </label>
                   <textarea
                     value={uploadForm.description}
-                    onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     rows="3"
                     placeholder="Describe the dataset content"
@@ -423,7 +421,7 @@ const TrainingData = () => {
                   <input
                     type="text"
                     value={uploadForm.target_column}
-                    onChange={(e) => setUploadForm({...uploadForm, target_column: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, target_column: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., job_role, salary_range"
                   />
@@ -445,7 +443,7 @@ const TrainingData = () => {
                           {(uploadForm.dataset_file.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                         <button
-                          onClick={() => setUploadForm({...uploadForm, dataset_file: null})}
+                          onClick={() => setUploadForm({ ...uploadForm, dataset_file: null })}
                           className="text-red-600 hover:text-red-800 text-sm"
                         >
                           Remove File

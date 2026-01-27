@@ -25,7 +25,7 @@ const UserManagement = () => {
   const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchUsers();
@@ -43,14 +43,14 @@ const UserManagement = () => {
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.name.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesRole = filterRole === 'all' || user.role === filterRole;
-    const matchesStatus = filterStatus === 'all' || 
+    const matchesStatus = filterStatus === 'all' ||
       (filterStatus === 'active' ? user.is_active : !user.is_active);
-    
+
     return matchesSearch && matchesRole && matchesStatus;
   });
 
@@ -71,7 +71,7 @@ const UserManagement = () => {
       await axios.patch(`${API_URL}/admin/users/${userId}/`, {
         is_active: !currentStatus
       });
-      setUsers(users.map(u => 
+      setUsers(users.map(u =>
         u.id === userId ? { ...u, is_active: !currentStatus } : u
       ));
     } catch (error) {
@@ -81,9 +81,9 @@ const UserManagement = () => {
 
   const exportUsers = () => {
     const dataStr = JSON.stringify(users, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `users_export_${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -236,22 +236,20 @@ const UserManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                        userItem.role === 'moderator' ? 'bg-blue-100 text-blue-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
+                          userItem.role === 'moderator' ? 'bg-blue-100 text-blue-800' :
+                            'bg-green-100 text-green-800'
+                        }`}>
                         {userItem.role.charAt(0).toUpperCase() + userItem.role.slice(1)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleToggleStatus(userItem.id, userItem.is_active)}
-                        className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                          userItem.is_active
+                        className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${userItem.is_active
                             ? 'bg-green-100 text-green-800 hover:bg-green-200'
                             : 'bg-red-100 text-red-800 hover:bg-red-200'
-                        }`}
+                          }`}
                       >
                         {userItem.is_active ? (
                           <>

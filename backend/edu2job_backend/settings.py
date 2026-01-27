@@ -21,10 +21,12 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    '*',
     '.railway.app', 
-    'edu2job-production-4b92.up.railway.app',
+    '.up.railway.app',
     'localhost',
-    '127.0.0.1',]  # Change this temporarily for deployment
+    '127.0.0.1',
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -295,7 +297,7 @@ LOGGING = {
 }
 
 # Security settings for production
-IS_RAILWAY = os.getenv("RAILWAY_ENVIRONMENT") is not None
+IS_RAILWAY = os.getenv("RAILWAY_ENVIRONMENT_NAME") is not None or os.getenv("RAILWAY_STATIC_URL") is not None
 
 if not DEBUG and not IS_RAILWAY:
     SECURE_SSL_REDIRECT = True
@@ -309,6 +311,7 @@ if not DEBUG and not IS_RAILWAY:
     SECURE_HSTS_PRELOAD = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://edu2job-production-4b92.up.railway.app',
     'https://*.railway.app',
+    'https://*.up.railway.app',
+    'https://edu2-job-kohl.vercel.app',
 ]

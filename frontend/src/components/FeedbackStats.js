@@ -1,27 +1,27 @@
 // components/FeedbackStats.js
 import React, { useState, useEffect, useMemo } from 'react';
 import { Bar, Pie, Line, Doughnut } from 'react-chartjs-2';
-import { 
-  Chart as ChartJS, 
-  CategoryScale, 
-  LinearScale, 
-  BarElement, 
-  Title, 
-  Tooltip, 
-  Legend, 
-  ArcElement, 
-  PointElement, 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
   LineElement,
   Filler,
   RadialLinearScale
 } from 'chart.js';
-import { 
-  FaStar, 
-  FaComment, 
-  FaChartLine, 
-  FaUsers, 
-  FaExclamationTriangle, 
-  FaCheckCircle, 
+import {
+  FaStar,
+  FaComment,
+  FaChartLine,
+  FaUsers,
+  FaExclamationTriangle,
+  FaCheckCircle,
   FaClock,
   FaDownload,
   FaFilter,
@@ -40,14 +40,14 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 ChartJS.register(
-  CategoryScale, 
-  LinearScale, 
-  BarElement, 
-  Title, 
-  Tooltip, 
-  Legend, 
-  ArcElement, 
-  PointElement, 
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
   LineElement,
   Filler,
   RadialLinearScale
@@ -58,36 +58,37 @@ const FeedbackStats = ({ token }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [timeRange, setTimeRange] = useState('30d');
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
   const [dateRange, setDateRange] = useState({
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     endDate: new Date()
   });
   const [exporting, setExporting] = useState(false);
   const [sentimentData, setSentimentData] = useState(null);
-  
+
   useEffect(() => {
     fetchFeedbackStats();
   }, [timeRange]);
-  
+
   const fetchFeedbackStats = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      
+
       if (timeRange === 'custom') {
         params.append('start_date', dateRange.startDate.toISOString().split('T')[0]);
         params.append('end_date', dateRange.endDate.toISOString().split('T')[0]);
       } else {
         params.append('time_range', timeRange);
       }
-      
-      const response = await axios.get('http://localhost:8000/api/predictions/feedback/stats/', {
+
+      const response = await axios.get(`${API_URL}/predictions/feedback/stats/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
         params
       });
-      
+
       setStats(response.data);
       analyzeSentiment(response.data.recent_feedback);
     } catch (err) {
@@ -97,7 +98,7 @@ const FeedbackStats = ({ token }) => {
       setLoading(false);
     }
   };
-  
+
   const analyzeSentiment = (feedback) => {
     const sentiment = {
       positive: 0,
@@ -105,26 +106,26 @@ const FeedbackStats = ({ token }) => {
       negative: 0,
       total: feedback.length
     };
-    
+
     feedback.forEach(fb => {
       if (fb.rating >= 4) sentiment.positive++;
       else if (fb.rating === 3) sentiment.neutral++;
       else sentiment.negative++;
     });
-    
+
     setSentimentData(sentiment);
   };
-  
+
   const exportData = async () => {
     try {
       setExporting(true);
-      const response = await axios.get('http://localhost:8000/api/predictions/feedback/export/', {
+      const response = await axios.get(`${API_URL}/predictions/feedback/export/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
         responseType: 'blob'
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -139,7 +140,7 @@ const FeedbackStats = ({ token }) => {
       setExporting(false);
     }
   };
-  
+
   const ratingDistributionData = useMemo(() => ({
     labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
     datasets: [{
@@ -161,7 +162,7 @@ const FeedbackStats = ({ token }) => {
       hoverOffset: 15
     }]
   }), [stats]);
-  
+
   const sentimentChartData = useMemo(() => ({
     labels: ['Positive', 'Neutral', 'Negative'],
     datasets: [{
@@ -184,9 +185,9 @@ const FeedbackStats = ({ token }) => {
       borderRadius: 8
     }]
   }), [sentimentData]);
-  
+
   const timelineData = useMemo(() => ({
-    labels: stats?.timeline_data?.map(item => 
+    labels: stats?.timeline_data?.map(item =>
       new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     ) || [],
     datasets: [
@@ -217,7 +218,7 @@ const FeedbackStats = ({ token }) => {
       }
     ]
   }), [stats]);
-  
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
@@ -226,7 +227,7 @@ const FeedbackStats = ({ token }) => {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-xl p-6">
@@ -246,15 +247,15 @@ const FeedbackStats = ({ token }) => {
       </div>
     );
   }
-  
+
   if (!stats) return null;
-  
+
   const getTrendIcon = (current, previous) => {
     if (current > previous) return <FaArrowTrendUp className="text-green-500" />;
     if (current < previous) return <FaArrowTrendDown className="text-red-500" />;
     return null;
   };
-  
+
   return (
     <div className="space-y-6">
       {/* Header with Controls */}
@@ -263,7 +264,7 @@ const FeedbackStats = ({ token }) => {
           <h1 className="text-2xl font-bold text-gray-900">Feedback Analytics</h1>
           <p className="text-gray-600">Monitor and analyze user feedback</p>
         </div>
-        
+
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center space-x-2">
             <FaFilter className="text-gray-400" />
@@ -278,7 +279,7 @@ const FeedbackStats = ({ token }) => {
               <option value="custom">Custom Range</option>
             </select>
           </div>
-          
+
           {timeRange === 'custom' && (
             <div className="flex items-center space-x-2">
               <FaCalendarAlt className="text-gray-400" />
@@ -298,7 +299,7 @@ const FeedbackStats = ({ token }) => {
               />
             </div>
           )}
-          
+
           <button
             onClick={fetchFeedbackStats}
             className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
@@ -306,7 +307,7 @@ const FeedbackStats = ({ token }) => {
             <FaSync className={loading ? 'animate-spin' : ''} />
             <span>Refresh</span>
           </button>
-          
+
           <button
             onClick={exportData}
             disabled={exporting}
@@ -317,7 +318,7 @@ const FeedbackStats = ({ token }) => {
           </button>
         </div>
       </div>
-      
+
       {/* Enhanced Stats Cards with Trends */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-lg p-6 border border-blue-100">
@@ -328,7 +329,7 @@ const FeedbackStats = ({ token }) => {
               <div className="flex items-center mt-2">
                 {getTrendIcon(stats.statistics.average_rating, stats.statistics.previous_average_rating)}
                 <span className="text-sm text-gray-500 ml-2">
-                  {stats.statistics.previous_average_rating && 
+                  {stats.statistics.previous_average_rating &&
                     `${(stats.statistics.average_rating - stats.statistics.previous_average_rating).toFixed(1)} vs previous`
                   }
                 </span>
@@ -339,7 +340,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl shadow-lg p-6 border border-green-100">
           <div className="flex items-start justify-between">
             <div>
@@ -348,7 +349,7 @@ const FeedbackStats = ({ token }) => {
               <div className="flex items-center mt-2">
                 {getTrendIcon(stats.statistics.total_feedback, stats.statistics.previous_total_feedback)}
                 <span className="text-sm text-gray-500 ml-2">
-                  {stats.statistics.previous_total_feedback && 
+                  {stats.statistics.previous_total_feedback &&
                     `${stats.statistics.total_feedback - stats.statistics.previous_total_feedback} vs previous`
                   }
                 </span>
@@ -359,7 +360,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-white to-red-50 rounded-2xl shadow-lg p-6 border border-red-100">
           <div className="flex items-start justify-between">
             <div>
@@ -374,7 +375,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-white to-yellow-50 rounded-2xl shadow-lg p-6 border border-yellow-100">
           <div className="flex items-start justify-between">
             <div>
@@ -390,7 +391,7 @@ const FeedbackStats = ({ token }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Enhanced Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Rating Distribution */}
@@ -412,7 +413,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
           <div className="h-72">
-            <Line 
+            <Line
               data={timelineData}
               options={{
                 responsive: true,
@@ -471,7 +472,7 @@ const FeedbackStats = ({ token }) => {
             />
           </div>
         </div>
-        
+
         {/* Sentiment Analysis */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h3 className="text-lg font-bold text-gray-800 mb-6 flex items-center">
@@ -479,7 +480,7 @@ const FeedbackStats = ({ token }) => {
             Sentiment Analysis
           </h3>
           <div className="h-48 mb-4">
-            <Doughnut 
+            <Doughnut
               data={sentimentChartData}
               options={{
                 responsive: true,
@@ -538,14 +539,14 @@ const FeedbackStats = ({ token }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Additional Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Rating Distribution */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h3 className="text-lg font-bold text-gray-800 mb-6">Rating Distribution</h3>
           <div className="h-64">
-            <Pie 
+            <Pie
               data={ratingDistributionData}
               options={{
                 responsive: true,
@@ -593,7 +594,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Common Issues */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">
@@ -607,7 +608,7 @@ const FeedbackStats = ({ token }) => {
               </span>
             )}
           </div>
-          
+
           {stats.common_issues && stats.common_issues.length > 0 ? (
             <div className="space-y-4">
               {stats.common_issues.slice(0, 5).map((issue, index) => (
@@ -638,25 +639,25 @@ const FeedbackStats = ({ token }) => {
               <p className="text-sm text-gray-500 mt-1">Great job!</p>
             </div>
           )}
-          
+
           {/* Quick Actions */}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h4 className="font-medium text-gray-900 mb-3">Quick Actions</h4>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => {/* Export low ratings */}}
+                onClick={() => {/* Export low ratings */ }}
                 className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
               >
                 Export Low Ratings
               </button>
               <button
-                onClick={() => {/* Generate report */}}
+                onClick={() => {/* Generate report */ }}
                 className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm"
               >
                 Generate Report
               </button>
               <button
-                onClick={() => {/* View all */}}
+                onClick={() => {/* View all */ }}
                 className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
               >
                 View All Issues
@@ -665,7 +666,7 @@ const FeedbackStats = ({ token }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Recent Feedback Table */}
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200">
@@ -679,7 +680,7 @@ const FeedbackStats = ({ token }) => {
                 Showing {Math.min(10, stats.recent_feedback.length)} of {stats.recent_feedback.length}
               </span>
               <button
-                onClick={() => {/* View all feedback */}}
+                onClick={() => {/* View all feedback */ }}
                 className="text-sm text-primary hover:text-primary-dark"
               >
                 View All →
@@ -687,7 +688,7 @@ const FeedbackStats = ({ token }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -709,7 +710,7 @@ const FeedbackStats = ({ token }) => {
                     </div>
                     <div className="text-xs text-gray-500 flex items-center">
                       <div className="w-16 bg-gray-200 rounded-full h-1.5 mr-2">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-500 rounded-full"
                           style={{ width: `${feedback.prediction_details?.confidence_score || 0}%` }}
                         ></div>
@@ -723,11 +724,10 @@ const FeedbackStats = ({ token }) => {
                         {[...Array(5)].map((_, i) => (
                           <FaStar
                             key={i}
-                            className={`text-sm ${
-                              i < feedback.rating 
-                                ? 'text-yellow-500 fill-current' 
+                            className={`text-sm ${i < feedback.rating
+                                ? 'text-yellow-500 fill-current'
                                 : 'text-gray-300'
-                            }`}
+                              }`}
                           />
                         ))}
                       </div>
@@ -770,11 +770,10 @@ const FeedbackStats = ({ token }) => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                        feedback.is_reviewed 
-                          ? 'bg-green-100 text-green-800' 
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${feedback.is_reviewed
+                          ? 'bg-green-100 text-green-800'
                           : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                        }`}>
                         {feedback.is_reviewed ? (
                           <>
                             <FaCheckCircle className="mr-1" />
@@ -788,11 +787,10 @@ const FeedbackStats = ({ token }) => {
                         )}
                       </span>
                       {feedback.helpful !== undefined && (
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs ${
-                          feedback.helpful
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs ${feedback.helpful
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-gray-100 text-gray-800'
-                        }`}>
+                          }`}>
                           {feedback.helpful ? <FaThumbsUp className="mr-1" /> : <FaThumbsDown className="mr-1" />}
                         </span>
                       )}
@@ -803,7 +801,7 @@ const FeedbackStats = ({ token }) => {
             </tbody>
           </table>
         </div>
-        
+
         {stats.recent_feedback.length === 0 && (
           <div className="text-center py-12">
             <FaComment className="w-12 h-12 text-gray-300 mx-auto mb-3" />

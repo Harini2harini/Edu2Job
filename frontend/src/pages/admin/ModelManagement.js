@@ -48,7 +48,7 @@ const ModelManagement = () => {
     target_column: ''
   });
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchData();
@@ -134,7 +134,7 @@ const ModelManagement = () => {
         random_state: 42,
         description: ''
       });
-      
+
       // Refresh data after a delay
       setTimeout(() => {
         fetchData();
@@ -175,7 +175,7 @@ const ModelManagement = () => {
         dataset_file: null,
         target_column: ''
       });
-      
+
       fetchData();
     } catch (error) {
       console.error('Error uploading dataset:', error);
@@ -276,33 +276,30 @@ const ModelManagement = () => {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab('models')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'models'
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'models'
                     ? 'border-primary text-primary'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 <FaRobot className="inline mr-2" />
                 ML Models ({models.length})
               </button>
               <button
                 onClick={() => setActiveTab('datasets')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'datasets'
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'datasets'
                     ? 'border-primary text-primary'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 <FaDatabase className="inline mr-2" />
                 Training Datasets ({datasets.length})
               </button>
               <button
                 onClick={() => setActiveTab('metrics')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'metrics'
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'metrics'
                     ? 'border-primary text-primary'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 <FaChartLine className="inline mr-2" />
                 Performance Metrics
@@ -380,18 +377,17 @@ const ModelManagement = () => {
                           <p className="text-xs text-gray-500">v{model.version}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
-                        model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
-                        model.status === 'failed' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs rounded-full ${model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
+                          model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
+                            model.status === 'failed' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                        }`}>
                         {model.status}
                       </span>
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mb-4">{model.description}</p>
-                    
+
                     {/* Performance Metrics */}
                     <div className="grid grid-cols-2 gap-4 mb-6">
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -514,15 +510,14 @@ const ModelManagement = () => {
                           <p className="text-xs text-gray-500">{dataset.dataset_type.toUpperCase()}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        dataset.is_validated ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs rounded-full ${dataset.is_validated ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {dataset.is_validated ? 'Validated' : 'Pending'}
                       </span>
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mb-4">{dataset.description}</p>
-                    
+
                     {/* Dataset Stats */}
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
@@ -631,7 +626,7 @@ const ModelManagement = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                              <div 
+                              <div
                                 className="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full"
                                 style={{ width: `${(model.accuracy || 0) * 100}%` }}
                               ></div>
@@ -649,11 +644,10 @@ const ModelManagement = () => {
                           <span className="font-medium">{model.f1_score?.toFixed(3) || 'N/A'}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
-                            model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span className={`px-2 py-1 text-xs rounded-full ${model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
+                              model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800'
+                            }`}>
                             {model.status}
                           </span>
                         </td>
@@ -722,7 +716,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={uploadForm.name}
-                    onChange={(e) => setUploadForm({...uploadForm, name: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter dataset name"
                   />
@@ -734,7 +728,7 @@ const ModelManagement = () => {
                   </label>
                   <textarea
                     value={uploadForm.description}
-                    onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     rows="3"
                     placeholder="Describe the dataset content"
@@ -748,7 +742,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={uploadForm.target_column}
-                    onChange={(e) => setUploadForm({...uploadForm, target_column: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, target_column: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., job_role, salary_range"
                   />
@@ -767,7 +761,7 @@ const ModelManagement = () => {
                           {(uploadForm.dataset_file.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                         <button
-                          onClick={() => setUploadForm({...uploadForm, dataset_file: null})}
+                          onClick={() => setUploadForm({ ...uploadForm, dataset_file: null })}
                           className="text-red-600 hover:text-red-800 text-sm"
                         >
                           Remove File
@@ -847,7 +841,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={trainingForm.model_name}
-                    onChange={(e) => setTrainingForm({...trainingForm, model_name: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, model_name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., Job Prediction v2.0"
                   />
@@ -859,7 +853,7 @@ const ModelManagement = () => {
                   </label>
                   <select
                     value={trainingForm.dataset_id}
-                    onChange={(e) => setTrainingForm({...trainingForm, dataset_id: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, dataset_id: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
                     <option value="">Select a dataset</option>
@@ -878,7 +872,7 @@ const ModelManagement = () => {
                   <input
                     type="text"
                     value={trainingForm.target_column}
-                    onChange={(e) => setTrainingForm({...trainingForm, target_column: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, target_column: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="e.g., job_role"
                   />
@@ -894,7 +888,7 @@ const ModelManagement = () => {
                     </label>
                     <select
                       value={trainingForm.model_type}
-                      onChange={(e) => setTrainingForm({...trainingForm, model_type: e.target.value})}
+                      onChange={(e) => setTrainingForm({ ...trainingForm, model_type: e.target.value })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
                       <option value="random_forest">Random Forest</option>
@@ -914,7 +908,7 @@ const ModelManagement = () => {
                       min="0.1"
                       max="0.5"
                       value={trainingForm.test_size}
-                      onChange={(e) => setTrainingForm({...trainingForm, test_size: parseFloat(e.target.value)})}
+                      onChange={(e) => setTrainingForm({ ...trainingForm, test_size: parseFloat(e.target.value) })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">Portion for testing (0.1-0.5)</p>
@@ -927,7 +921,7 @@ const ModelManagement = () => {
                   </label>
                   <textarea
                     value={trainingForm.description}
-                    onChange={(e) => setTrainingForm({...trainingForm, description: e.target.value})}
+                    onChange={(e) => setTrainingForm({ ...trainingForm, description: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     rows="3"
                     placeholder="Describe what this model will be used for..."

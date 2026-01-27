@@ -22,7 +22,7 @@ const SystemLogs = () => {
   const [filterLevel, setFilterLevel] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchLogs();
@@ -40,13 +40,13 @@ const SystemLogs = () => {
   };
 
   const filteredLogs = logs.filter(log => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       log.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
       log.source?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesLevel = filterLevel === 'all' || log.level === filterLevel;
     const matchesCategory = filterCategory === 'all' || log.category === filterCategory;
-    
+
     return matchesSearch && matchesLevel && matchesCategory;
   });
 
@@ -64,9 +64,9 @@ const SystemLogs = () => {
 
   const exportLogs = () => {
     const dataStr = JSON.stringify(logs, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `system_logs_export_${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -240,9 +240,8 @@ const SystemLogs = () => {
                     key={log.id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className={`hover:bg-gray-50 ${
-                      log.level === 'error' || log.level === 'critical' ? 'bg-red-50' : ''
-                    }`}
+                    className={`hover:bg-gray-50 ${log.level === 'error' || log.level === 'critical' ? 'bg-red-50' : ''
+                      }`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -319,7 +318,7 @@ const SystemLogs = () => {
               {['info', 'warning', 'error', 'critical'].map((level) => {
                 const count = logs.filter(l => l.level === level).length;
                 const percentage = logs.length > 0 ? (count / logs.length * 100).toFixed(1) : 0;
-                
+
                 return (
                   <div key={level} className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -327,13 +326,12 @@ const SystemLogs = () => {
                       <span>{count} ({percentage}%)</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-full rounded-full ${
-                          level === 'info' ? 'bg-blue-500' :
-                          level === 'warning' ? 'bg-yellow-500' :
-                          level === 'error' ? 'bg-orange-500' :
-                          'bg-red-500'
-                        }`}
+                      <div
+                        className={`h-full rounded-full ${level === 'info' ? 'bg-blue-500' :
+                            level === 'warning' ? 'bg-yellow-500' :
+                              level === 'error' ? 'bg-orange-500' :
+                                'bg-red-500'
+                          }`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -384,7 +382,7 @@ const SystemLogs = () => {
                     <p className="text-sm text-red-700 truncate">{log.message}</p>
                   </div>
                 ))}
-              
+
               {logs.filter(l => l.level === 'critical' || l.level === 'error').length === 0 && (
                 <p className="text-gray-500 text-center py-4">No critical logs found</p>
               )}

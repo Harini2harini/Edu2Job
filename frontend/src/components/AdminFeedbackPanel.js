@@ -40,7 +40,7 @@ const AdminFeedbackPanel = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'insights'
   const [dateRange, setDateRange] = useState('all'); // 'all', 'today', 'week', 'month'
 
-  const API_URL = 'http://localhost:8000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
   useEffect(() => {
     fetchFeedback();
@@ -78,7 +78,7 @@ const AdminFeedbackPanel = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-        
+
         if (historyResponse.data && Array.isArray(historyResponse.data)) {
           const historyFeedback = historyResponse.data
             .filter(prediction => prediction.feedback_rating || prediction.feedback_comment)
@@ -99,7 +99,7 @@ const AdminFeedbackPanel = () => {
               would_recommend: prediction.feedback_rating >= 4,
               accuracy_match: prediction.feedback_rating || 3
             }));
-          
+
           allFeedback = [...allFeedback, ...historyFeedback];
         }
       } catch (error) {
@@ -127,7 +127,7 @@ const AdminFeedbackPanel = () => {
           accuracy_match: fb.rating || 3,
           is_anonymous: !fb.user_email
         }));
-        
+
         allFeedback = [...allFeedback, ...formattedLocalFeedback];
       } catch (error) {
         console.log('Error reading local feedback:', error);
@@ -135,7 +135,7 @@ const AdminFeedbackPanel = () => {
 
       // Apply filters
       let filteredFeedback = allFeedback;
-      
+
       // Filter by rating
       if (filterRating !== 'all') {
         const minRating = parseInt(filterRating);
@@ -146,7 +146,7 @@ const AdminFeedbackPanel = () => {
       if (dateRange !== 'all') {
         const now = new Date();
         let startDate = new Date();
-        
+
         switch (dateRange) {
           case 'today':
             startDate.setHours(0, 0, 0, 0);
@@ -158,8 +158,8 @@ const AdminFeedbackPanel = () => {
             startDate.setMonth(now.getMonth() - 1);
             break;
         }
-        
-        filteredFeedback = filteredFeedback.filter(fb => 
+
+        filteredFeedback = filteredFeedback.filter(fb =>
           new Date(fb.submitted_at) >= startDate
         );
       }
@@ -177,7 +177,7 @@ const AdminFeedbackPanel = () => {
 
       // Apply search filter
       if (searchTerm) {
-        filteredFeedback = filteredFeedback.filter(fb => 
+        filteredFeedback = filteredFeedback.filter(fb =>
           fb.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           fb.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           fb.prediction_details?.job_role?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -209,7 +209,7 @@ const AdminFeedbackPanel = () => {
     const avgRating = feedback.reduce((sum, fb) => sum + fb.rating, 0) / total;
     const helpfulCount = feedback.filter(fb => fb.helpful).length;
     const recommendationCount = feedback.filter(fb => fb.would_recommend).length;
-    
+
     // Rating distribution
     const ratingDist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     feedback.forEach(fb => {
@@ -249,7 +249,7 @@ const AdminFeedbackPanel = () => {
         if (source === 'localStorage') {
           // Remove from localStorage
           const localFeedback = JSON.parse(localStorage.getItem('predictionFeedback') || '[]');
-          const updatedFeedback = localFeedback.filter(fb => 
+          const updatedFeedback = localFeedback.filter(fb =>
             !(fb.prediction_id === feedbackId.replace('local_', '').split('_')[0])
           );
           localStorage.setItem('predictionFeedback', JSON.stringify(updatedFeedback));
@@ -276,7 +276,7 @@ const AdminFeedbackPanel = () => {
             console.log('Could not delete from API, but continuing...');
           }
         }
-        
+
         // Remove from local state
         setFeedback(feedback.filter(fb => fb.id !== feedbackId));
       } catch (error) {
@@ -288,9 +288,9 @@ const AdminFeedbackPanel = () => {
 
   const exportFeedback = () => {
     const dataStr = JSON.stringify(feedback, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `feedback_export_${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -303,9 +303,8 @@ const AdminFeedbackPanel = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <FaStar
             key={star}
-            className={`w-4 h-4 ${
-              star <= rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
-            }`}
+            className={`w-4 h-4 ${star <= rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
+              }`}
           />
         ))}
       </div>
@@ -330,9 +329,9 @@ const AdminFeedbackPanel = () => {
       'history': { color: 'bg-green-100 text-green-800', label: 'History' },
       'localStorage': { color: 'bg-purple-100 text-purple-800', label: 'Local' }
     };
-    
+
     const badge = badges[source] || { color: 'bg-gray-100 text-gray-800', label: source };
-    
+
     return (
       <span className={`px-2 py-1 text-xs rounded-full ${badge.color}`}>
         {badge.label}
@@ -476,12 +475,11 @@ const AdminFeedbackPanel = () => {
                       <span className="font-medium">{percentage.toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-full rounded-full ${
-                          rating >= 4 ? 'bg-green-500' :
-                          rating >= 3 ? 'bg-yellow-500' :
-                          'bg-red-500'
-                        }`}
+                      <div
+                        className={`h-full rounded-full ${rating >= 4 ? 'bg-green-500' :
+                            rating >= 3 ? 'bg-yellow-500' :
+                              'bg-red-500'
+                          }`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -632,7 +630,7 @@ const AdminFeedbackPanel = () => {
                         {fb.prediction_details?.job_role || 'Unknown Prediction'}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {fb.prediction_details?.confidence 
+                        {fb.prediction_details?.confidence
                           ? `Confidence: ${(fb.prediction_details.confidence * 100).toFixed(1)}%`
                           : 'N/A'}
                       </div>
@@ -725,13 +723,13 @@ const AdminFeedbackPanel = () => {
                     {feedback.filter(fb => fb.rating >= 4).length}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {stats.total_feedback > 0 
+                    {stats.total_feedback > 0
                       ? `${((feedback.filter(fb => fb.rating >= 4).length / stats.total_feedback) * 100).toFixed(1)}%`
                       : '0%'}
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <FaMeh className="w-8 h-8 text-yellow-500" />
@@ -745,13 +743,13 @@ const AdminFeedbackPanel = () => {
                     {feedback.filter(fb => fb.rating === 3).length}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {stats.total_feedback > 0 
+                    {stats.total_feedback > 0
                       ? `${((feedback.filter(fb => fb.rating === 3).length / stats.total_feedback) * 100).toFixed(1)}%`
                       : '0%'}
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <FaFrown className="w-8 h-8 text-red-500" />
@@ -765,7 +763,7 @@ const AdminFeedbackPanel = () => {
                     {feedback.filter(fb => fb.rating <= 2).length}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {stats.total_feedback > 0 
+                    {stats.total_feedback > 0
                       ? `${((feedback.filter(fb => fb.rating <= 2).length / stats.total_feedback) * 100).toFixed(1)}%`
                       : '0%'}
                   </div>
@@ -782,34 +780,34 @@ const AdminFeedbackPanel = () => {
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Most Common Rating</span>
                   <span>
-                    {Object.entries(stats.rating_distribution).reduce((a, b) => 
+                    {Object.entries(stats.rating_distribution).reduce((a, b) =>
                       a[1] > b[1] ? a : b, [0, 0]
                     )[0]} stars
                   </span>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Feedback with Comments</span>
                   <span>
                     {feedback.filter(fb => fb.comment && fb.comment.trim() !== '').length}
                     {' '}
-                    ({stats.total_feedback > 0 
+                    ({stats.total_feedback > 0
                       ? `${((feedback.filter(fb => fb.comment && fb.comment.trim() !== '').length / stats.total_feedback) * 100).toFixed(1)}%`
                       : '0%'})
                   </span>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Average Comments Length</span>
                   <span>
                     {feedback.filter(fb => fb.comment).length > 0
-                      ? Math.round(feedback.filter(fb => fb.comment).reduce((sum, fb) => 
-                          sum + (fb.comment?.length || 0), 0) / 
-                          feedback.filter(fb => fb.comment).length)
+                      ? Math.round(feedback.filter(fb => fb.comment).reduce((sum, fb) =>
+                        sum + (fb.comment?.length || 0), 0) /
+                        feedback.filter(fb => fb.comment).length)
                       : 0} chars
                   </span>
                 </div>
@@ -844,8 +842,8 @@ const AdminFeedbackPanel = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-semibold text-gray-900">
-                        {selectedFeedback.is_anonymous || !selectedFeedback.user_email || selectedFeedback.user_email === 'Anonymous' 
-                          ? 'Anonymous User' 
+                        {selectedFeedback.is_anonymous || !selectedFeedback.user_email || selectedFeedback.user_email === 'Anonymous'
+                          ? 'Anonymous User'
                           : selectedFeedback.user_email.split('@')[0]}
                       </h4>
                       <p className="text-sm text-gray-600">
@@ -878,8 +876,8 @@ const AdminFeedbackPanel = () => {
                       {getSentimentIcon(selectedFeedback.rating)}
                     </div>
                     <div className="text-gray-600">
-                      {selectedFeedback.rating >= 4 ? 'Very Satisfied' : 
-                       selectedFeedback.rating >= 3 ? 'Satisfied' : 'Dissatisfied'}
+                      {selectedFeedback.rating >= 4 ? 'Very Satisfied' :
+                        selectedFeedback.rating >= 3 ? 'Satisfied' : 'Dissatisfied'}
                     </div>
                   </div>
                 </div>
@@ -905,7 +903,7 @@ const AdminFeedbackPanel = () => {
                     <div>
                       <div className="text-sm text-gray-500">Confidence</div>
                       <div className="font-medium">
-                        {selectedFeedback.prediction_details?.confidence 
+                        {selectedFeedback.prediction_details?.confidence
                           ? `${(selectedFeedback.prediction_details.confidence * 100).toFixed(1)}%`
                           : 'N/A'}
                       </div>

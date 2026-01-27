@@ -5,7 +5,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import {
   FaHistory, FaChartLine, FaStar, FaCalendarAlt,
-  FaArrowRight, FaEye, FaDownload, FaCheckCircle ,
+  FaArrowRight, FaEye, FaDownload, FaCheckCircle,
   FaFilter, FaSearch, FaSortAmountDown
 } from 'react-icons/fa';
 
@@ -24,12 +24,12 @@ const PredictionHistory = () => {
 
   const fetchPredictions = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/predictions/history/', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000/api'}/predictions/history/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.data.predictions) {
         setPredictions(response.data.predictions);
       }
@@ -42,10 +42,10 @@ const PredictionHistory = () => {
 
   const filteredPredictions = predictions.filter(pred => {
     const matchesSearch = pred.top_prediction.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pred.input_data?.degree_field?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      pred.input_data?.degree_field?.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesRole = filterRole === 'all' || pred.top_prediction === filterRole;
-    
+
     return matchesSearch && matchesRole;
   });
 
@@ -131,7 +131,7 @@ const PredictionHistory = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-800">
-                  {predictions.length > 0 
+                  {predictions.length > 0
                     ? Math.round(predictions.reduce((sum, p) => sum + p.confidence_score, 0) / predictions.length)
                     : 0}%
                 </div>
@@ -159,7 +159,7 @@ const PredictionHistory = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-800">
-                  {predictions.length > 0 
+                  {predictions.length > 0
                     ? new Date(predictions[0].created_at).toLocaleDateString()
                     : 'N/A'}
                 </div>
@@ -274,15 +274,15 @@ const PredictionHistory = () => {
                               {new Date(prediction.created_at).toLocaleDateString()}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {new Date(prediction.created_at).toLocaleTimeString([], { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
+                              {new Date(prediction.created_at).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
                               })}
                             </div>
                           </div>
                         </div>
                       </td>
-                      
+
                       <td className="px-6 py-4">
                         <div className="text-sm font-semibold text-gray-900">
                           {prediction.top_prediction}
@@ -291,13 +291,13 @@ const PredictionHistory = () => {
                           {prediction.input_data?.highest_degree} in {prediction.input_data?.degree_field}
                         </div>
                       </td>
-                      
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getConfidenceBgColor(prediction.confidence_score)}`}>
                           {prediction.confidence_score}%
                         </span>
                       </td>
-                      
+
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900">
                           GPA: {prediction.input_data?.gpa_score || 'N/A'}
@@ -306,7 +306,7 @@ const PredictionHistory = () => {
                           Exp: {prediction.input_data?.total_experience_years || 0} years
                         </div>
                       </td>
-                      
+
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-3">
                           <button
@@ -316,15 +316,15 @@ const PredictionHistory = () => {
                           >
                             <FaEye className="w-5 h-5" />
                           </button>
-                          
+
                           <button
-                            onClick={() => {/* Download functionality */}}
+                            onClick={() => {/* Download functionality */ }}
                             className="text-gray-600 hover:text-gray-900"
                             title="Download Report"
                           >
                             <FaDownload className="w-5 h-5" />
                           </button>
-                          
+
                           <Link
                             to={`/job-prediction`}
                             state={{ fromHistory: true, predictionData: prediction.input_data }}
@@ -433,14 +433,12 @@ const PredictionHistory = () => {
                         {selectedPrediction.all_predictions?.map((pred, index) => (
                           <div
                             key={index}
-                            className={`flex items-center justify-between p-3 rounded-lg ${
-                              index === 0 ? 'bg-primary/10 border border-primary/20' : 'bg-gray-50'
-                            }`}
+                            className={`flex items-center justify-between p-3 rounded-lg ${index === 0 ? 'bg-primary/10 border border-primary/20' : 'bg-gray-50'
+                              }`}
                           >
                             <div className="flex items-center">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                                index === 0 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
-                              }`}>
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${index === 0 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+                                }`}>
                                 {index + 1}
                               </div>
                               <div>
@@ -495,7 +493,7 @@ const PredictionHistory = () => {
                     Close
                   </button>
                   <button
-                    onClick={() => {/* Download full report */}}
+                    onClick={() => {/* Download full report */ }}
                     className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark"
                   >
                     Download Full Report

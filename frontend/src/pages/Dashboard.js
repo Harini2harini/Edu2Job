@@ -2,10 +2,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { 
-  FaChartLine, 
-  FaUserGraduate, 
-  FaFileUpload, 
+import {
+  FaChartLine,
+  FaUserGraduate,
+  FaFileUpload,
   FaCalendarAlt,
   FaArrowRight,
   FaChartBar,
@@ -107,30 +107,30 @@ const TIME_FILTERS = [
 ];
 
 const QUICK_ACTIONS = [
-  { 
-    icon: FaFileUpload, 
-    title: 'Update Profile', 
+  {
+    icon: FaFileUpload,
+    title: 'Update Profile',
     description: 'Boost match score',
     color: 'blue',
     link: '/profile'
   },
-  { 
-    icon: FaChartBar, 
-    title: 'View Analytics', 
+  {
+    icon: FaChartBar,
+    title: 'View Analytics',
     description: 'Detailed insights',
     color: 'green',
     link: '/analytics'
   },
-  { 
-    icon: FaUserGraduate, 
-    title: 'Learning Path', 
+  {
+    icon: FaUserGraduate,
+    title: 'Learning Path',
     description: 'Close skill gaps',
     color: 'purple',
     link: '/learning-path'
   },
-  { 
-    icon: FaFileUpload, 
-    title: 'New Prediction', 
+  {
+    icon: FaFileUpload,
+    title: 'New Prediction',
     description: 'Upload resume',
     color: 'amber',
     link: '/job-prediction'
@@ -144,10 +144,10 @@ const SKILL_GAPS = [
 ];
 
 const RECOMMENDED_JOBS = [
-  { 
-    id: 1, 
-    title: 'Senior Data Scientist', 
-    company: 'TechCorp AI', 
+  {
+    id: 1,
+    title: 'Senior Data Scientist',
+    company: 'TechCorp AI',
     match: 96,
     salary: '$140k - $180k',
     location: 'Remote',
@@ -156,10 +156,10 @@ const RECOMMENDED_JOBS = [
     skills: ['Python', 'TensorFlow', 'SQL'],
     isHot: true
   },
-  { 
-    id: 2, 
-    title: 'Machine Learning Engineer', 
-    company: 'AI Solutions Inc', 
+  {
+    id: 2,
+    title: 'Machine Learning Engineer',
+    company: 'AI Solutions Inc',
     match: 92,
     salary: '$130k - $160k',
     location: 'New York, NY',
@@ -168,10 +168,10 @@ const RECOMMENDED_JOBS = [
     skills: ['PyTorch', 'AWS', 'MLOps'],
     isFeatured: true
   },
-  { 
-    id: 3, 
-    title: 'AI Research Engineer', 
-    company: 'Innovation Labs', 
+  {
+    id: 3,
+    title: 'AI Research Engineer',
+    company: 'Innovation Labs',
     match: 88,
     salary: '$150k - $190k',
     location: 'San Francisco, CA',
@@ -179,10 +179,10 @@ const RECOMMENDED_JOBS = [
     posted: '3 days ago',
     skills: ['Research', 'NLP', 'Deep Learning']
   },
-  { 
-    id: 4, 
-    title: 'Data Analytics Lead', 
-    company: 'DataWorks Corp', 
+  {
+    id: 4,
+    title: 'Data Analytics Lead',
+    company: 'DataWorks Corp',
     match: 85,
     salary: '$120k - $150k',
     location: 'Remote',
@@ -226,18 +226,17 @@ const StatCard = React.memo(({ stat, value, index }) => {
       className={`${colorClasses[stat.color].bg} rounded-2xl p-5 hover:shadow-xl transition-all duration-300 cursor-pointer border border-white/50 relative overflow-hidden group`}
     >
       <div className="absolute top-0 right-0 w-16 h-16 bg-white/20 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500"></div>
-      
+
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
             <Icon className={`text-2xl ${colorClasses[stat.color].icon}`} />
           </div>
           {stat.trend && (
-            <span className={`text-sm font-semibold px-2 py-1 rounded-full ${
-              stat.trendUp 
-                ? 'bg-green-100 text-green-800' 
+            <span className={`text-sm font-semibold px-2 py-1 rounded-full ${stat.trendUp
+                ? 'bg-green-100 text-green-800'
                 : 'bg-red-100 text-red-800'
-            }`}>
+              }`}>
               {stat.trendUp ? '↑' : '↓'} {stat.trend}
             </span>
           )}
@@ -250,11 +249,11 @@ const StatCard = React.memo(({ stat, value, index }) => {
         <h3 className="font-semibold text-gray-800 mb-1">{stat.title}</h3>
         <p className="text-sm text-gray-600">
           {stat.key === 'predictionAccuracy' ? 'AI model accuracy' :
-           stat.key === 'highConfidenceMatches' ? '85%+ confidence' :
-           stat.key === 'jobMatches' ? 'Total matches found' :
-           stat.key === 'skillGap' ? 'Areas to improve' :
-           stat.key === 'totalPredictions' ? 'All predictions made' :
-           'Average prediction score'}
+            stat.key === 'highConfidenceMatches' ? '85%+ confidence' :
+              stat.key === 'jobMatches' ? 'Total matches found' :
+                stat.key === 'skillGap' ? 'Areas to improve' :
+                  stat.key === 'totalPredictions' ? 'All predictions made' :
+                    'Average prediction score'}
         </p>
         {stat.link && (
           <div className="mt-4 text-sm font-medium text-primary flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -278,7 +277,7 @@ const StatCard = React.memo(({ stat, value, index }) => {
 const PredictionCard = React.memo(({ prediction }) => {
   const statusColor = prediction.confidence >= 90 ? 'green' : prediction.confidence >= 80 ? 'yellow' : 'red';
   const statusText = prediction.confidence >= 90 ? 'Excellent' : prediction.confidence >= 80 ? 'Good' : 'Needs Work';
-  
+
   return (
     <div className="border border-gray-200 rounded-xl p-5 hover:border-primary hover:shadow-lg transition-all duration-300 group">
       <div className="flex items-start justify-between mb-4">
@@ -305,7 +304,7 @@ const PredictionCard = React.memo(({ prediction }) => {
           <span className="font-semibold">{prediction.confidence}%</span>
         </div>
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div 
+          <div
             className={`h-full transition-all duration-1000 bg-gradient-to-r from-${statusColor}-400 to-${statusColor}-600`}
             style={{ width: `${prediction.confidence}%` }}
           ></div>
@@ -322,7 +321,7 @@ const PredictionCard = React.memo(({ prediction }) => {
 
 const JobCard = React.memo(({ job }) => {
   const matchColor = job.match >= 90 ? 'green' : job.match >= 80 ? 'amber' : 'blue';
-  
+
   return (
     <div className="border border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-md transition-all duration-300 group hover:bg-gray-50/50">
       <div className="flex items-start justify-between mb-3">
@@ -347,7 +346,7 @@ const JobCard = React.memo(({ job }) => {
           <div className="text-xs text-gray-500">Match</div>
         </div>
       </div>
-      
+
       <div className="mb-3">
         <div className="flex items-center text-sm text-gray-600 mb-2">
           <FaRegClock className="mr-2" />
@@ -357,7 +356,7 @@ const JobCard = React.memo(({ job }) => {
           <span className="mx-2">•</span>
           <span className="font-medium text-gray-700">{job.salary}</span>
         </div>
-        
+
         <div className="flex flex-wrap gap-1 mb-3">
           {job.skills.map((skill, idx) => (
             <span key={idx} className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">
@@ -366,7 +365,7 @@ const JobCard = React.memo(({ job }) => {
           ))}
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
         <span className="text-sm text-gray-500">{job.type}</span>
         <button className="inline-flex items-center text-primary hover:text-primary-dark font-medium text-sm group-hover:underline">
@@ -441,10 +440,9 @@ const Dashboard = () => {
 
   const fetchDashboardData = useCallback(async () => {
     try {
-      setLoading(true);
-      const predictionsResponse = await axios.get('http://localhost:8000/api/predictions/history/');
-      const predictions = predictionsResponse.data.predictions || [];
-      
+      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000/api'}/predictions/history/`);
+      const predictions = response.data.predictions || [];
+
       // Calculate stats in one pass
       const statsData = predictions.reduce((acc, p) => {
         acc.totalPredictions++;
@@ -464,7 +462,7 @@ const Dashboard = () => {
         jobMatches: statsData.jobMatches,
         skillGap: 2,
         totalPredictions: statsData.totalPredictions,
-        avgConfidence: statsData.totalPredictions > 0 
+        avgConfidence: statsData.totalPredictions > 0
           ? Math.round(statsData.totalConfidence / statsData.totalPredictions)
           : 0,
         highConfidenceMatches: statsData.highConfidenceMatches
@@ -527,11 +525,10 @@ const Dashboard = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 font-medium text-sm border-b-2 transition-all duration-300 ${
-                    activeTab === tab
+                  className={`py-4 px-1 font-medium text-sm border-b-2 transition-all duration-300 ${activeTab === tab
                       ? 'border-primary text-primary'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center">
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -547,7 +544,7 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <select 
+                <select
                   value={timeFilter}
                   onChange={(e) => setTimeFilter(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
@@ -559,7 +556,7 @@ const Dashboard = () => {
                   ))}
                 </select>
               </div>
-              <button 
+              <button
                 onClick={fetchDashboardData}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 title="Refresh data"
@@ -581,7 +578,7 @@ const Dashboard = () => {
           <div className="bg-gradient-to-r from-primary via-primary/90 to-primary-dark rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full -translate-x-64 translate-y-64"></div>
-            
+
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between">
               <div className="mb-6 lg:mb-0 lg:max-w-2xl">
                 <div className="flex items-center mb-3">
@@ -666,7 +663,7 @@ const Dashboard = () => {
                   <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {recentPredictions.length > 0 ? (
                   recentPredictions.map((prediction) => (
@@ -708,7 +705,7 @@ const Dashboard = () => {
                   <FaChartBar className="text-primary text-xl" />
                 </div>
                 <div className="h-64 relative">
-                  <Doughnut 
+                  <Doughnut
                     data={chartData.industryDistribution}
                     options={{
                       responsive: true,
@@ -746,7 +743,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="h-64">
-                  <Line 
+                  <Line
                     data={chartData.confidenceTrend}
                     options={{
                       responsive: true,
@@ -786,13 +783,13 @@ const Dashboard = () => {
                   {RECOMMENDED_JOBS.length} Jobs
                 </span>
               </div>
-              
+
               <div className="space-y-4">
                 {RECOMMENDED_JOBS.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
-              
+
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <Link
                   to="/job-search"
@@ -815,7 +812,7 @@ const Dashboard = () => {
                 <FaRocket className="mr-3 text-primary" />
                 Quick Actions
               </h2>
-              
+
               <div className="space-y-3">
                 {QUICK_ACTIONS.map((action, idx) => {
                   const Icon = action.icon;
@@ -825,7 +822,7 @@ const Dashboard = () => {
                     purple: 'from-purple-500/20 to-purple-600/20',
                     amber: 'from-amber-500/20 to-amber-600/20'
                   };
-                  
+
                   return (
                     <Link
                       key={idx}
@@ -862,17 +859,16 @@ const Dashboard = () => {
                   <p className="text-amber-600 text-sm">Close these to improve matches</p>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 {SKILL_GAPS.map((skill, index) => (
                   <div key={index} className="bg-white/80 rounded-xl p-4 border border-amber-100">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-gray-800">{skill.skill}</span>
-                      <span className={`px-2 py-1 text-xs font-bold rounded-full ${
-                        skill.priority === 'High' 
-                          ? 'bg-red-100 text-red-700' 
+                      <span className={`px-2 py-1 text-xs font-bold rounded-full ${skill.priority === 'High'
+                          ? 'bg-red-100 text-red-700'
                           : 'bg-amber-100 text-amber-700'
-                      }`}>
+                        }`}>
                         {skill.priority}
                       </span>
                     </div>
@@ -882,7 +878,7 @@ const Dashboard = () => {
                         <span className="text-gray-600">Target: {skill.target}%</span>
                       </div>
                       <div className="h-2 bg-amber-100 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-1000"
                           style={{ width: `${skill.current}%` }}
                         ></div>
@@ -898,7 +894,7 @@ const Dashboard = () => {
                   </div>
                 ))}
               </div>
-              
+
               <Link
                 to="/learning-path"
                 className="inline-flex items-center justify-center w-full mt-6 py-3 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all hover:shadow-lg group"
