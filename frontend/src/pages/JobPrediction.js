@@ -30,7 +30,7 @@ const JobPrediction = () => {
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
   const [savingPrediction, setSavingPrediction] = useState(false);
   const [modelInfo, setModelInfo] = useState(null);
-  
+
   // Initialize form data with proper defaults
   const [formData, setFormData] = useState({
     // Personal Information
@@ -39,7 +39,7 @@ const JobPrediction = () => {
     location_country: 'USA',
     location_city_tier: '1',
     second_language: 'None',
-    
+
     // Education
     highest_degree: 'bachelor',
     degree_field: 'computer_science',
@@ -47,7 +47,7 @@ const JobPrediction = () => {
     gpa_score: 8.5,
     graduation_year: 2020,
     years_since_graduation: 4,
-    
+
     // Experience
     total_experience_years: 3,
     current_role_level: 'mid',
@@ -63,14 +63,14 @@ const JobPrediction = () => {
     patents_filed: 0,
     open_source_contributions: 0,
     career_gap_months: 0,
-    
+
     // Skills & Certifications
     additional_certs_count: 2,
     online_courses_completed: 5,
     research_publications: 0,
     academic_awards: 1,
     professional_network_size: 150,
-    
+
     // Certifications (binary flags)
     cert_aws: 0,
     cert_google_cloud: 0,
@@ -88,7 +88,7 @@ const JobPrediction = () => {
     cert_tableau: 0,
     cert_python_institute: 0,
     cert_java_ocp: 0,
-    
+
     // Derived scores (will be calculated)
     tech_skill_score: 0,
     soft_skill_score: 0,
@@ -122,7 +122,7 @@ const JobPrediction = () => {
     { value: 'skill_perl', label: 'Perl', category: 'Programming Languages', icon: <FaCode /> },
     { value: 'skill_bash', label: 'Bash', category: 'Programming Languages', icon: <FaCode /> },
     { value: 'skill_powershell', label: 'PowerShell', category: 'Programming Languages', icon: <FaCode /> },
-    
+
     // ======= WEB DEVELOPMENT FRAMEWORKS (17 skills) =======
     { value: 'skill_react', label: 'React', category: 'Web Development', icon: <FaCode /> },
     { value: 'skill_angular', label: 'Angular', category: 'Web Development', icon: <FaCode /> },
@@ -140,7 +140,11 @@ const JobPrediction = () => {
     { value: 'skill_bootstrap', label: 'Bootstrap', category: 'Web Development', icon: <FaCode /> },
     { value: 'skill_sass', label: 'Sass', category: 'Web Development', icon: <FaCode /> },
     { value: 'skill_webpack', label: 'Webpack', category: 'Web Development', icon: <FaCode /> },
-    
+    { value: 'skill_figma', label: 'Figma', category: 'Design', icon: <FaCode /> },
+    { value: 'skill_design_systems', label: 'Design Systems', category: 'Design', icon: <FaCode /> },
+    { value: 'skill_user_research', label: 'User Research', category: 'Design', icon: <FaCode /> },
+    { value: 'skill_prototyping', label: 'Prototyping', category: 'Design', icon: <FaCode /> },
+
     // ======= DATABASES (12 skills) =======
     { value: 'skill_sql', label: 'SQL', category: 'Databases', icon: <FaDatabase /> },
     { value: 'skill_mongodb', label: 'MongoDB', category: 'Databases', icon: <FaDatabase /> },
@@ -154,7 +158,7 @@ const JobPrediction = () => {
     { value: 'skill_dynamodb', label: 'DynamoDB', category: 'Databases', icon: <FaDatabase /> },
     { value: 'skill_firebase', label: 'Firebase', category: 'Databases', icon: <FaDatabase /> },
     { value: 'skill_cosmosdb', label: 'Cosmos DB', category: 'Databases', icon: <FaDatabase /> },
-    
+
     // ======= DATA SCIENCE & MACHINE LEARNING (17 skills) =======
     { value: 'skill_machine_learning', label: 'Machine Learning', category: 'Data Science & ML', icon: <FaBrain /> },
     { value: 'skill_deep_learning', label: 'Deep Learning', category: 'Data Science & ML', icon: <FaBrain /> },
@@ -172,7 +176,7 @@ const JobPrediction = () => {
     { value: 'skill_spark', label: 'Spark', category: 'Data Science & ML', icon: <FaDatabase /> },
     { value: 'skill_kafka', label: 'Kafka', category: 'Data Science & ML', icon: <FaDatabase /> },
     { value: 'skill_airflow', label: 'Airflow', category: 'Data Science & ML', icon: <FaDatabase /> },
-    
+
     // ======= CLOUD & DEVOPS (11 skills) =======
     { value: 'skill_aws', label: 'AWS', category: 'Cloud & DevOps', icon: <FaCloud /> },
     { value: 'skill_azure', label: 'Azure', category: 'Cloud & DevOps', icon: <FaCloud /> },
@@ -185,12 +189,12 @@ const JobPrediction = () => {
     { value: 'skill_git', label: 'Git', category: 'Cloud & DevOps', icon: <FaTools /> },
     { value: 'skill_ci_cd', label: 'CI/CD', category: 'Cloud & DevOps', icon: <FaTools /> },
     { value: 'skill_linux', label: 'Linux', category: 'Cloud & DevOps', icon: <FaTools /> },
-    
+
     // ======= SYSTEM & SERVER (3 skills) =======
     { value: 'skill_windows_server', label: 'Windows Server', category: 'System & Server', icon: <FaTools /> },
     { value: 'skill_nginx', label: 'Nginx', category: 'System & Server', icon: <FaTools /> },
     { value: 'skill_apache', label: 'Apache', category: 'System & Server', icon: <FaTools /> },
-    
+
     // ======= MOBILE DEVELOPMENT (6 skills) =======
     { value: 'skill_android_development', label: 'Android Development', category: 'Mobile Development', icon: <FaMobile /> },
     { value: 'skill_ios_development', label: 'iOS Development', category: 'Mobile Development', icon: <FaMobile /> },
@@ -198,7 +202,7 @@ const JobPrediction = () => {
     { value: 'skill_flutter', label: 'Flutter', category: 'Mobile Development', icon: <FaMobile /> },
     { value: 'skill_xamarin', label: 'Xamarin', category: 'Mobile Development', icon: <FaMobile /> },
     { value: 'skill_ionic', label: 'Ionic', category: 'Mobile Development', icon: <FaMobile /> },
-    
+
     // ======= TESTING TOOLS (8 skills) =======
     { value: 'skill_selenium', label: 'Selenium', category: 'Testing Tools', icon: <FaTools /> },
     { value: 'skill_junit', label: 'JUnit', category: 'Testing Tools', icon: <FaTools /> },
@@ -208,14 +212,16 @@ const JobPrediction = () => {
     { value: 'skill_soapui', label: 'SoapUI', category: 'Testing Tools', icon: <FaTools /> },
     { value: 'skill_cypress', label: 'Cypress', category: 'Testing Tools', icon: <FaTools /> },
     { value: 'skill_jest', label: 'Jest', category: 'Testing Tools', icon: <FaTools /> },
-    
+
     // ======= CYBERSECURITY (5 skills) =======
     { value: 'skill_cybersecurity', label: 'Cybersecurity', category: 'Cybersecurity', icon: <FaShieldAlt /> },
     { value: 'skill_network_security', label: 'Network Security', category: 'Cybersecurity', icon: <FaShieldAlt /> },
     { value: 'skill_ethical_hacking', label: 'Ethical Hacking', category: 'Cybersecurity', icon: <FaShieldAlt /> },
     { value: 'skill_penetration_testing', label: 'Penetration Testing', category: 'Cybersecurity', icon: <FaShieldAlt /> },
     { value: 'skill_security_audit', label: 'Security Audit', category: 'Cybersecurity', icon: <FaShieldAlt /> },
-    
+    { value: 'skill_incident_response', label: 'Incident Response', category: 'Cybersecurity', icon: <FaShieldAlt /> },
+    { value: 'skill_siem', label: 'SIEM (Splunk/ELK)', category: 'Cybersecurity', icon: <FaShieldAlt /> },
+
     // ======= EMERGING TECHNOLOGIES (9 skills) =======
     { value: 'skill_blockchain', label: 'Blockchain', category: 'Emerging Technologies', icon: <FaCode /> },
     { value: 'skill_iot', label: 'IoT', category: 'Emerging Technologies', icon: <FaCode /> },
@@ -226,7 +232,7 @@ const JobPrediction = () => {
     { value: 'skill_embedded_systems', label: 'Embedded Systems', category: 'Emerging Technologies', icon: <FaTools /> },
     { value: 'skill_fpga', label: 'FPGA', category: 'Emerging Technologies', icon: <FaTools /> },
     { value: 'skill_vls', label: 'VLSI', category: 'Emerging Technologies', icon: <FaTools /> },
-    
+
     // ======= SOFT SKILLS (15 skills) =======
     { value: 'skill_communication', label: 'Communication', category: 'Soft Skills', icon: <FaUser /> },
     { value: 'skill_leadership', label: 'Leadership', category: 'Soft Skills', icon: <FaUser /> },
@@ -283,12 +289,48 @@ const JobPrediction = () => {
   ];
 
   const quickSkillSuggestions = {
-    'Software Engineer': ['skill_python', 'skill_java', 'skill_javascript', 'skill_react', 'skill_nodejs', 'skill_sql', 'skill_git'],
-    'Data Scientist': ['skill_python', 'skill_r', 'skill_machine_learning', 'skill_sql', 'skill_pandas', 'skill_tensorflow', 'skill_data_analysis'],
-    'DevOps Engineer': ['skill_aws', 'skill_docker', 'skill_kubernetes', 'skill_jenkins', 'skill_linux', 'skill_python', 'skill_terraform'],
-    'Frontend Developer': ['skill_javascript', 'skill_react', 'skill_html_css', 'skill_typescript', 'skill_vue', 'skill_angular'],
-    'Backend Developer': ['skill_python', 'skill_java', 'skill_nodejs', 'skill_sql', 'skill_mongodb', 'skill_django', 'skill_spring'],
-    'Full Stack Developer': ['skill_javascript', 'skill_python', 'skill_react', 'skill_nodejs', 'skill_sql', 'skill_aws', 'skill_docker']
+    // ===== SOFTWARE DEVELOPMENT ROLES =====
+    'Software Engineer': ['skill_python', 'skill_java', 'skill_javascript', 'skill_react', 'skill_nodejs', 'skill_sql', 'skill_git', 'skill_problem_solving'],
+    'Frontend Developer': ['skill_javascript', 'skill_react', 'skill_html_css', 'skill_typescript', 'skill_vue', 'skill_angular', 'skill_sass', 'skill_webpack'],
+    'Backend Developer': ['skill_python', 'skill_java', 'skill_nodejs', 'skill_sql', 'skill_mongodb', 'skill_django', 'skill_spring', 'skill_postgresql'],
+    'Full Stack Developer': ['skill_javascript', 'skill_python', 'skill_react', 'skill_nodejs', 'skill_sql', 'skill_aws', 'skill_docker', 'skill_git'],
+
+    // ===== DATA & AI ROLES =====
+    'Data Scientist': ['skill_python', 'skill_r', 'skill_machine_learning', 'skill_sql', 'skill_pandas', 'skill_tensorflow', 'skill_data_analysis', 'skill_data_visualization'],
+    'Data Analyst': ['skill_sql', 'skill_python', 'skill_data_analysis', 'skill_data_visualization', 'skill_tableau', 'skill_powerbi', 'skill_pandas', 'skill_numpy'],
+    'ML Engineer': ['skill_python', 'skill_machine_learning', 'skill_deep_learning', 'skill_tensorflow', 'skill_pytorch', 'skill_scikit_learn', 'skill_numpy', 'skill_pandas'],
+    'Data Engineer': ['skill_python', 'skill_sql', 'skill_spark', 'skill_hadoop', 'skill_kafka', 'skill_airflow', 'skill_aws', 'skill_postgresql'],
+
+    // ===== DEVOPS & CLOUD ROLES =====
+    'DevOps Engineer': ['skill_aws', 'skill_docker', 'skill_kubernetes', 'skill_jenkins', 'skill_linux', 'skill_python', 'skill_terraform', 'skill_ci_cd'],
+    'Cloud Architect': ['skill_aws', 'skill_azure', 'skill_google_cloud', 'skill_kubernetes', 'skill_terraform', 'skill_docker', 'skill_linux', 'skill_ansible'],
+    'Linux Administrator': ['skill_linux', 'skill_bash', 'skill_powershell', 'skill_python', 'skill_nginx', 'skill_apache', 'skill_git', 'skill_network_security'],
+
+    // ===== MOBILE DEVELOPMENT ROLES =====
+    'Mobile Developer': ['skill_react_native', 'skill_flutter', 'skill_javascript', 'skill_kotlin', 'skill_swift', 'skill_android_development', 'skill_ios_development', 'skill_firebase'],
+    'iOS Developer': ['skill_swift', 'skill_ios_development', 'skill_git', 'skill_firebase', 'skill_sql', 'skill_javascript'],
+
+    // ===== SPECIALIZED ENGINEERING =====
+    'Security Engineer': ['skill_cybersecurity', 'skill_network_security', 'skill_penetration_testing', 'skill_ethical_hacking', 'skill_linux', 'skill_incident_response', 'skill_siem', 'skill_problem_solving'],
+    'QA Engineer': ['skill_selenium', 'skill_junit', 'skill_testng', 'skill_jmeter', 'skill_postman', 'skill_cypress', 'skill_jest', 'skill_python'],
+    'Database Administrator': ['skill_sql', 'skill_postgresql', 'skill_mysql', 'skill_oracle_db', 'skill_mongodb', 'skill_redis', 'skill_linux', 'skill_python'],
+    'Game Developer': ['skill_cpp', 'skill_csharp', 'skill_python', 'skill_javascript', 'skill_git'],
+    'Embedded Systems Engineer': ['skill_embedded_systems', 'skill_cpp', 'skill_python', 'skill_fpga', 'skill_vls', 'skill_robotics', 'skill_linux'],
+    'UI/UX Designer': ['skill_figma', 'skill_design_systems', 'skill_user_research', 'skill_prototyping', 'skill_html_css', 'skill_creativity', 'skill_javascript'],
+    'Product Manager': ['skill_communication', 'skill_leadership', 'skill_data_analysis', 'skill_project_management', 'skill_teamwork', 'skill_problem_solving']
+  };
+
+  // Helper to format job role labels (snake_case to Title Case)
+  const formatJobRole = (role) => {
+    if (!role) return '';
+    return role
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+      .replace('Ui Ux', 'UI/UX')
+      .replace('Ml', 'ML')
+      .replace('Qa', 'QA')
+      .replace('Ai', 'AI');
   };
 
   // Feedback star descriptions
@@ -372,24 +414,24 @@ const JobPrediction = () => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (checked ? 1 : 0) : 
-              type === 'number' ? parseFloat(value) : value
+      [name]: type === 'checkbox' ? (checked ? 1 : 0) :
+        type === 'number' ? parseFloat(value) : value
     }));
   };
 
   const handleAddSkill = (skillValue) => {
     if (!skillValue) return;
-    
+
     const skill = allTechnicalSkills.find(s => s.value === skillValue);
     if (!skill) return;
-    
+
     // Check if skill already exists
     if (selectedSkills.some(s => s.skill === skillValue)) return;
-    
+
     setSelectedSkills(prev => [
       ...prev,
-      { 
-        skill: skillValue, 
+      {
+        skill: skillValue,
         proficiency: 5,
         category: skill.category,
         label: skill.label,
@@ -403,8 +445,8 @@ const JobPrediction = () => {
   };
 
   const handleProficiencyChange = (skill, proficiency) => {
-    setSelectedSkills(prev => 
-      prev.map(s => 
+    setSelectedSkills(prev =>
+      prev.map(s =>
         s.skill === skill ? { ...s, proficiency: parseInt(proficiency) } : s
       )
     );
@@ -428,20 +470,20 @@ const JobPrediction = () => {
 
   const calculateDerivedScores = () => {
     // Calculate tech skill score (average of all selected technical skills)
-    const techSkills = selectedSkills.filter(s => 
-      s.category !== 'Soft Skills' && 
+    const techSkills = selectedSkills.filter(s =>
+      s.category !== 'Soft Skills' &&
       !s.skill.includes('score') &&
       !s.skill.includes('index')
     );
-    
+
     const totalTechProficiency = techSkills.reduce((sum, skill) => sum + skill.proficiency, 0);
     const techSkillScore = techSkills.length > 0 ? totalTechProficiency / techSkills.length : 0;
-    
+
     // Calculate soft skill score (average of soft skills)
     const softSkills = selectedSkills.filter(s => s.category === 'Soft Skills');
     const totalSoftProficiency = softSkills.reduce((sum, skill) => sum + skill.proficiency, 0);
     const softSkillScore = softSkills.length > 0 ? totalSoftProficiency / softSkills.length : 0;
-    
+
     // Calculate premium cert score
     const premiumCertScore = (
       (formData.cert_aws ? 1 : 0) +
@@ -450,7 +492,7 @@ const JobPrediction = () => {
       (formData.cert_pmp ? 1 : 0) +
       (formData.cert_scrum ? 1 : 0)
     ) * 2;
-    
+
     // Calculate experience quality score
     const experienceQualityScore = Math.min(
       (formData.total_experience_years * 0.5) +
@@ -459,15 +501,15 @@ const JobPrediction = () => {
       (formData.remote_work_percentage > 50 ? 1 : 0),
       10
     );
-    
+
     // Calculate education score
     const educationScore = (
       (formData.gpa_score * 0.7) +
-      (formData.institution_tier === '1' ? 3 : 
-       formData.institution_tier === '2' ? 2 : 
-       formData.institution_tier === '3' ? 1 : 0)
+      (formData.institution_tier === '1' ? 3 :
+        formData.institution_tier === '2' ? 2 :
+          formData.institution_tier === '3' ? 1 : 0)
     );
-    
+
     // Calculate overall profile score
     const overallProfileScore = (
       techSkillScore * 0.35 +
@@ -475,11 +517,11 @@ const JobPrediction = () => {
       educationScore * 0.25 +
       experienceQualityScore * 0.25
     );
-    
+
     // Calculate skill diversity index
     const uniqueCategories = new Set(selectedSkills.map(s => s.category));
     const skillDiversityIndex = (uniqueCategories.size / categories.length) * 10;
-    
+
     return {
       tech_skill_score: parseFloat(techSkillScore.toFixed(2)),
       soft_skill_score: parseFloat(softSkillScore.toFixed(2)),
@@ -507,20 +549,20 @@ const JobPrediction = () => {
     try {
       // Calculate derived scores
       const derivedScores = calculateDerivedScores();
-      
+
       // Prepare form data
       const submissionData = { ...formData, ...derivedScores };
-      
+
       // IMPORTANT: Initialize ALL skill fields to 0
       allTechnicalSkills.forEach(skill => {
         submissionData[skill.value] = 0;
       });
-      
+
       // Set values for selected skills
       selectedSkills.forEach(({ skill, proficiency }) => {
         submissionData[skill] = proficiency;
       });
-      
+
       console.log('Submitting data with', selectedSkills.length, 'skills');
 
       // Step 1: Get the prediction
@@ -535,7 +577,7 @@ const JobPrediction = () => {
         // Step 2: Set the prediction for display
         setPrediction(predictionResponse.data);
         setStep(3);
-        
+
         // Step 3: Check if we need to save to history
         // Only save if we get a successful prediction response
         let savedPredictionId = null;
@@ -553,7 +595,7 @@ const JobPrediction = () => {
               'Content-Type': 'application/json'
             }
           });
-          
+
           savedPredictionId = historyResponse.data?.prediction_id;
           console.log('Prediction saved to history with ID:', savedPredictionId);
         } catch (historyError) {
@@ -562,7 +604,7 @@ const JobPrediction = () => {
         }
 
         setPredictionId(savedPredictionId);
-        
+
         // Step 4: Show feedback popup after 2 seconds
         setTimeout(() => {
           setShowFeedback(true);
@@ -639,7 +681,7 @@ const JobPrediction = () => {
               timestamp: new Date().toISOString()
             });
             localStorage.setItem('predictionFeedback', JSON.stringify(savedFeedback));
-            
+
             alert('Thank you for your feedback! (Saved locally)');
             setShowFeedback(false);
             setFeedbackRating(0);
@@ -658,7 +700,7 @@ const JobPrediction = () => {
       setFeedbackRating(0);
       setFeedbackComment('');
       setHoverRating(0);
-      
+
     } catch (err) {
       console.error('Error submitting feedback:', err);
       alert('Feedback submission failed, but your prediction is complete. Thank you for using our service!');
@@ -700,7 +742,7 @@ const JobPrediction = () => {
       // Always save to localStorage for redundancy
       const savedPredictions = JSON.parse(localStorage.getItem('savedPredictions') || '[]');
       const existingIndex = savedPredictions.findIndex(item => item.id === predictionId);
-      
+
       if (existingIndex === -1) {
         savedPredictions.push({
           id: predictionId,
@@ -748,10 +790,10 @@ const JobPrediction = () => {
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
     const exportFileDefaultName = `job-prediction-${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -762,14 +804,14 @@ const JobPrediction = () => {
     if (!prediction) return;
 
     const predictionText = `I got my AI job prediction! Top match: ${prediction.top_prediction?.job_role} with ${prediction.top_prediction?.confidence || 85}% confidence. Try it out!`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: 'My Job Prediction Results',
         text: predictionText,
         url: window.location.href,
       })
-      .catch(err => console.log('Error sharing:', err));
+        .catch(err => console.log('Error sharing:', err));
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(predictionText)
@@ -783,12 +825,12 @@ const JobPrediction = () => {
     const experienceScore = Math.min(formData.total_experience_years * 2, 20);
     const certScore = formData.additional_certs_count * 5;
 
-    const technicalSkills = selectedSkills.filter(s => 
-      s.category !== 'Soft Skills' && 
+    const technicalSkills = selectedSkills.filter(s =>
+      s.category !== 'Soft Skills' &&
       !s.skill.includes('score') &&
       !s.skill.includes('index')
     );
-    
+
     const totalProficiency = technicalSkills.reduce((sum, skill) => sum + skill.proficiency, 0);
     const techScore = technicalSkills.length > 0 ? totalProficiency / technicalSkills.length : 0;
 
@@ -844,7 +886,7 @@ const JobPrediction = () => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-0 flex items-center justify-center z-50 p-4"
           >
-            <div 
+            <div
               className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 relative"
               onClick={(e) => e.stopPropagation()}
             >
@@ -859,7 +901,7 @@ const JobPrediction = () => {
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaStar className="text-2xl text-primary" />
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">
                   Rate Your Prediction
                 </h3>
@@ -979,7 +1021,7 @@ const JobPrediction = () => {
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="fixed inset-0 flex items-center justify-center z-50 p-4"
           >
-            <div 
+            <div
               className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
               onClick={(e) => e.stopPropagation()}
             >
@@ -1033,7 +1075,7 @@ const JobPrediction = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative">
       {/* Feedback Popup */}
       <FeedbackPopup />
-      
+
       {/* Save Confirmation Modal */}
       <SaveConfirmationModal />
 
@@ -1072,22 +1114,19 @@ const JobPrediction = () => {
           <div className="flex justify-between items-center mb-4">
             {steps.map((s, index) => (
               <div key={s.number} className="flex flex-col items-center flex-1 relative">
-                <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full mb-2 transition-all duration-300 ${
-                  step >= s.number 
-                    ? 'bg-primary text-white transform scale-110' 
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full mb-2 transition-all duration-300 ${step >= s.number
+                  ? 'bg-primary text-white transform scale-110'
+                  : 'bg-gray-200 text-gray-500'
+                  }`}>
                   {s.icon}
                 </div>
-                <span className={`text-xs md:text-sm font-medium ${
-                  step >= s.number ? 'text-primary' : 'text-gray-500'
-                }`}>
+                <span className={`text-xs md:text-sm font-medium ${step >= s.number ? 'text-primary' : 'text-gray-500'
+                  }`}>
                   {s.title}
                 </span>
                 {index < steps.length - 1 && (
-                  <div className={`absolute h-1 w-1/4 transform translate-x-12 md:translate-x-12 -translate-y-5 md:-translate-y-6 ${
-                    step > s.number ? 'bg-primary' : 'bg-gray-200'
-                  }`}></div>
+                  <div className={`absolute h-1 w-1/4 transform translate-x-12 md:translate-x-12 -translate-y-5 md:-translate-y-6 ${step > s.number ? 'bg-primary' : 'bg-gray-200'
+                    }`}></div>
                 )}
               </div>
             ))}
@@ -1135,7 +1174,7 @@ const JobPrediction = () => {
                     <FaUser className="mr-2 text-primary text-sm md:text-base" />
                     Personal Information
                   </h3>
-                  
+
                   <div>
                     <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">
                       Age *
@@ -1210,7 +1249,7 @@ const JobPrediction = () => {
                     <FaGraduationCap className="mr-2 text-primary text-sm md:text-base" />
                     Education & Experience
                   </h3>
-                  
+
                   <div>
                     <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">
                       Highest Degree *
@@ -1279,7 +1318,7 @@ const JobPrediction = () => {
                         className="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-sm md:text-base"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">
                         Experience (Years) *
@@ -1332,7 +1371,7 @@ const JobPrediction = () => {
                 <h2 className="text-xl md:text-2xl font-bold text-gray-800">Technical Skills Assessment</h2>
               </div>
               <p className="text-gray-600 text-sm md:text-base">Add your technical skills and rate your proficiency (0-10 scale)</p>
-              
+
               {/* Quick Skill Suggestions */}
               <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 rounded-xl border border-blue-200">
                 <h4 className="font-semibold text-blue-800 mb-2 md:mb-3 flex items-center text-sm md:text-base">
@@ -1364,7 +1403,7 @@ const JobPrediction = () => {
                   {selectedSkills.length} skills added
                 </span>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <div className="flex-grow relative">
                   <select
@@ -1376,8 +1415,8 @@ const JobPrediction = () => {
                     {categories.map(category => (
                       <optgroup key={category} label={`${category} (${skillsByCategory[category]?.length || 0} skills)`}>
                         {skillsByCategory[category]?.map(skill => (
-                          <option 
-                            key={skill.value} 
+                          <option
+                            key={skill.value}
                             value={skill.value}
                             disabled={selectedSkills.some(s => s.skill === skill.value)}
                           >
@@ -1389,7 +1428,7 @@ const JobPrediction = () => {
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
@@ -1405,7 +1444,7 @@ const JobPrediction = () => {
                   Add Skill
                 </button>
               </div>
-              
+
               <div className="mt-3 md:mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
                 <div className="text-center p-2 bg-white rounded-lg border">
                   <div className="text-base md:text-lg font-bold text-primary">{allTechnicalSkills.length}</div>
@@ -1429,7 +1468,7 @@ const JobPrediction = () => {
             {/* Selected Skills List */}
             <div className="mb-6 md:mb-8">
               <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4">Your Technical Skills</h3>
-              
+
               {selectedSkills.length === 0 ? (
                 <div className="text-center py-6 md:py-8 border-2 border-dashed border-gray-300 rounded-xl">
                   <FaCogs className="text-3xl md:text-4xl text-gray-300 mx-auto mb-2 md:mb-3" />
@@ -1442,7 +1481,7 @@ const JobPrediction = () => {
                   {categories.map(category => {
                     const categorySkills = selectedSkills.filter(s => s.category === category);
                     if (categorySkills.length === 0) return null;
-                    
+
                     return (
                       <div key={category} className="mb-3 md:mb-4">
                         <div className="flex items-center mb-1 md:mb-2">
@@ -1469,7 +1508,7 @@ const JobPrediction = () => {
                                   <div className="text-xs text-gray-500">Proficiency: {item.proficiency}/10</div>
                                 </div>
                               </div>
-                              
+
                               <div className="flex items-center space-x-1 md:space-x-2">
                                 <select
                                   value={item.proficiency}
@@ -1482,7 +1521,7 @@ const JobPrediction = () => {
                                     </option>
                                   ))}
                                 </select>
-                                
+
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveSkill(item.skill)}
@@ -1512,7 +1551,7 @@ const JobPrediction = () => {
                 <FaStar className="mr-2 text-yellow-500 text-base md:text-lg" />
                 Profile Strength Analysis
               </h3>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4 mb-4 md:mb-6">
                 <div className="bg-white rounded-xl p-2 md:p-4 text-center border">
                   <div className="text-lg md:text-2xl font-bold text-primary">{profileScore.educationScore}</div>
@@ -1547,7 +1586,7 @@ const JobPrediction = () => {
                   <span>Soft Skills: {selectedSkills.filter(s => s.category === 'Soft Skills').length}</span>
                 </div>
                 <div className="h-2 md:h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 transition-all duration-1000"
                     style={{ width: `${profileScore.overallScore}%` }}
                   ></div>
@@ -1605,9 +1644,9 @@ const JobPrediction = () => {
                       <p className="text-white/80 text-sm md:text-base">Based on AI analysis of your technical profile</p>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 md:mt-6">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">{prediction.top_prediction?.job_role || prediction.predictions?.[0]?.job_role}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">{formatJobRole(prediction.top_prediction?.job_role || prediction.predictions?.[0]?.job_role)}</h3>
                     <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4">
                       <div className="flex items-center">
                         <FaStar className="text-yellow-300 mr-1 md:mr-2 text-sm md:text-base" />
@@ -1618,7 +1657,7 @@ const JobPrediction = () => {
                       <div className="flex items-center">
                         <FaMoneyBillWave className="text-green-300 mr-1 md:mr-2 text-sm md:text-base" />
                         <span className="text-sm md:text-lg">
-                          ${prediction.top_prediction?.salary_range?.min?.toLocaleString() || '60,000'} - 
+                          ${prediction.top_prediction?.salary_range?.min?.toLocaleString() || '60,000'} -
                           ${prediction.top_prediction?.salary_range?.max?.toLocaleString() || '120,000'}/year
                         </span>
                       </div>
@@ -1631,7 +1670,7 @@ const JobPrediction = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 md:mt-6 lg:mt-0 lg:ml-4">
                   <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-6">
                     <div className="text-center">
@@ -1700,7 +1739,7 @@ const JobPrediction = () => {
                     <FaChartLine className="mr-2 text-primary text-base md:text-lg" />
                     Top Job Recommendations
                   </h3>
-                  
+
                   {prediction.predictions && prediction.predictions.length > 0 ? (
                     <div className="space-y-3 md:space-y-4">
                       {prediction.predictions.slice(0, 5).map((job, index) => (
@@ -1709,23 +1748,21 @@ const JobPrediction = () => {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className={`border rounded-xl p-4 md:p-6 transition-all duration-300 hover:shadow-lg ${
-                            index === 0 
-                              ? 'border-primary border-2 bg-primary/5' 
-                              : 'border-gray-200 hover:border-primary/30'
-                          }`}
+                          className={`border rounded-xl p-4 md:p-6 transition-all duration-300 hover:shadow-lg ${index === 0
+                            ? 'border-primary border-2 bg-primary/5'
+                            : 'border-gray-200 hover:border-primary/30'
+                            }`}
                         >
                           <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 md:mb-4">
                             <div className="flex items-center mb-2 md:mb-0">
-                              <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center mr-3 md:mr-4 ${
-                                index === 0 
-                                  ? 'bg-primary text-white' 
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}>
+                              <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center mr-3 md:mr-4 ${index === 0
+                                ? 'bg-primary text-white'
+                                : 'bg-gray-100 text-gray-600'
+                                }`}>
                                 <span className="font-bold text-sm md:text-base">{index + 1}</span>
                               </div>
                               <div>
-                                <h4 className="text-base md:text-lg font-bold text-gray-800">{job.job_role}</h4>
+                                <h4 className="text-base md:text-lg font-bold text-gray-800">{formatJobRole(job.job_role)}</h4>
                                 <div className="flex items-center text-xs md:text-sm text-gray-600">
                                   <FaMoneyBillWave className="mr-1 text-xs md:text-sm" />
                                   <span>
@@ -1734,24 +1771,23 @@ const JobPrediction = () => {
                                 </div>
                               </div>
                             </div>
-                            
+
                             <div className="text-right">
-                              <div className={`text-xl md:text-2xl font-bold ${
-                                job.confidence_score >= 80 ? 'text-green-600' :
+                              <div className={`text-xl md:text-2xl font-bold ${job.confidence_score >= 80 ? 'text-green-600' :
                                 job.confidence_score >= 60 ? 'text-yellow-600' : 'text-red-600'
-                              }`}>
+                                }`}>
                                 {job.confidence_score || 75}%
                               </div>
                               <div className="text-xs md:text-sm text-gray-500">Confidence</div>
                             </div>
                           </div>
-                          
+
                           <div className="mt-2 md:mt-4">
                             <div className="flex flex-col md:flex-row md:justify-between text-xs md:text-sm text-gray-600 mb-2">
                               <span>Market Demand: <strong>{job.market_demand || 'Medium'}</strong></span>
                               <span>Growth: <strong>{job.growth_outlook || 'High'}</strong></span>
                             </div>
-                            
+
                             {job.required_skills && job.required_skills.length > 0 && (
                               <div className="mt-2 md:mt-3">
                                 <div className="text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Key Skills Matched:</div>
@@ -1788,7 +1824,7 @@ const JobPrediction = () => {
                     <FaCogs className="mr-2 text-blue-500 text-base md:text-lg" />
                     Your Technical Skills
                   </h3>
-                  
+
                   <div className="space-y-1 md:space-y-2">
                     {selectedSkills
                       .filter(s => s.category !== 'Soft Skills')
@@ -1799,7 +1835,7 @@ const JobPrediction = () => {
                           <span className="text-gray-700 text-xs md:text-sm truncate mr-2">{item.label}</span>
                           <div className="flex items-center">
                             <div className="w-12 md:w-16 h-1 md:h-2 bg-gray-200 rounded-full overflow-hidden mr-1 md:mr-2">
-                              <div 
+                              <div
                                 className="h-full bg-gradient-to-r from-green-400 to-blue-500"
                                 style={{ width: `${item.proficiency * 10}%` }}
                               ></div>
@@ -1817,27 +1853,27 @@ const JobPrediction = () => {
                     <FaLightbulb className="mr-2 text-yellow-500 text-base md:text-lg" />
                     Skill Recommendations
                   </h3>
-                  
+
                   <div className="space-y-2 md:space-y-3">
                     <p className="text-gray-600 text-xs md:text-sm">Based on your profile, consider adding:</p>
                     <ul className="space-y-1 md:space-y-2">
                       {(() => {
                         const recommendations = [];
-                        
+
                         // Check for technical roles
-                        const hasWebDev = selectedSkills.some(s => 
+                        const hasWebDev = selectedSkills.some(s =>
                           ['skill_react', 'skill_angular', 'skill_vue', 'skill_nodejs', 'skill_javascript'].includes(s.skill)
                         );
-                        const hasBackend = selectedSkills.some(s => 
+                        const hasBackend = selectedSkills.some(s =>
                           ['skill_python', 'skill_java', 'skill_csharp', 'skill_nodejs'].includes(s.skill)
                         );
-                        const hasCloud = selectedSkills.some(s => 
+                        const hasCloud = selectedSkills.some(s =>
                           ['skill_aws', 'skill_azure', 'skill_google_cloud', 'skill_docker'].includes(s.skill)
                         );
-                        const hasData = selectedSkills.some(s => 
+                        const hasData = selectedSkills.some(s =>
                           ['skill_python', 'skill_sql', 'skill_machine_learning', 'skill_data_analysis'].includes(s.skill)
                         );
-                        
+
                         if (hasWebDev && !hasBackend) {
                           recommendations.push('Backend skills (Node.js, Python, Java)');
                         }
@@ -1852,10 +1888,10 @@ const JobPrediction = () => {
                           recommendations.push('DevOps and CI/CD practices');
                           recommendations.push('Advanced data structures and algorithms');
                         }
-                        
+
                         return recommendations.slice(0, 3).map((rec, index) => (
-                          <motion.li 
-                            key={index} 
+                          <motion.li
+                            key={index}
                             className="flex items-center p-2 bg-blue-50 rounded-lg border border-blue-100"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -1873,7 +1909,7 @@ const JobPrediction = () => {
                 {/* Actions */}
                 <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6">
                   <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 md:mb-4">Next Steps</h3>
-                  
+
                   <div className="space-y-2 md:space-y-3">
                     <button
                       onClick={() => {
@@ -1892,7 +1928,7 @@ const JobPrediction = () => {
                       </div>
                       <FaArrowRight className="text-gray-400 group-hover:text-primary text-sm md:text-base" />
                     </button>
-                    
+
                     <button
                       onClick={() => navigate('/prediction-history')}
                       className="w-full flex items-center justify-between p-3 md:p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all group"
@@ -1905,7 +1941,7 @@ const JobPrediction = () => {
                       </div>
                       <FaArrowRight className="text-gray-400 group-hover:text-primary text-sm md:text-base" />
                     </button>
-                    
+
                     <button
                       onClick={() => navigate('/dashboard')}
                       className="w-full flex items-center justify-between p-3 md:p-4 border border-primary border-2 rounded-lg hover:bg-primary/10 transition-all group"
