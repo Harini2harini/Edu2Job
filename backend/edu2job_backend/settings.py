@@ -118,10 +118,10 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'  # Or create staticfiles folder
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Changed to match Railway's expected path
 STATICFILES_DIRS = [
-    #BASE_DIR / 'static',
+    # Add any additional static file directories here
 ]
 
 # Media files
