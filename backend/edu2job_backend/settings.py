@@ -21,7 +21,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-
 DEBUG = False
 
 ALLOWED_HOSTS = [ '*',
-    'edu2job-production-4b92.up.railway.app',
+    'edu2job-production.up.railway.app',
     'localhost',
     '127.0.0.1',]  # Change this temporarily for deployment
 
@@ -141,7 +141,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5173", 
      "https://edu2-job-kohl.vercel.app", 
-      "https://edu2job-production-4b92.up.railway.app", # NEW DOMAIN
+      "https://edu2job-production.up.railway.app", # NEW DOMAIN
 ]
 
 CORS_ALLOW_METHODS = [
