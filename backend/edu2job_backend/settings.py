@@ -20,10 +20,13 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [ '*',
+ALLOWED_HOSTS = [ 
+    '*',
     'edu2job-production.up.railway.app',
     'localhost',
-    '127.0.0.1',]  # Change this temporarily for deployment
+    '127.0.0.1',
+    'edu2-job-kohl.vercel.app',
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -219,7 +222,7 @@ SIMPLE_JWT = {
 # Google OAuth settings
 GOOGLE_CLIENT_ID = '687089464534-nlvqi1mhdfcjsi00e1c33fiq9fgp1dp4.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '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'
-GOOGLE_REDIRECT_URI = 'http://localhost:3000/oauth/callback'
+GOOGLE_REDIRECT_URI = 'https://edu2-job-kohl.vercel.app/oauth/callback' if not DEBUG else 'http://localhost:3000/oauth/callback'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

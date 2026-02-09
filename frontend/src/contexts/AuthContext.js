@@ -3,6 +3,8 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
+
 
 const AuthContext = createContext({});
 
@@ -19,8 +21,9 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   // API Configuration
-  const API_URL = 'http://localhost:8000/api';
-  
+  const API_URL = config.API_URL;
+
+
   // Configure axios defaults
   useEffect(() => {
     const token = authState.token || localStorage.getItem('token');
@@ -34,19 +37,19 @@ export const AuthProvider = ({ children }) => {
 
   const initializeAuth = () => {
     console.log('🔍 Initializing auth from localStorage...');
-    
+
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
     const userStr = localStorage.getItem('user');
-    
+
     console.log('📦 Storage check - Token:', token ? `✅ Found (${token.substring(0, 20)}...)` : '❌ Missing');
     console.log('📦 Storage check - User:', userStr ? '✅ Found' : '❌ Missing');
-    
+
     if (token && userStr) {
       try {
         const userData = JSON.parse(userStr);
         console.log('👤 User loaded from storage:', userData.email);
-        
+
         // Update auth state
         setAuthState({
           user: userData,
@@ -55,7 +58,7 @@ export const AuthProvider = ({ children }) => {
           isAuthenticated: true,
           loading: false
         });
-        
+
         console.log('✅ Auth initialized successfully');
       } catch (error) {
         console.error('❌ Error parsing user data:', error);
@@ -87,12 +90,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       console.log('🔑 Attempting login for:', email);
-      
+
       const backendOk = await testBackend();
       if (!backendOk) {
-        return { 
-          success: false, 
-          error: 'Backend server is not responding' 
+        return {
+          success: false,
+          error: 'Backend server is not responding'
         };
       }
 
@@ -100,18 +103,18 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      
+
       console.log('✅ Login response received');
-      
+
       const { user, tokens } = response.data;
-      
+
       // Save everything to localStorage
       localStorage.setItem('token', tokens.access);
       localStorage.setItem('refreshToken', tokens.refresh);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       console.log('📦 Data saved to localStorage');
-      
+
       // Update auth state
       setAuthState({
         user: user,
@@ -120,17 +123,17 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: true,
         loading: false
       });
-      
+
       console.log('✅ Login successful, user:', user.email);
-      
+
       return { success: true, data: response.data };
     } catch (error) {
       console.error('❌ Login error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 
-               error.response?.data?.detail || 
-               'Login failed. Please check your credentials.' 
+      return {
+        success: false,
+        error: error.response?.data?.error ||
+          error.response?.data?.detail ||
+          'Login failed. Please check your credentials.'
       };
     }
   };
@@ -138,26 +141,26 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       console.log('📝 Attempting registration:', userData);
-      
+
       const backendOk = await testBackend();
       if (!backendOk) {
-        return { 
-          success: false, 
-          error: 'Backend server is not responding' 
+        return {
+          success: false,
+          error: 'Backend server is not responding'
         };
       }
 
       const response = await axios.post(`${API_URL}/auth/register/`, userData);
-      
+
       console.log('✅ Registration response received');
-      
+
       const { user, tokens } = response.data;
-      
+
       // Save everything to localStorage
       localStorage.setItem('token', tokens.access);
       localStorage.setItem('refreshToken', tokens.refresh);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       // Update auth state
       setAuthState({
         user: user,
@@ -166,28 +169,28 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: true,
         loading: false
       });
-      
+
       console.log('✅ Registration successful, user:', user.email);
-      
+
       return { success: true, data: response.data };
     } catch (error) {
       console.error('❌ Registration error:', error.response?.data || error.message);
-      
+
       if (error.response?.data?.details) {
         const errors = error.response.data.details;
-        const errorMessages = Object.keys(errors).map(key => 
+        const errorMessages = Object.keys(errors).map(key =>
           `${key}: ${errors[key].join(', ')}`
         );
-        return { 
-          success: false, 
-          error: errorMessages.join('. ') 
+        return {
+          success: false,
+          error: errorMessages.join('. ')
         };
       }
-      
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 
-               'Registration failed. Please try again.' 
+
+      return {
+        success: false,
+        error: error.response?.data?.error ||
+          'Registration failed. Please try again.'
       };
     }
   };
@@ -196,69 +199,69 @@ export const AuthProvider = ({ children }) => {
   const handleGoogleCallback = async (code) => {
     try {
       console.log('🔄 Processing Google callback with code...');
-      
+
       const backendOk = await testBackend();
       if (!backendOk) {
         console.error('❌ Backend not responding');
-        return { 
-          success: false, 
-          error: 'Backend server is not responding' 
+        return {
+          success: false,
+          error: 'Backend server is not responding'
         };
       }
 
       console.log('📡 Sending code to backend...');
-      
+
       const response = await axios.post(`${API_URL}/auth/google/`, {
         code: code,
       });
-      
+
       console.log('✅ Google auth response received');
-      
+
       if (!response.data.tokens || !response.data.user) {
         console.error('❌ Invalid response from server:', response.data);
         throw new Error('Invalid response from server');
       }
-      
+
       const { user, tokens } = response.data;
-      
+
       // CRITICAL FIX: Save to localStorage FIRST
       localStorage.setItem('token', tokens.access);
       localStorage.setItem('refreshToken', tokens.refresh);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       console.log('📦 Auth data saved to localStorage');
       console.log('👤 User saved:', user.email);
-      
+
       // CRITICAL FIX: Return SUCCESS IMMEDIATELY without complex state updates
       // Let the OAuthCallback page handle the redirect
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: response.data,
         user: user,
         tokens: tokens
       };
-      
+
     } catch (error) {
       console.error('❌ Google callback error:', error);
-      
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 
-               error.response?.data?.details || 
-               error.message || 
-               'Google authentication failed.' 
+
+      return {
+        success: false,
+        error: error.response?.data?.error ||
+          error.response?.data?.details ||
+          error.message ||
+          'Google authentication failed.'
       };
     }
   };
 
   const clearAuth = () => {
     console.log('🧹 Clearing auth data...');
-    
+
     // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    
+
     // Clear state
     setAuthState({
       user: null,
@@ -267,7 +270,7 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated: false,
       loading: false
     });
-    
+
     // Clear axios header
     delete axios.defaults.headers.common['Authorization'];
   };

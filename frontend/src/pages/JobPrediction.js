@@ -11,6 +11,8 @@ import {
   FaComment, FaDownload, FaShareAlt, FaSyncAlt, FaInfoCircle
 } from 'react-icons/fa';
 import axios from 'axios';
+import config from '../config';
+
 
 const JobPrediction = () => {
   const { user, token } = useAuth();
@@ -566,7 +568,7 @@ const JobPrediction = () => {
       console.log('Submitting data with', selectedSkills.length, 'skills');
 
       // Step 1: Get the prediction
-      const predictionResponse = await axios.post('http://localhost:8000/api/predictions/predict/', submissionData, {
+      const predictionResponse = await axios.post(`${config.API_URL}/predictions/predict/`, submissionData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -589,12 +591,13 @@ const JobPrediction = () => {
             all_predictions: predictionResponse.data.predictions || []
           };
 
-          const historyResponse = await axios.post('http://localhost:8000/api/predictions/history/save/', historyData, {
+          const historyResponse = await axios.post(`${config.API_URL}/predictions/history/save/`, historyData, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           });
+
 
           savedPredictionId = historyResponse.data?.prediction_id;
           console.log('Prediction saved to history with ID:', savedPredictionId);
@@ -640,7 +643,7 @@ const JobPrediction = () => {
 
       // First try the main feedback endpoint
       try {
-        const response = await axios.post('http://localhost:8000/api/predictions/feedback/', feedbackData, {
+        const response = await axios.post(`${config.API_URL}/predictions/feedback/`, feedbackData, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -663,7 +666,7 @@ const JobPrediction = () => {
       if (predictionId) {
         try {
           // Get the prediction first
-          const predictionResponse = await axios.get(`http://localhost:8000/api/predictions/history/${predictionId}/`, {
+          const predictionResponse = await axios.get(`${config.API_URL}/predictions/history/${predictionId}/`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -727,7 +730,7 @@ const JobPrediction = () => {
     try {
       // First try to mark as saved via API
       try {
-        await axios.patch(`http://localhost:8000/api/predictions/history/${predictionId}/`, {
+        await axios.patch(`${config.API_URL}/predictions/history/${predictionId}/`, {
           is_saved: true
         }, {
           headers: {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import config from '../../config';
 import {
   FaCog,
   FaSave,
@@ -26,32 +27,32 @@ const Settings = () => {
     site_description: 'Education to Job Prediction System',
     admin_email: 'admin@edu2job.com',
     timezone: 'UTC',
-    
+
     // Security Settings
     max_login_attempts: 5,
     session_timeout: 30,
     password_min_length: 8,
     require_2fa: false,
-    
+
     // Model Settings
     default_model_type: 'random_forest',
     max_training_time: 3600,
     confidence_threshold: 0.7,
     auto_retrain: false,
     retrain_interval: 7,
-    
+
     // Notification Settings
     email_notifications: true,
     push_notifications: true,
     notify_on_training_complete: true,
     notify_on_flagged_prediction: true,
     notify_on_system_alert: true,
-    
+
     // API Settings
     api_rate_limit: 100,
     api_timeout: 30,
     enable_api_logging: true,
-    
+
     // System Settings
     cache_duration: 300,
     log_retention_days: 30,
@@ -59,7 +60,7 @@ const Settings = () => {
     enable_auto_backup: true
   });
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+  const API_URL = config.API_URL;
 
   useEffect(() => {
     fetchSettings();
@@ -84,7 +85,7 @@ const Settings = () => {
     try {
       // In a real app, this would save to API
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Show success message
       alert('Settings saved successfully!');
     } catch (error) {
@@ -159,11 +160,10 @@ const Settings = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`flex items-center space-x-2 px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
@@ -191,7 +191,7 @@ const Settings = () => {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Admin Email
@@ -203,7 +203,7 @@ const Settings = () => {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Timezone
@@ -223,7 +223,7 @@ const Settings = () => {
                       <option value="Asia/Tokyo">Tokyo</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Site Description
@@ -261,7 +261,7 @@ const Settings = () => {
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -276,7 +276,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Session Timeout (minutes)
@@ -290,7 +290,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Minimum Password Length
@@ -331,7 +331,7 @@ const Settings = () => {
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -349,7 +349,7 @@ const Settings = () => {
                         <option value="neural_network">Neural Network</option>
                       </select>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Confidence Threshold
@@ -364,7 +364,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Max Training Time (seconds)
@@ -378,7 +378,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Retrain Interval (days)
@@ -453,7 +453,7 @@ const Settings = () => {
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -468,7 +468,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         API Timeout (seconds)
@@ -509,7 +509,7 @@ const Settings = () => {
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -524,7 +524,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Log Retention (days)
@@ -538,7 +538,7 @@ const Settings = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Backup Frequency
@@ -576,7 +576,7 @@ const Settings = () => {
               <span>All Systems Operational</span>
             </div>
           </div>
-          
+
           <div className="p-4 bg-gray-50 rounded-xl">
             <div className="flex items-center space-x-3 mb-2">
               <FaDatabase className="text-green-500" />
@@ -587,7 +587,7 @@ const Settings = () => {
               <span>Connected</span>
             </div>
           </div>
-          
+
           <div className="p-4 bg-gray-50 rounded-xl">
             <div className="flex items-center space-x-3 mb-2">
               <FaRobot className="text-purple-500" />
@@ -614,7 +614,7 @@ const Settings = () => {
               Clear Logs
             </button>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-red-900">Reset All Settings</p>

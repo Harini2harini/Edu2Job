@@ -1,0 +1,421 @@
+{
+  "feature_columns": [
+    "age",
+    "gender",
+    "location_country",
+    "location_city_tier",
+    "second_language",
+    "highest_degree",
+    "degree_field",
+    "institution_tier",
+    "gpa_score",
+    "graduation_year",
+    "years_since_graduation",
+    "total_experience_years",
+    "current_role_level",
+    "industry",
+    "company_size",
+    "job_hop_count",
+    "has_managerial_exp",
+    "team_size_managed",
+    "budget_responsibility",
+    "international_exp",
+    "remote_work_percentage",
+    "freelance_projects",
+    "patents_filed",
+    "open_source_contributions",
+    "career_gap_months",
+    "additional_certs_count",
+    "online_courses_completed",
+    "research_publications",
+    "academic_awards",
+    "professional_network_size",
+    "missing_skill_count",
+    "tech_skill_score",
+    "soft_skill_score",
+    "premium_cert_score",
+    "experience_quality_score",
+    "education_score",
+    "overall_profile_score",
+    "skill_diversity_index",
+    "career_progression_rate",
+    "industry_experience_years",
+    "profile_completeness",
+    "skill_python",
+    "skill_java",
+    "skill_javascript",
+    "skill_cpp",
+    "skill_csharp",
+    "skill_go",
+    "skill_rust",
+    "skill_kotlin",
+    "skill_swift",
+    "skill_php",
+    "skill_ruby",
+    "skill_scala",
+    "skill_typescript",
+    "skill_r",
+    "skill_perl",
+    "skill_bash",
+    "skill_powershell",
+    "skill_react",
+    "skill_angular",
+    "skill_vue",
+    "skill_nodejs",
+    "skill_django",
+    "skill_flask",
+    "skill_spring",
+    "skill_laravel",
+    "skill_express",
+    "skill_ruby_on_rails",
+    "skill_asp_net",
+    "skill_jquery",
+    "skill_html_css",
+    "skill_bootstrap",
+    "skill_sass",
+    "skill_webpack",
+    "skill_sql",
+    "skill_mongodb",
+    "skill_postgresql",
+    "skill_mysql",
+    "skill_redis",
+    "skill_elasticsearch",
+    "skill_oracle_db",
+    "skill_sql_server",
+    "skill_cassandra",
+    "skill_dynamodb",
+    "skill_firebase",
+    "skill_cosmosdb",
+    "skill_machine_learning",
+    "skill_deep_learning",
+    "skill_data_analysis",
+    "skill_data_visualization",
+    "skill_tensorflow",
+    "skill_pytorch",
+    "skill_scikit_learn",
+    "skill_pandas",
+    "skill_numpy",
+    "skill_tableau",
+    "skill_powerbi",
+    "skill_qlik",
+    "skill_hadoop",
+    "skill_spark",
+    "skill_kafka",
+    "skill_airflow",
+    "skill_aws",
+    "skill_azure",
+    "skill_google_cloud",
+    "skill_docker",
+    "skill_kubernetes",
+    "skill_jenkins",
+    "skill_ansible",
+    "skill_terraform",
+    "skill_git",
+    "skill_ci_cd",
+    "skill_linux",
+    "skill_windows_server",
+    "skill_nginx",
+    "skill_apache",
+    "skill_android_development",
+    "skill_ios_development",
+    "skill_react_native",
+    "skill_flutter",
+    "skill_xamarin",
+    "skill_ionic",
+    "skill_selenium",
+    "skill_junit",
+    "skill_testng",
+    "skill_jmeter",
+    "skill_postman",
+    "skill_soapui",
+    "skill_cypress",
+    "skill_jest",
+    "skill_cybersecurity",
+    "skill_network_security",
+    "skill_ethical_hacking",
+    "skill_penetration_testing",
+    "skill_security_audit",
+    "skill_blockchain",
+    "skill_iot",
+    "skill_ar_vr",
+    "skill_computer_vision",
+    "skill_nlp",
+    "skill_robotics",
+    "skill_embedded_systems",
+    "skill_fpga",
+    "skill_vls",
+    "skill_communication",
+    "skill_leadership",
+    "skill_problem_solving",
+    "skill_teamwork",
+    "skill_project_management",
+    "skill_english_proficiency",
+    "skill_presentation_skills",
+    "skill_negotiation_skills",
+    "skill_time_management",
+    "skill_critical_thinking",
+    "skill_creativity",
+    "skill_adaptability",
+    "skill_conflict_resolution",
+    "skill_mentoring",
+    "skill_client_management",
+    "cert_aws",
+    "cert_google_cloud",
+    "cert_azure",
+    "cert_pmp",
+    "cert_scrum",
+    "cert_data_science",
+    "cert_cybersecurity",
+    "cert_digital_marketing",
+    "cert_oracle",
+    "cert_redhat",
+    "cert_cisco",
+    "cert_microsoft",
+    "cert_salesforce",
+    "cert_tableau",
+    "cert_python_institute",
+    "cert_java_ocp"
+  ],
+  "job_roles": [
+    "ai_research_scientist",
+    "backend_developer",
+    "big_data_engineer",
+    "blockchain_developer",
+    "business_analyst",
+    "cloud_architect",
+    "cybersecurity_analyst",
+    "data_analyst",
+    "data_engineer",
+    "data_scientist",
+    "database_administrator",
+    "devops_engineer",
+    "embedded_systems_engineer",
+    "engineering_manager",
+    "frontend_developer",
+    "full_stack_developer",
+    "game_developer",
+    "linux_administrator",
+    "ml_engineer",
+    "mobile_developer",
+    "network_engineer",
+    "platform_engineer",
+    "product_manager",
+    "qa_engineer",
+    "scrum_master",
+    "security_engineer",
+    "site_reliability_engineer",
+    "software_engineer",
+    "technical_lead",
+    "technical_writer",
+    "test_automation_engineer",
+    "ui_ux_designer"
+  ],
+  "salary_data": {
+    "ai_research_scientist": {
+      "salary_min_usd": 90059.838,
+      "salary_max_usd": 179888.978
+    },
+    "backend_developer": {
+      "salary_min_usd": 80222.66,
+      "salary_max_usd": 159752.362
+    },
+    "big_data_engineer": {
+      "salary_min_usd": 90100.246,
+      "salary_max_usd": 169993.702
+    },
+    "blockchain_developer": {
+      "salary_min_usd": 84984.182,
+      "salary_max_usd": 164906.028
+    },
+    "business_analyst": {
+      "salary_min_usd": 59990.332,
+      "salary_max_usd": 120032.99
+    },
+    "cloud_architect": {
+      "salary_min_usd": 120274.36,
+      "salary_max_usd": 250097.76
+    },
+    "cybersecurity_analyst": {
+      "salary_min_usd": 74848.42,
+      "salary_max_usd": 144942.412
+    },
+    "data_analyst": {
+      "salary_min_usd": 64971.35,
+      "salary_max_usd": 129994.17
+    },
+    "data_engineer": {
+      "salary_min_usd": 95079.2,
+      "salary_max_usd": 184874.294
+    },
+    "data_scientist": {
+      "salary_min_usd": 95234.574,
+      "salary_max_usd": 189999.14
+    },
+    "database_administrator": {
+      "salary_min_usd": 74912.49,
+      "salary_max_usd": 150166.706
+    },
+    "devops_engineer": {
+      "salary_min_usd": 90166.758,
+      "salary_max_usd": 180014.952
+    },
+    "embedded_systems_engineer": {
+      "salary_min_usd": 85004.094,
+      "salary_max_usd": 165132.45
+    },
+    "engineering_manager": {
+      "salary_min_usd": 110045.608,
+      "salary_max_usd": 200086.21
+    },
+    "frontend_developer": {
+      "salary_min_usd": 75011.304,
+      "salary_max_usd": 149991.18
+    },
+    "full_stack_developer": {
+      "salary_min_usd": 85001.154,
+      "salary_max_usd": 169844.432
+    },
+    "game_developer": {
+      "salary_min_usd": 75107.822,
+      "salary_max_usd": 155136.968
+    },
+    "linux_administrator": {
+      "salary_min_usd": 69858.07,
+      "salary_max_usd": 140172.974
+    },
+    "ml_engineer": {
+      "salary_min_usd": 99939.332,
+      "salary_max_usd": 200123.726
+    },
+    "mobile_developer": {
+      "salary_min_usd": 80020.528,
+      "salary_max_usd": 160053.764
+    },
+    "network_engineer": {
+      "salary_min_usd": 69978.852,
+      "salary_max_usd": 140056.934
+    },
+    "platform_engineer": {
+      "salary_min_usd": 90153.606,
+      "salary_max_usd": 164847.672
+    },
+    "product_manager": {
+      "salary_min_usd": 94914.692,
+      "salary_max_usd": 184833.552
+    },
+    "qa_engineer": {
+      "salary_min_usd": 69938.292,
+      "salary_max_usd": 139986.156
+    },
+    "scrum_master": {
+      "salary_min_usd": 79954.822,
+      "salary_max_usd": 154870.29
+    },
+    "security_engineer": {
+      "salary_min_usd": 89856.53,
+      "salary_max_usd": 179878.932
+    },
+    "site_reliability_engineer": {
+      "salary_min_usd": 85127.198,
+      "salary_max_usd": 160416.272
+    },
+    "software_engineer": {
+      "salary_min_usd": 79771.35,
+      "salary_max_usd": 160080.422
+    },
+    "technical_lead": {
+      "salary_min_usd": 100005.472,
+      "salary_max_usd": 184968.712
+    },
+    "technical_writer": {
+      "salary_min_usd": 54991.702,
+      "salary_max_usd": 110175.93
+    },
+    "test_automation_engineer": {
+      "salary_min_usd": 74785.73,
+      "salary_max_usd": 145093.442
+    },
+    "ui_ux_designer": {
+      "salary_min_usd": 69916.776,
+      "salary_max_usd": 145006.712
+    }
+  },
+  "accuracy": 0.9996875,
+  "last_trained": "2026-02-09T21:13:50.881453",
+  "total_samples": 16000,
+  "version": "1.0.0",
+  "categorical_mappings": {
+    "gender": {
+      "Female": 0,
+      "Male": 1,
+      "Other": 2
+    },
+    "location_country": {
+      "Australia": 0,
+      "Canada": 1,
+      "Germany": 2,
+      "India": 3,
+      "UK": 4,
+      "USA": 5
+    },
+    "location_city_tier": {
+      "Tier 1": 0,
+      "Tier 2": 1,
+      "Tier 3": 2
+    },
+    "second_language": {
+      "No": 0,
+      "Yes": 1
+    },
+    "highest_degree": {
+      "Bachelor": 0,
+      "Master": 1,
+      "PhD": 2
+    },
+    "degree_field": {
+      "Arts": 0,
+      "Business": 1,
+      "Computer Science": 2,
+      "Engineering": 3,
+      "Information Technology": 4,
+      "Mathematics": 5,
+      "Physics": 6,
+      "Statistics": 7
+    },
+    "institution_tier": {
+      "Tier 1": 0,
+      "Tier 2": 1,
+      "Tier 3": 2
+    },
+    "current_role_level": {
+      "Junior": 0,
+      "Lead": 1,
+      "Mid": 2,
+      "Senior": 3
+    },
+    "industry": {
+      "Consulting": 0,
+      "E-commerce": 1,
+      "Education": 2,
+      "Finance": 3,
+      "Healthcare": 4,
+      "Manufacturing": 5,
+      "Technology": 6
+    },
+    "company_size": {
+      "Enterprise": 0,
+      "Large": 1,
+      "Medium": 2,
+      "Small": 3,
+      "Startup": 4
+    },
+    "has_managerial_exp": {
+      "No": 0,
+      "Yes": 1
+    },
+    "international_exp": {
+      "No": 0,
+      "Yes": 1
+    }
+  }
+}
