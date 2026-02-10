@@ -3,15 +3,7 @@
 # Navigate to backend directory if not already there
 cd "$(dirname "$0")"
 
-echo "🚀 Starting backend initialization..."
-
-# Run migrations
-echo "📂 Running database migrations..."
-python manage.py migrate --noinput
-
-# Collect static files
-echo "🎨 Collecting static files..."
-python manage.py collectstatic --noinput
+echo "🚀 Starting backend Gunicorn server..."
 
 # Start Gunicorn
 echo "🌐 Starting Gunicorn server on port $PORT..."
