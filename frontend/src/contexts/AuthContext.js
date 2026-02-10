@@ -213,6 +213,7 @@ export const AuthProvider = ({ children }) => {
 
       const response = await axios.post(`${API_URL}/auth/google/`, {
         code: code,
+        redirect_uri: config.REDIRECT_URI,
       });
 
       console.log('✅ Google auth response received');

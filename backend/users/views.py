@@ -129,8 +129,9 @@ class GoogleAuthView(APIView):
             print("Google Auth Request Data:", request.data)
             print("Google Client ID:", settings.GOOGLE_CLIENT_ID[:20] + "...")
             
-            # Get authorization code from request
+            # Get authorization code and redirect_uri from request
             code = request.data.get('code')
+            redirect_uri = request.data.get('redirect_uri', settings.GOOGLE_REDIRECT_URI)
             
             if not code:
                 print("❌ No authorization code provided")
@@ -139,6 +140,7 @@ class GoogleAuthView(APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
             
             print(f"✅ Received code (length: {len(code)})")
+            print(f"🔄 Using redirect_uri: {redirect_uri}")
             
             # Exchange code for tokens
             token_url = 'https://oauth2.googleapis.com/token'
@@ -146,7 +148,7 @@ class GoogleAuthView(APIView):
                 'code': code,
                 'client_id': settings.GOOGLE_CLIENT_ID,
                 'client_secret': settings.GOOGLE_CLIENT_SECRET,
-                'redirect_uri': settings.GOOGLE_REDIRECT_URI,
+                'redirect_uri': redirect_uri,
                 'grant_type': 'authorization_code'
             }
             
