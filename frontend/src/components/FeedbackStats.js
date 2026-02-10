@@ -37,7 +37,6 @@ import {
   FaRegMeh,
   FaRegFrown
 } from 'react-icons/fa';
-import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -726,8 +725,8 @@ const FeedbackStats = ({ token }) => {
                           <FaStar
                             key={i}
                             className={`text-sm ${i < feedback.rating
-                                ? 'text-yellow-500 fill-current'
-                                : 'text-gray-300'
+                              ? 'text-yellow-500 fill-current'
+                              : 'text-gray-300'
                               }`}
                           />
                         ))}
@@ -772,8 +771,8 @@ const FeedbackStats = ({ token }) => {
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${feedback.is_reviewed
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-yellow-100 text-yellow-800'
                         }`}>
                         {feedback.is_reviewed ? (
                           <>
@@ -789,8 +788,8 @@ const FeedbackStats = ({ token }) => {
                       </span>
                       {feedback.helpful !== undefined && (
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs ${feedback.helpful
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-gray-100 text-gray-800'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
                           }`}>
                           {feedback.helpful ? <FaThumbsUp className="mr-1" /> : <FaThumbsDown className="mr-1" />}
                         </span>

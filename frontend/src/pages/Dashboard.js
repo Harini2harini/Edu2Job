@@ -25,8 +25,6 @@ import {
   FaSync
 } from 'react-icons/fa';
 import { Line, Doughnut } from 'react-chartjs-2';
-import axios from 'axios';
-import config from '../config';
 import {
   Chart as ChartJS,
   CategoryScale,

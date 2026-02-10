@@ -22,16 +22,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = [ 
     '*',
-    '.railway.app',
     'edu2job-production.up.railway.app',
     'localhost',
     '127.0.0.1',
     'edu2-job-kohl.vercel.app',
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://edu2job-production.up.railway.app',
-    'https://edu2-job-kohl.vercel.app',
 ]
 
 # Application definition
