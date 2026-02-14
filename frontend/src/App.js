@@ -19,6 +19,7 @@ import ResetPassword from './pages/ResetPassword';
 import OAuthCallback from './pages/OAuthCallback';
 import Debug from './pages/Debug';
 import AdminLogin from './pages/AdminLogin';
+import SystemCheck from './pages/SystemCheck';
 
 // Admin Pages
 import UserManagement from './pages/admin/UserManagement';
@@ -47,6 +48,7 @@ function App() {
               <Route path="/oauth/callback" element={<OAuthCallback />} />
               <Route path="/debug" element={<Debug />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/system-check" element={<SystemCheck />} />
 
               {/* Protected Routes (Regular Users) */}
               <Route path="/dashboard" element={
@@ -54,62 +56,62 @@ function App() {
                   <Dashboard />
                 </PrivateRoute>
               } />
-              
+
               <Route path="/job-prediction" element={
                 <PrivateRoute>
                   <JobPrediction />
                 </PrivateRoute>
               } />
-              
+
               <Route path="/prediction-history" element={
                 <PrivateRoute>
                   <PredictionHistory />
                 </PrivateRoute>
               } />
-              
+
               <Route path="/profile" element={
                 <PrivateRoute>
                   <Profile />
                 </PrivateRoute>
               } />
-              
+
               <Route path="/community" element={
                 <PrivateRoute>
                   <Community />
                 </PrivateRoute>
               } />
-              
+
               {/* Admin Routes */}
               <Route path="/admin/dashboard" element={
                 <AdminRoute>
                   <AdminDashboard />
                 </AdminRoute>
               } />
-              
+
               <Route path="/admin/users" element={
                 <AdminRoute>
                   <UserManagement />
                 </AdminRoute>
               } />
-              
+
               <Route path="/admin/predictions" element={
                 <AdminRoute>
                   <PredictionLogs />
                 </AdminRoute>
               } />
-              
+
               <Route path="/admin/logs" element={
                 <AdminRoute>
                   <SystemLogs />
                 </AdminRoute>
               } />
-              
+
               <Route path="/admin/models" element={
                 <AdminRoute>
                   <ModelManagement />
                 </AdminRoute>
               } />
-              
+
               {/* Catch all route - Redirect to home */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

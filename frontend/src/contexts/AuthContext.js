@@ -78,12 +78,23 @@ export const AuthProvider = ({ children }) => {
 
   const testBackend = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/test/`);
+      console.log('📡 Testing backend connection at:', `${API_URL}/auth/test/`);
+      const response = await axios.get(`${API_URL}/auth/test/`, { timeout: 5000 });
       console.log('✅ Backend is running:', response.data);
-      return true;
+      return { ok: true };
     } catch (error) {
       console.error('❌ Backend connection failed:', error.message);
-      return false;
+      let errorMessage = 'Backend server is not responding';
+
+      if (error.code === 'ERR_NETWORK') {
+        errorMessage = 'Network error: Cannot reach the backend server. Please check if the backend URL is correct and active.';
+      } else if (error.response) {
+        errorMessage = `Server error (${error.response.status}): ${error.response.data?.message || 'The server returned an error.'}`;
+      } else if (error.request) {
+        errorMessage = 'No response from server. It might be down or blocked by CORS.';
+      }
+
+      return { ok: false, error: errorMessage };
     }
   };
 
@@ -91,11 +102,11 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔑 Attempting login for:', email);
 
-      const backendOk = await testBackend();
-      if (!backendOk) {
+      const backendStatus = await testBackend();
+      if (!backendStatus.ok) {
         return {
           success: false,
-          error: 'Backend server is not responding'
+          error: backendStatus.error
         };
       }
 
@@ -142,11 +153,11 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('📝 Attempting registration:', userData);
 
-      const backendOk = await testBackend();
-      if (!backendOk) {
+      const backendStatus = await testBackend();
+      if (!backendStatus.ok) {
         return {
           success: false,
-          error: 'Backend server is not responding'
+          error: backendStatus.error
         };
       }
 
@@ -200,12 +211,12 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔄 Processing Google callback with code...');
 
-      const backendOk = await testBackend();
-      if (!backendOk) {
-        console.error('❌ Backend not responding');
+      const backendStatus = await testBackend();
+      if (!backendStatus.ok) {
+        console.error('❌ Backend connection failed:', backendStatus.error);
         return {
           success: false,
-          error: 'Backend server is not responding'
+          error: backendStatus.error
         };
       }
 

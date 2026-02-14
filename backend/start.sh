@@ -3,6 +3,12 @@
 # Navigate to backend directory if not already there
 cd "$(dirname "$0")"
 
+echo "⚙️ Running migrations..."
+python manage.py migrate --noinput
+
+echo "📂 Collecting static files..."
+python manage.py collectstatic --noinput
+
 echo "🚀 Starting backend Gunicorn server..."
 
 # Start Gunicorn
