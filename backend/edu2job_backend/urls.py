@@ -11,10 +11,18 @@ urlpatterns = [
      path('', lambda request: JsonResponse({'status': 'ok', 'service': 'Edu2Job Backend'})),
     path('admin/', admin.site.urls),
     # API URLs
+    # API URLs
      path('api/auth/', include('users.urls')),
+     path('api/auth', include('users.urls')), # Fix for 405
+     
      path('api/profile/', include('profiles.urls')),
+     path('api/profile', include('profiles.urls')), # Fix for 405
+     
      path('api/admin/', include('admin_panel.urls')),
+     path('api/admin', include('admin_panel.urls')), # Fix for 405
+     
      path('api/predictions/',include('predictions.urls')),
+     path('api/predictions',include('predictions.urls')), # Fix for 405
     # Health check
     path('health/', lambda request: JsonResponse({'status': 'healthy'})),
     path('health', lambda request: JsonResponse({'status': 'healthy'})),
