@@ -123,6 +123,25 @@ const SystemLogs = () => {
     );
   }
 
+  // Empty state when no logs
+  if (!loading && filteredLogs.length === 0 && logs.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">System Logs</h1>
+            <p className="text-gray-600 mt-2">Monitor system events, errors, and activities</p>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+            <FaServer className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No System Logs Yet</h3>
+            <p className="text-gray-600">System logs will appear here as the application runs and events occur.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

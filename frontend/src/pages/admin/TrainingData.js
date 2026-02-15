@@ -70,12 +70,21 @@ const TrainingData = () => {
       formData.append('dataset_file', uploadForm.dataset_file);
       formData.append('target_column', uploadForm.target_column);
 
-      await axios.post(`${API_URL}/admin/datasets/`, formData, {
+      console.log('Uploading dataset:', {
+        name: uploadForm.name,
+        description: uploadForm.description,
+        fileName: uploadForm.dataset_file.name,
+        fileSize: uploadForm.dataset_file.size,
+        target_column: uploadForm.target_column
+      });
+
+      const response = await axios.post(`${API_URL}/admin/datasets/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
+      console.log('Upload successful:', response.data);
       alert('Dataset uploaded successfully!');
       setShowUploadModal(false);
       setUploadForm({
@@ -88,7 +97,16 @@ const TrainingData = () => {
       fetchDatasets();
     } catch (error) {
       console.error('Error uploading dataset:', error);
-      alert('Failed to upload dataset: ' + (error.response?.data?.error || error.message));
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+
+      const errorMessage = error.response?.data?.error
+        || error.response?.data?.detail
+        || error.response?.data?.message
+        || error.message
+        || 'Unknown error occurred';
+
+      alert('Failed to upload dataset: ' + errorMessage);
     } finally {
       setUploading(false);
     }
