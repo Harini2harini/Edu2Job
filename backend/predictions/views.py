@@ -105,41 +105,92 @@ class PredictJobView(APIView):
                     'details': str(e)
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
-            # Save prediction history
-            saved_prediction_id = None
-            try:
-                history = PredictionHistory.objects.create(
-                    user=request.user,
-                    input_data=input_data,
-                    top_prediction=prediction_result['top_prediction'],
-                    confidence_score=prediction_result['confidence_score'],
-                    all_predictions=prediction_result['all_predictions'],
-                    missing_skills=prediction_result.get('missing_skills', []),
-                    salary_range=prediction_result.get('salary_range', {}),
-                    market_demand=prediction_result.get('market_demand', 'Medium'),
-                    training_required=prediction_result.get('training_required', '')
-                )
-                saved_prediction_id = str(history.id)
-                print(f"💾 Prediction saved to history with ID: {saved_prediction_id}")
-                
-                # Try to create user activity log
+            # Check for duplicate predictions (within last minute)
+            last_prediction = PredictionHistory.objects.filter(
+                user=request.user,
+                created_at__gte=timezone.now() - timedelta(minutes=1)
+            ).order_by('-created_at').first()
+            
+            if last_prediction and last_prediction.input_data == input_data:
+                print(f"⚠️ Duplicate prediction detected for user: {request.user.email}")
+                # Return existing prediction instead of creating new one
+                saved_prediction_id = str(last_prediction.id)
+                prediction_result = {
+                    'top_prediction': last_prediction.top_prediction,
+                    'confidence_score': last_prediction.confidence_score,
+                    'all_predictions': last_prediction.all_predictions,
+                    'missing_skills': last_prediction.missing_skills,
+                    'salary_range': last_prediction.salary_range,
+                    'market_demand': last_prediction.market_demand,
+                    'training_required': last_prediction.training_required
+                }
+            else:
+                # Save prediction history
                 try:
-                    UserActivity.objects.create(
+                    history = PredictionHistory.objects.create(
                         user=request.user,
-                        activity_type='prediction',
-                        description=f'Made prediction: {history.top_prediction} with {history.confidence_score}% confidence',
-                        metadata={
-                            'prediction_id': saved_prediction_id,
-                            'confidence': history.confidence_score,
-                            'job_role': history.top_prediction
-                        }
+                        input_data=input_data,
+                        top_prediction=prediction_result['top_prediction'],
+                        confidence_score=prediction_result['confidence_score'],
+                        all_predictions=prediction_result['all_predictions'],
+                        missing_skills=prediction_result.get('missing_skills', []),
+                        salary_range=prediction_result.get('salary_range', {}),
+                        market_demand=prediction_result.get('market_demand', 'Medium'),
+                        training_required=prediction_result.get('training_required', '')
                     )
+                    saved_prediction_id = str(history.id)
+                    print(f"💾 Prediction saved to history with ID: {saved_prediction_id}")
+                    
+                    # Create UserActivity log
+                    try:
+                        UserActivity.objects.create(
+                            user=request.user,
+                            activity_type='prediction',
+                            description=f'Made prediction: {history.top_prediction} with {history.confidence_score}% confidence',
+                            metadata={
+                                'prediction_id': saved_prediction_id,
+                                'confidence': history.confidence_score,
+                                'job_role': history.top_prediction
+                            }
+                        )
+                    except Exception as e:
+                        print(f"⚠️ Failed to create UserActivity: {str(e)}")
+
+                    # Create Admin PredictionLog (for dashboard stats)
+                    try:
+                        # Find model version
+                        active_model = MLModelVersion.objects.filter(is_active=True).first()
+                        model_version_str = active_model.version if active_model else "v1.0.0"
+                        
+                        # Need to get MLModel from admin_panel to link correctly if possible, 
+                        # but PredictionLog.model_used expects admin_panel.models.MLModel
+                        # For now, we'll try to find it or leave null
+                        from admin_panel.models import MLModel as AdminMLModel, PredictionLog, AdminDashboardStats
+                        
+                        admin_model = AdminMLModel.objects.filter(is_active=True).first()
+                        
+                        PredictionLog.objects.create(
+                            user=request.user,
+                            input_data=input_data,
+                            prediction_result=prediction_result,
+                            confidence_score=prediction_result['confidence_score'],
+                            model_used=admin_model,
+                            model_version=model_version_str,
+                            status='success',
+                            processing_time=0.5 # Estimated
+                        )
+                        
+                        # Invalidate Admin Dashboard Cache
+                        AdminDashboardStats.objects.all().delete()
+                        print("🧹 Admin dashboard cache cleared")
+                        
+                    except Exception as e:
+                         print(f"⚠️ Failed to create Admin PredictionLog or clear cache: {str(e)}")
+                    
                 except Exception as e:
-                    print(f"⚠️ Failed to create UserActivity: {str(e)}")
-                
-            except Exception as e:
-                print(f"⚠️ Failed to save prediction history: {str(e)}")
-                # Continue even if history save fails
+                    print(f"⚠️ Failed to save prediction history: {str(e)}")
+                    # Continue even if history save fails if we have the result
+
             
             # Prepare response
             response_data = {
@@ -278,6 +329,38 @@ class SavePredictionHistoryView(APIView):
                 )
             except Exception as e:
                 print(f"⚠️ Failed to create UserActivity: {str(e)}")
+
+            # Create Admin PredictionLog (for dashboard stats)
+            try:
+                # Find model version
+                active_model = MLModelVersion.objects.filter(is_active=True).first()
+                model_version_str = active_model.version if active_model else "v1.0.0"
+                
+                from admin_panel.models import MLModel as AdminMLModel, PredictionLog, AdminDashboardStats
+                
+                admin_model = AdminMLModel.objects.filter(is_active=True).first()
+                
+                PredictionLog.objects.create(
+                    user=request.user,
+                    input_data=data['input_data'],
+                    prediction_result={
+                        'top_prediction': history.top_prediction,
+                        'confidence_score': history.confidence_score,
+                        'all_predictions': history.all_predictions
+                    },
+                    confidence_score=history.confidence_score,
+                    model_used=admin_model,
+                    model_version=model_version_str,
+                    status='success',
+                    processing_time=0.5 # Estimated
+                )
+                
+                # Invalidate Admin Dashboard Cache
+                AdminDashboardStats.objects.all().delete()
+                
+            except Exception as e:
+                    print(f"⚠️ Failed to create Admin PredictionLog or clear cache: {str(e)}")
+
             
             return Response({
                 'success': True,

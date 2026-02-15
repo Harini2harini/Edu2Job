@@ -581,29 +581,33 @@ const JobPrediction = () => {
         setStep(3);
 
         // Step 3: Check if we need to save to history
-        // Only save if we get a successful prediction response
-        let savedPredictionId = null;
-        try {
-          const historyData = {
-            top_prediction: predictionResponse.data.top_prediction?.job_role || predictionResponse.data.predictions?.[0]?.job_role,
-            confidence_score: predictionResponse.data.top_prediction?.confidence || predictionResponse.data.predictions?.[0]?.confidence_score || 85,
-            input_data: submissionData,
-            all_predictions: predictionResponse.data.predictions || []
-          };
+        // Only save if we get a successful prediction response AND it wasn't already saved by the backend
+        let savedPredictionId = predictionResponse.data.prediction_id;
 
-          const historyResponse = await axios.post(`${config.API_URL}/predictions/history/save`, historyData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
+        if (!savedPredictionId) {
+          try {
+            const historyData = {
+              top_prediction: predictionResponse.data.top_prediction?.job_role || predictionResponse.data.predictions?.[0]?.job_role,
+              confidence_score: predictionResponse.data.top_prediction?.confidence || predictionResponse.data.predictions?.[0]?.confidence_score || 85,
+              input_data: submissionData,
+              all_predictions: predictionResponse.data.predictions || []
+            };
 
+            const historyResponse = await axios.post(`${config.API_URL}/predictions/history/save`, historyData, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
 
-          savedPredictionId = historyResponse.data?.prediction_id;
-          console.log('Prediction saved to history with ID:', savedPredictionId);
-        } catch (historyError) {
-          console.error('Error saving to history:', historyError);
-          // Don't fail the whole prediction if history save fails
+            savedPredictionId = historyResponse.data?.prediction_id;
+            console.log('Prediction saved to history (fallback) with ID:', savedPredictionId);
+          } catch (historyError) {
+            console.error('Error saving to history:', historyError);
+            // Don't fail the whole prediction if history save fails
+          }
+        } else {
+          console.log('Prediction already saved by backend with ID:', savedPredictionId);
         }
 
         setPredictionId(savedPredictionId);

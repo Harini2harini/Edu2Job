@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    MLModel, TrainingDataset, PredictionLog, 
+    MLModel, TrainingDataset, PredictionLog, PredictionFeedback,
     SystemLog, UserActivity, Notification
 )
 from users.models import User
@@ -180,7 +180,42 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    user_email = serializers.CharField(source='user.email', read_only=True)
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    prediction_job_role = serializers.CharField(source='prediction.top_prediction', read_only=True)
+    prediction_confidence = serializers.FloatField(source='prediction.confidence_score', read_only=True)
+    
+    class Meta:
+        model = PredictionFeedback
+        fields = [
+            'id', 'user', 'user_email', 'user_name', 'prediction', 
+            'prediction_job_role', 'prediction_confidence',
+            'rating', 'comment', 'created_at', 'is_reviewed', 
+            'admin_notes', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'user', 'prediction']
         read_only_fields = ('id', 'created_at', 'read_at')
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    user_email = serializers.CharField(source='user_email', read_only=True)  # Use direct field first, verify model
+    user_name = serializers.SerializerMethodField()
+    prediction_job_role = serializers.CharField(source='prediction.top_prediction', read_only=True)
+    prediction_confidence = serializers.FloatField(source='prediction.confidence_score', read_only=True)
+    
+    class Meta:
+        model = PredictionFeedback
+        fields = [
+            'id', 'user', 'user_email', 'user_name', 'prediction', 
+            'prediction_job_role', 'prediction_confidence',
+            'rating', 'comment', 'created_at', 'is_reviewed', 
+            'admin_notes', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'user', 'prediction']
+
+    def get_user_name(self, obj):
+        return obj.user.name if obj.user else "Anonymous"
     
     def get_related_user_id(self, obj):
         return str(obj.related_user.id) if obj.related_user else None

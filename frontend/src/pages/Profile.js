@@ -364,7 +364,7 @@ const Profile = () => {
       // Add all personal info fields
       Object.keys(personalInfo).forEach(key => {
         if (key === 'profile_picture' && personalInfo[key]) {
-          formData.append(key, personalInfo[key]);
+          formData.append('avatar', personalInfo[key]);
         } else if (key === 'profile_picture_url') {
           // Skip this, it's just for display
           return;

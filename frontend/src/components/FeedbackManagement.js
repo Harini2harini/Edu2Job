@@ -242,7 +242,7 @@ const FeedbackManagement = () => {
       if (endDate) params.append('end_date', endDate);
       params.append('page_size', 100);
 
-      const response = await axios.get(`${API_URL}/admin/feedback/?${params}`, {
+      const response = await axios.get(`${API_URL}/admin/feedback?${params}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -269,7 +269,7 @@ const FeedbackManagement = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/feedback/stats/`, {
+      const response = await axios.get(`${API_URL}/admin/feedback/stats`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -283,7 +283,7 @@ const FeedbackManagement = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/feedback/analytics/`, {
+      const response = await axios.get(`${API_URL}/admin/feedback/analytics`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -536,7 +536,7 @@ const FeedbackManagement = () => {
   const deleteFeedback = async (feedbackId) => {
     if (window.confirm('Are you sure you want to delete this feedback?')) {
       try {
-        await axios.delete(`${API_URL}/admin/feedback/${feedbackId}/`, {
+        await axios.delete(`${API_URL}/admin/feedback/${feedbackId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -565,7 +565,7 @@ const FeedbackManagement = () => {
       try {
         await Promise.all(
           selectedItems.map(id =>
-            axios.delete(`${API_URL}/admin/feedback/${id}/`, {
+            axios.delete(`${API_URL}/admin/feedback/${id}`, {
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
               }
@@ -585,7 +585,7 @@ const FeedbackManagement = () => {
 
   const updateFeedback = async (feedbackId, updates) => {
     try {
-      const response = await axios.patch(`${API_URL}/admin/feedback/${feedbackId}/`, updates, {
+      const response = await axios.patch(`${API_URL}/admin/feedback/${feedbackId}`, updates, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -627,7 +627,7 @@ const FeedbackManagement = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/admin/feedback/${feedbackId}/reply/`, {
+      await axios.post(`${API_URL}/admin/feedback/${feedbackId}/reply`, {
         message: replyMessage
       }, {
         headers: {
@@ -653,7 +653,7 @@ const FeedbackManagement = () => {
   const exportFeedback = async (format = 'csv') => {
     try {
       setExporting(true);
-      const response = await axios.get(`${API_URL}/admin/feedback/export/?format=${format}`, {
+      const response = await axios.get(`${API_URL}/admin/feedback/export?format=${format}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
@@ -869,16 +869,16 @@ const FeedbackManagement = () => {
                 if (tab.id === 'analytics') setShowStats(true);
               }}
               className={`flex items-center space-x-2 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 transition-colors ${activeTab === tab.id
-                  ? 'border-primary text-primary bg-primary/5'
-                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ? 'border-primary text-primary bg-primary/5'
+                : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
             >
               <tab.icon />
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span className={`px-2 py-0.5 text-xs rounded-full ${activeTab === tab.id
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-200 text-gray-700'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-200 text-gray-700'
                   }`}>
                   {tab.count}
                 </span>
@@ -1039,8 +1039,8 @@ const FeedbackManagement = () => {
                 <div
                   key={index}
                   className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${keyword.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
-                      keyword.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
+                    keyword.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
                     }`}
                 >
                   <span className="font-medium">{keyword.word}</span>
@@ -1542,8 +1542,8 @@ const FeedbackManagement = () => {
                             key={i}
                             onClick={() => setPagination(prev => ({ ...prev, currentPage: pageNum }))}
                             className={`px-3 py-1 rounded-lg ${pagination.currentPage === pageNum
-                                ? 'bg-primary text-white'
-                                : 'border border-gray-300'
+                              ? 'bg-primary text-white'
+                              : 'border border-gray-300'
                               }`}
                           >
                             {pageNum}
@@ -1978,8 +1978,8 @@ const FeedbackManagement = () => {
                           key={rating}
                           onClick={() => setEditingFeedback({ ...editingFeedback, rating })}
                           className={`text-2xl ${rating <= editingFeedback.rating
-                              ? 'text-yellow-500 fill-current'
-                              : 'text-gray-300'
+                            ? 'text-yellow-500 fill-current'
+                            : 'text-gray-300'
                             }`}
                         >
                           <FaStar />

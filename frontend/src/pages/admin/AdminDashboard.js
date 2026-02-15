@@ -72,8 +72,8 @@ const DashboardHome = () => {
   const fetchDashboardData = async () => {
     try {
       const [statsRes, chartsRes] = await Promise.all([
-        axios.get(`${API_URL}/admin/stats/`),
-        axios.get(`${API_URL}/admin/charts/`)
+        axios.get(`${API_URL}/admin/stats`),
+        axios.get(`${API_URL}/admin/charts`)
       ]);
 
       setStats(statsRes.data);
@@ -182,7 +182,7 @@ const DashboardHome = () => {
                 <FaArrowDown className="w-4 h-4 text-red-500 mr-1" />
               ) : null}
               <span className={`text-sm ${stat.trend === 'up' ? 'text-green-600' :
-                  stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'
+                stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'
                 }`}>
                 {stat.change}
               </span>
@@ -211,8 +211,8 @@ const DashboardHome = () => {
                   </p>
                 </div>
                 <span className={`px-2 py-1 text-xs rounded-full ${activity.activity_type === 'login' ? 'bg-green-100 text-green-800' :
-                    activity.activity_type === 'prediction' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
+                  activity.activity_type === 'prediction' ? 'bg-blue-100 text-blue-800' :
+                    'bg-gray-100 text-gray-800'
                   }`}>
                   {activity.activity_type}
                 </span>
@@ -237,8 +237,8 @@ const DashboardHome = () => {
                     {prediction.user_name}
                   </span>
                   <span className={`text-sm px-2 py-1 rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                      prediction.status === 'flagged' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
+                    prediction.status === 'flagged' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
                     }`}>
                     {prediction.status}
                   </span>
@@ -314,7 +314,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/users/`);
+      const response = await axios.get(`${API_URL}/admin/users`);
       setUsers(response.data.results || response.data || []);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -338,7 +338,7 @@ const UserManagement = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`${API_URL}/admin/users/${userId}/`);
+        await axios.delete(`${API_URL}/admin/users/${userId}`);
         setUsers(users.filter(u => u.id !== userId));
       } catch (error) {
         console.error('Error deleting user:', error);
@@ -349,7 +349,7 @@ const UserManagement = () => {
 
   const handleToggleStatus = async (userId, currentStatus) => {
     try {
-      await axios.patch(`${API_URL}/admin/users/${userId}/`, {
+      await axios.patch(`${API_URL}/admin/users/${userId}`, {
         is_active: !currentStatus
       });
       setUsers(users.map(u =>
@@ -478,7 +478,7 @@ const UserManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                        'bg-green-100 text-green-800'
+                      'bg-green-100 text-green-800'
                       }`}>
                       {userItem.role.charAt(0).toUpperCase() + userItem.role.slice(1)}
                     </span>
@@ -487,8 +487,8 @@ const UserManagement = () => {
                     <button
                       onClick={() => handleToggleStatus(userItem.id, userItem.is_active)}
                       className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${userItem.is_active
-                          ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                          : 'bg-red-100 text-red-800 hover:bg-red-200'
+                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                        : 'bg-red-100 text-red-800 hover:bg-red-200'
                         }`}
                     >
                       {userItem.is_active ? (
@@ -584,12 +584,13 @@ const ModelManagement = () => {
   const fetchData = async () => {
     try {
       const [modelsRes, datasetsRes] = await Promise.all([
-        axios.get(`${API_URL}/admin/models/`),
-        axios.get(`${API_URL}/admin/datasets/`)
+        axios.get(`${API_URL}/admin/models`),
+        axios.get(`${API_URL}/admin/datasets`)
       ]);
 
-      setModels(modelsRes.data.results || modelsRes.data || []);
-      setDatasets(datasetsRes.data.results || datasetsRes.data || []);
+      setModels(Array.isArray(modelsRes.data.results) ? modelsRes.data.results : (Array.isArray(modelsRes.data) ? modelsRes.data : []));
+      setDatasets(Array.isArray(datasetsRes.data.results) ? datasetsRes.data.results : (Array.isArray(datasetsRes.data) ? datasetsRes.data : []));
+
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -599,7 +600,7 @@ const ModelManagement = () => {
 
   const handleActivateModel = async (modelId) => {
     try {
-      await axios.post(`${API_URL}/admin/models/${modelId}/activate/`);
+      await axios.post(`${API_URL}/admin/models/${modelId}/activate`);
       fetchData();
     } catch (error) {
       console.error('Error activating model:', error);
@@ -610,7 +611,7 @@ const ModelManagement = () => {
   const handleDeleteModel = async (modelId) => {
     if (window.confirm('Are you sure you want to delete this model?')) {
       try {
-        await axios.delete(`${API_URL}/admin/models/${modelId}/`);
+        await axios.delete(`${API_URL}/admin/models/${modelId}`);
         setModels(models.filter(m => m.id !== modelId));
       } catch (error) {
         console.error('Error deleting model:', error);
@@ -622,7 +623,7 @@ const ModelManagement = () => {
   const handleDeleteDataset = async (datasetId) => {
     if (window.confirm('Are you sure you want to delete this dataset?')) {
       try {
-        await axios.delete(`${API_URL}/admin/datasets/${datasetId}/`);
+        await axios.delete(`${API_URL}/admin/datasets/${datasetId}`);
         setDatasets(datasets.filter(d => d.id !== datasetId));
       } catch (error) {
         console.error('Error deleting dataset:', error);
@@ -639,7 +640,7 @@ const ModelManagement = () => {
 
     setTraining(true);
     try {
-      await axios.post(`${API_URL}/admin/train-model/`, trainingForm);
+      await axios.post(`${API_URL}/admin/train-model`, trainingForm);
 
       alert('Model training started successfully!');
       setShowTrainModal(false);
@@ -678,7 +679,7 @@ const ModelManagement = () => {
       formData.append('dataset_file', uploadForm.dataset_file);
       formData.append('target_column', uploadForm.target_column);
 
-      await axios.post(`${API_URL}/admin/datasets/`, formData, {
+      await axios.post(`${API_URL}/admin/datasets`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -778,8 +779,8 @@ const ModelManagement = () => {
           <button
             onClick={() => setActiveTab('models')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'models'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
           >
             <FaRobot className="inline mr-2" />
@@ -788,8 +789,8 @@ const ModelManagement = () => {
           <button
             onClick={() => setActiveTab('datasets')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'datasets'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
           >
             <FaDatabase className="inline mr-2" />
@@ -815,8 +816,8 @@ const ModelManagement = () => {
                       </div>
                     </div>
                     <span className={`px-2 py-1 text-xs rounded-full ${model.status === 'trained' ? 'bg-blue-100 text-blue-800' :
-                        model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
+                      model.status === 'training' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
                       }`}>
                       {model.status}
                     </span>
@@ -1477,8 +1478,8 @@ const PredictionLogs = () => {
                     <div className="flex items-center">
                       {getStatusIcon(prediction.status)}
                       <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                          prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
+                        prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
                         }`}>
                         {prediction.status?.charAt(0).toUpperCase() + prediction.status?.slice(1) || 'Unknown'}
                       </span>
@@ -2296,8 +2297,8 @@ const AdminDashboard = () => {
                         setMobileMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === item.id
-                          ? 'bg-primary text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-primary text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
                         }`}
                     >
                       {item.icon}
@@ -2326,8 +2327,8 @@ const AdminDashboard = () => {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === item.id
-                      ? 'bg-primary text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-primary text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   title={!sidebarOpen ? item.label : ''}
                 >

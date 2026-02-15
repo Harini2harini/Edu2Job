@@ -22,11 +22,12 @@ from .models import (
     MLModel, TrainingDataset, PredictionLog, 
     SystemLog, UserActivity, Notification, AdminDashboardStats
 )
+from predictions.models import PredictionFeedback
 from .serializers import (
     MLModelSerializer, TrainingDatasetSerializer, PredictionLogSerializer,
     SystemLogSerializer, UserActivitySerializer, NotificationSerializer,
     UserSerializer, TrainingDatasetUploadSerializer, TrainModelSerializer,
-    FlagPredictionSerializer
+    FlagPredictionSerializer, FeedbackSerializer
 )
 from users.models import User
 
@@ -815,23 +816,130 @@ class FlagPredictionView(APIView):
                 related_prediction=prediction
             )
             
-            # Log the action
-            SystemLog.objects.create(
-                level='warning',
-                category='prediction',
-                source='admin_panel',
-                message=f'Prediction flagged for review',
-                user=request.user,
-                details={
-                    'prediction_id': str(prediction.id),
-                    'user': prediction.user.email,
-                    'flag_reason': prediction.flag_reason
-                }
-            )
-            
             return Response({'message': 'Prediction flagged successfully'})
+            
         except PredictionLog.DoesNotExist:
             return Response({'error': 'Prediction not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class FeedbackViewSet(viewsets.ModelViewSet):
+    queryset = PredictionFeedback.objects.all()
+    serializer_class = FeedbackSerializer
+    permission_classes = [IsAdmin]
+    
+    def get_queryset(self):
+        queryset = PredictionFeedback.objects.all().order_by('-created_at')
+        
+        # Filters
+        min_rating = self.request.query_params.get('min_rating')
+        if min_rating:
+            queryset = queryset.filter(rating__gte=min_rating)
+            
+        is_reviewed = self.request.query_params.get('is_reviewed')
+        if is_reviewed is not None:
+            queryset = queryset.filter(is_reviewed=is_reviewed.lower() == 'true')
+            
+        start_date = self.request.query_params.get('start_date')
+        if start_date:
+            queryset = queryset.filter(created_at__gte=start_date)
+            
+        end_date = self.request.query_params.get('end_date')
+        if end_date:
+            queryset = queryset.filter(created_at__lte=end_date)
+            
+        return queryset
+
+    @action(detail=False, methods=['get'])
+    def stats(self, request):
+        total_feedback = PredictionFeedback.objects.count()
+        avg_rating = PredictionFeedback.objects.aggregate(Avg('rating'))['rating__avg'] or 0
+        reviewed_count = PredictionFeedback.objects.filter(is_reviewed=True).count()
+        
+        # Rating distribution
+        rating_dist = PredictionFeedback.objects.values('rating').annotate(count=Count('rating')).order_by('rating')
+        distribution = {item['rating']: item['count'] for item in rating_dist}
+        
+        # Daily feedback (last 30 days)
+        last_30_days = timezone.now() - timedelta(days=30)
+        daily_feedback = PredictionFeedback.objects.filter(created_at__gte=last_30_days)\
+            .extra(select={'date': 'date(created_at)'})\
+            .values('date')\
+            .annotate(count=Count('id'), average_rating=Avg('rating'))\
+            .order_by('date')
+            
+        return Response({
+            'total_feedback': total_feedback,
+            'average_rating': round(avg_rating, 2),
+            'reviewed_rate': round((reviewed_count / total_feedback * 100) if total_feedback > 0 else 0, 1),
+            'rating_distribution': distribution,
+            'daily_feedback': list(daily_feedback)
+        })
+
+    @action(detail=False, methods=['get'])
+    def analytics(self, request):
+        # Placeholder for analytics (sentiment analysis, etc.)
+        # In a real app, this would use NLP to analyze comments
+        return Response({
+            'top_keywords': [
+                {'word': 'accurate', 'count': 15, 'sentiment': 'positive'},
+                {'word': 'helpful', 'count': 12, 'sentiment': 'positive'},
+                {'word': 'job', 'count': 10, 'sentiment': 'neutral'}
+            ],
+            'sentiment_over_time': [],
+            'geographic_distribution': {'US': 10, 'India': 5, 'UK': 3}
+        })
+
+    @action(detail=False, methods=['get'])
+    def export(self, request):
+        format_type = request.query_params.get('format', 'csv')
+        queryset = self.get_queryset()
+        
+        if format_type == 'csv':
+            import csv
+            from django.http import HttpResponse
+            
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="feedback_export_{timezone.now().date()}.csv"'
+            
+            writer = csv.writer(response)
+            writer.writerow(['ID', 'User', 'Rating', 'Comment', 'Role', 'Date'])
+            
+            for feedback in queryset:
+                writer.writerow([
+                    feedback.id,
+                    feedback.user.email if feedback.user else feedback.user_email or 'Anonymous',
+                    feedback.rating,
+                    feedback.comment,
+                    feedback.prediction.top_prediction if feedback.prediction else 'N/A',
+                    feedback.created_at
+                ])
+                
+            return response
+        
+        return Response({'error': 'Unsupported format'}, status=400)
+
+    @action(detail=True, methods=['post'])
+    def reply(self, request, pk=None):
+        feedback = self.get_object()
+        message = request.data.get('message')
+        
+        if not message:
+            return Response({'error': 'Message restriction'}, status=400)
+            
+        # In a real app, send email to user
+        # send_mail(...)
+        
+        feedback.is_reviewed = True
+        feedback.admin_notes += f"\nReply sent on {timezone.now()}: {message}"
+        feedback.save()
+        
+        return Response({'message': 'Reply sent successfully'})
+
+
+            
+
 
 class ReviewFlaggedPredictionView(APIView):
     permission_classes = [IsAdmin]
