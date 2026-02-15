@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }) => {
       let errorMessage = 'Backend server is not responding';
 
       if (error.code === 'ERR_NETWORK') {
-        errorMessage = 'Network error: Cannot reach the backend server. Please check if the backend URL is correct and active.';
+        errorMessage = `Network error: Cannot reach the backend server at ${API_URL}. Please check if the backend URL is correct and active.`;
       } else if (error.response) {
         errorMessage = `Server error (${error.response.status}): ${error.response.data?.message || 'The server returned an error.'}`;
       } else if (error.request) {
