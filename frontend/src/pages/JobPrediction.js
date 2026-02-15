@@ -568,7 +568,7 @@ const JobPrediction = () => {
       console.log('Submitting data with', selectedSkills.length, 'skills');
 
       // Step 1: Get the prediction
-      const predictionResponse = await axios.post(`${config.API_URL}/predictions/predict/`, submissionData, {
+      const predictionResponse = await axios.post(`${config.API_URL}/predictions/predict`, submissionData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -591,7 +591,7 @@ const JobPrediction = () => {
             all_predictions: predictionResponse.data.predictions || []
           };
 
-          const historyResponse = await axios.post(`${config.API_URL}/predictions/history/save/`, historyData, {
+          const historyResponse = await axios.post(`${config.API_URL}/predictions/history/save`, historyData, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -615,7 +615,17 @@ const JobPrediction = () => {
       }
     } catch (err) {
       console.error('Prediction error:', err);
-      setError(err.response?.data?.error || err.response?.data?.detail || 'Prediction failed. Please try again.');
+      // Improve error display to show backend details
+      const backendError = err.response?.data?.error;
+      const backendDetails = err.response?.data?.details;
+      let errorMessage = backendError || 'Prediction failed. Please try again.';
+
+      if (backendDetails) {
+        // If details is an object/array, stringify it, otherwise append string
+        errorMessage += `: ${typeof backendDetails === 'object' ? JSON.stringify(backendDetails) : backendDetails}`;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
