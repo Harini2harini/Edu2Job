@@ -4,6 +4,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import config from '../../config';
 import AdminFeedbackPanel from '../../components/AdminFeedbackPanel';
+import PredictionLogs from './PredictionLogs';
+import SystemLogs from './SystemLogs';
+import Settings from './Settings';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaTachometerAlt,
