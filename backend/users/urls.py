@@ -7,14 +7,24 @@ urlpatterns = [
     path('test/', views.TestView.as_view(), name='test'),
     
     # Authentication
+    # Authentication
     path('register/', views.RegisterView.as_view(), name='register'),
+    path('register', views.RegisterView.as_view()), # Fix for 405
+    
     path('login/', views.LoginView.as_view(), name='login'),
+    path('login', views.LoginView.as_view()), # Fix for 405
+    
     path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('logout', views.LogoutView.as_view()),
+    
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh', TokenRefreshView.as_view()),
+    
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
     # Google OAuth
     path('google/', views.GoogleAuthView.as_view(), name='google_auth'),
+    path('google', views.GoogleAuthView.as_view()),
     path('google/callback/', views.GoogleCallbackView.as_view(), name='google_callback'),
     
     # Profile
