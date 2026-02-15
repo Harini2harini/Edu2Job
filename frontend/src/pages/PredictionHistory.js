@@ -25,7 +25,7 @@ const PredictionHistory = () => {
 
   const fetchPredictions = async () => {
     try {
-      const response = await axios.get(`${config.API_URL}/predictions/history/`, {
+      const response = await axios.get(`${config.API_URL}/predictions/history`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

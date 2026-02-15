@@ -308,7 +308,7 @@ const Profile = () => {
   const loadProfileData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/profile/profile/complete/`);
+      const response = await axios.get(`${API_URL}/profile/profile/complete`);
       setProfileData(response.data);
 
       // Set personal info from profile
@@ -338,7 +338,7 @@ const Profile = () => {
       }
 
       // Load completion percentage
-      const completionResponse = await axios.get(`${API_URL}/profile/profile/completion/`);
+      const completionResponse = await axios.get(`${API_URL}/profile/profile/completion`);
       setCompletion(completionResponse.data.overall_completion);
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -380,14 +380,14 @@ const Profile = () => {
       let response;
       if (hasProfileId) {
         // Update existing profile
-        response = await axios.patch(`${API_URL}/profile/profile/`, formData, {
+        response = await axios.patch(`${API_URL}/profile/profile`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
       } else {
         // Create new profile
-        response = await axios.post(`${API_URL}/profile/profile/`, formData, {
+        response = await axios.post(`${API_URL}/profile/profile`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -472,7 +472,7 @@ const Profile = () => {
       // Log what we're sending (for debugging)
       console.log('Adding education:', educationData);
 
-      const response = await axios.post(`${API_URL}/profile/educations/`, educationData);
+      const response = await axios.post(`${API_URL}/profile/educations`, educationData);
       console.log('Education response:', response.data);
 
       // Reset form
@@ -538,11 +538,11 @@ const Profile = () => {
       // Try different API endpoints if needed
       let response;
       try {
-        response = await axios.post(`${API_URL}/profile/skills/`, skillData);
+        response = await axios.post(`${API_URL}/profile/skills`, skillData);
       } catch (apiError) {
         // Try alternative endpoint
         console.log('Trying alternative endpoint...');
-        response = await axios.post(`${API_URL}/skills/`, skillData);
+        response = await axios.post(`${API_URL}/skills`, skillData);
       }
 
       console.log('Skill response:', response.data);
@@ -614,7 +614,7 @@ const Profile = () => {
 
       console.log('Adding certification:', Object.fromEntries(formData));
 
-      const response = await axios.post(`${API_URL}/profile/certifications/`, formData, {
+      const response = await axios.post(`${API_URL}/profile/certifications`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -652,7 +652,7 @@ const Profile = () => {
 
       console.log('Adding work experience:', newWorkExperience);
 
-      const response = await axios.post(`${API_URL}/profile/work-experiences/`, newWorkExperience);
+      const response = await axios.post(`${API_URL}/profile/work-experiences`, newWorkExperience);
       console.log('Work experience response:', response.data);
 
       setNewWorkExperience({
@@ -692,7 +692,7 @@ const Profile = () => {
 
       console.log('Uploading resume:', Object.fromEntries(formData));
 
-      const response = await axios.post(`${API_URL}/profile/resumes/`, formData, {
+      const response = await axios.post(`${API_URL}/profile/resumes`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
