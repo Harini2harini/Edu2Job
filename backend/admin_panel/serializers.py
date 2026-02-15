@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from .models import (
-    MLModel, TrainingDataset, PredictionLog, PredictionFeedback,
+    MLModel, TrainingDataset, PredictionLog,
     SystemLog, UserActivity, Notification
 )
+from predictions.models import PredictionFeedback
 from users.models import User
 from datetime import timedelta
 from django.utils import timezone
