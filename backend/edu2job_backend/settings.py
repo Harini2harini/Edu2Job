@@ -63,6 +63,9 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for static files
 ]
 
+# Disable automatic slash appending to prevent 301 redirects changing POST to GET
+APPEND_SLASH = False
+
 ROOT_URLCONF = 'edu2job_backend.urls'
 
 TEMPLATES = [
