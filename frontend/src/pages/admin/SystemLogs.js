@@ -32,7 +32,8 @@ const SystemLogs = () => {
   const fetchLogs = async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/system-logs/`);
-      setLogs(response.data.results || response.data);
+      setLogs(Array.isArray(response.data.results) ? response.data.results : (Array.isArray(response.data) ? response.data : []));
+
     } catch (error) {
       console.error('Error fetching system logs:', error);
     } finally {

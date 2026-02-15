@@ -89,12 +89,20 @@ class TrainingDatasetViewSet(viewsets.ModelViewSet):
         return TrainingDataset.objects.all().order_by('-uploaded_at')
     
     def create(self, request, *args, **kwargs):
-        serializer = TrainingDatasetUploadSerializer(data=request.data)
+        # Create a mutable copy of data
+        data = request.data.copy() if hasattr(request.data, 'copy') else request.data
+        
+        # Ensure file is in data for serializer validation
+        if 'dataset_file' not in data and 'dataset_file' in request.FILES:
+            data['dataset_file'] = request.FILES['dataset_file']
+            
+        serializer = TrainingDatasetUploadSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            dataset_file = request.FILES['dataset_file']
+            # Get valid data
+            dataset_file = serializer.validated_data['dataset_file']
             
             # Validate file type
             allowed_types = ['.csv', '.json', '.xlsx', '.xls']

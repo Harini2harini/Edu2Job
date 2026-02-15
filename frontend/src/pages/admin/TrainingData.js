@@ -37,7 +37,7 @@ const TrainingData = () => {
   const fetchDatasets = async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/datasets/`);
-      setDatasets(response.data.results || response.data || []);
+      setDatasets(Array.isArray(response.data.results) ? response.data.results : (Array.isArray(response.data) ? response.data : []));
     } catch (error) {
       console.error('Error fetching datasets:', error);
     } finally {

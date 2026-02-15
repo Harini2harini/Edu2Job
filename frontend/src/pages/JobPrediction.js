@@ -885,140 +885,174 @@ const JobPrediction = () => {
   ];
 
   // Feedback Popup Component
-  const FeedbackPopup = () => (
-    <AnimatePresence>
-      {showFeedback && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-            onClick={handleSkipFeedback}
-          />
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-0 flex items-center justify-center z-50 p-4"
-          >
-            <div
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 relative"
-              onClick={(e) => e.stopPropagation()}
+  const FeedbackPopup = () => {
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const handleLocalSubmit = async () => {
+      await handleSubmitFeedback();
+      setShowSuccess(true);
+      setTimeout(() => {
+        handleSkipFeedback();
+        setTimeout(() => setShowSuccess(false), 300);
+      }, 2000);
+    };
+
+    return (
+      <AnimatePresence>
+        {showFeedback && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={handleSkipFeedback}
             >
-              <button
-                onClick={handleSkipFeedback}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2"
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-white rounded-2xl shadow-2xl max-w-md w-full relative overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
               >
-                <FaTimes className="text-xl" />
-              </button>
+                {/* Decorative Background Elements */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-blue-600"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full -ml-12 -mb-12 pointer-events-none"></div>
 
-              <div className="text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FaStar className="text-2xl text-primary" />
-                </div>
-
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  Rate Your Prediction
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  How satisfied are you with your job prediction results?
-                </p>
-
-                {/* Star Rating */}
-                <div className="flex justify-center mb-6 space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setFeedbackRating(star)}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="text-4xl focus:outline-none transition-transform duration-200 hover:scale-110 active:scale-95"
-                    >
-                      {star <= (hoverRating || feedbackRating) ? (
-                        <FaStar className="text-yellow-500 fill-current" />
-                      ) : (
-                        <FaStar className="text-gray-300" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Rating Description */}
-                {feedbackRating > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-6"
-                  >
-                    <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full">
-                      <span className="text-lg font-semibold text-primary mr-2">
-                        {starDescriptions[feedbackRating - 1]}
-                      </span>
-                      <span className="text-2xl">
-                        {starEmojis[feedbackRating - 1]}
-                      </span>
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Comment Section */}
-                <div className="mb-6">
-                  <label className="block text-left text-sm font-medium text-gray-700 mb-2">
-                    <FaComment className="inline mr-2 text-gray-400" />
-                    Optional Comments
-                  </label>
-                  <textarea
-                    value={feedbackComment}
-                    onChange={(e) => setFeedbackComment(e.target.value)}
-                    placeholder="Share your thoughts about the prediction..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none text-sm"
-                    rows="3"
-                    maxLength="500"
-                  />
-                  <div className="text-right text-xs text-gray-500 mt-1">
-                    {feedbackComment.length}/500 characters
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex space-x-3">
+                <div className="p-6 md:p-8 relative z-10">
                   <button
                     onClick={handleSkipFeedback}
-                    disabled={submittingFeedback}
-                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
                   >
-                    Skip
+                    <FaTimes className="text-xl" />
                   </button>
-                  <button
-                    onClick={handleSubmitFeedback}
-                    disabled={feedbackRating === 0 || submittingFeedback}
-                    className="flex-1 px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                  >
-                    {submittingFeedback ? (
-                      <>
-                        <div className="w-4 h-4 border-t-2 border-b-2 border-white rounded-full animate-spin inline-block mr-2"></div>
-                        Submitting...
-                      </>
-                    ) : (
-                      'Submit Feedback'
-                    )}
-                  </button>
-                </div>
 
-                {/* Privacy Notice */}
-                <div className="mt-4 text-xs text-gray-500">
-                  <p>Your feedback helps us improve the AI model.</p>
+                  <AnimatePresence mode="wait">
+                    {showSuccess ? (
+                      <motion.div
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="text-center py-8"
+                      >
+                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                          <FaCheckCircle className="text-4xl text-green-500" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Thank You!</h3>
+                        <p className="text-gray-600">Your feedback helps us improve our predictions.</p>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="form"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <div className="text-center mb-8">
+                          <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-primary/10">
+                            <FaStar className="text-3xl text-primary" />
+                          </div>
+
+                          <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                            Rate Your Prediction
+                          </h3>
+                          <p className="text-gray-600 text-sm">
+                            How accurate was our AI analysis for your profile?
+                          </p>
+                        </div>
+
+                        {/* Star Rating */}
+                        <div className="flex justify-center mb-8 space-x-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setFeedbackRating(star)}
+                              onMouseEnter={() => setHoverRating(star)}
+                              onMouseLeave={() => setHoverRating(0)}
+                              className="focus:outline-none transition-all duration-200 hover:scale-110"
+                            >
+                              <FaStar
+                                className={`text-4xl filter drop-shadow-sm transition-colors duration-200 ${star <= (hoverRating || feedbackRating)
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-200'
+                                  }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Rating Description */}
+                        <div className="h-8 mb-6 text-center">
+                          <AnimatePresence mode="wait">
+                            {(hoverRating || feedbackRating) > 0 && (
+                              <motion.div
+                                key={hoverRating || feedbackRating}
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -5 }}
+                                className="inline-flex items-center px-4 py-1.5 bg-gray-50 rounded-full border border-gray-100"
+                              >
+                                <span className="font-medium text-primary mr-2">
+                                  {starDescriptions[(hoverRating || feedbackRating) - 1]}
+                                </span>
+                                <span className="text-xl">
+                                  {starEmojis[(hoverRating || feedbackRating) - 1]}
+                                </span>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+
+                        {/* Comment Section */}
+                        <div className="mb-6 relative">
+                          <textarea
+                            value={feedbackComment}
+                            onChange={(e) => setFeedbackComment(e.target.value)}
+                            placeholder="Tell us what you think... (Optional)"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none text-sm min-h-[100px]"
+                            maxLength="500"
+                          />
+                          <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+                            {feedbackComment.length}/500
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex space-x-3">
+                          <button
+                            onClick={handleSkipFeedback}
+                            disabled={submittingFeedback}
+                            className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors text-sm"
+                          >
+                            Maybe Later
+                          </button>
+                          <button
+                            onClick={handleLocalSubmit}
+                            disabled={feedbackRating === 0 || submittingFeedback}
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-primary to-blue-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center transform active:scale-95"
+                          >
+                            {submittingFeedback ? (
+                              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                              'Submit Feedback'
+                            )}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    );
+  };
 
   // Save Confirmation Modal
   const SaveConfirmationModal = () => (

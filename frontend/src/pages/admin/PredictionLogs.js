@@ -35,7 +35,8 @@ const PredictionLogs = () => {
   const fetchPredictions = async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/predictions/`);
-      setPredictions(response.data.results || response.data);
+      setPredictions(Array.isArray(response.data.results) ? response.data.results : (Array.isArray(response.data) ? response.data : []));
+
     } catch (error) {
       console.error('Error fetching predictions:', error);
     } finally {
@@ -281,8 +282,8 @@ const PredictionLogs = () => {
                       <div className="flex items-center">
                         {getStatusIcon(prediction.status)}
                         <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${prediction.status === 'success' ? 'bg-green-100 text-green-800' :
-                            prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
-                              'bg-yellow-100 text-yellow-800'
+                          prediction.status === 'failed' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
                           }`}>
                           {prediction.status?.charAt(0).toUpperCase() + prediction.status?.slice(1) || 'Unknown'}
                         </span>
@@ -393,8 +394,8 @@ const PredictionLogs = () => {
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className={`h-full rounded-full ${status === 'success' ? 'bg-green-500' :
-                            status === 'flagged' ? 'bg-yellow-500' :
-                              'bg-red-500'
+                          status === 'flagged' ? 'bg-yellow-500' :
+                            'bg-red-500'
                           }`}
                         style={{ width: `${percentage}%` }}
                       ></div>
