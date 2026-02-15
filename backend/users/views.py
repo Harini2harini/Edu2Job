@@ -27,43 +27,52 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     
     def create(self, request, *args, **kwargs):
-        print("Register request data:", request.data)
-        
-        serializer = self.get_serializer(data=request.data)
-        
-        if serializer.is_valid():
-            print("Serializer is valid, creating user...")
-            user = serializer.save()
+        try:
+            print("Register request data:", request.data)
             
-            # Generate tokens
-            refresh = RefreshToken.for_user(user)
+            serializer = self.get_serializer(data=request.data)
             
-            response_data = {
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'name': user.name,
-                    'phone': user.phone,
-                    'role': user.role,
-                    'is_verified': user.is_verified,
-                    'avatar': user.avatar,
-                },
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                },
-                'message': 'Registration successful'
-            }
+            if serializer.is_valid():
+                print("Serializer is valid, creating user...")
+                user = serializer.save()
+                
+                # Generate tokens
+                refresh = RefreshToken.for_user(user)
+                
+                response_data = {
+                    'user': {
+                        'id': user.id,
+                        'email': user.email,
+                        'name': user.name,
+                        'phone': user.phone,
+                        'role': user.role,
+                        'is_verified': user.is_verified,
+                        'avatar': user.avatar,
+                    },
+                    'tokens': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    },
+                    'message': 'Registration successful'
+                }
+                
+                print("Registration successful:", response_data)
+                return Response(response_data, status=status.HTTP_201_CREATED)
             
-            print("Registration successful:", response_data)
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        
-        # Return validation errors
-        print("Serializer errors:", serializer.errors)
-        return Response({
-            'error': 'Registration failed',
-            'details': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+            # Return validation errors
+            print("Serializer errors:", serializer.errors)
+            return Response({
+                'error': 'Validation failed',
+                'details': serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({
+                'error': f'Server Error: {str(e)}',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
