@@ -201,6 +201,8 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         error: error.response?.data?.error ||
+          error.response?.data?.detail ||
+          error.message ||
           'Registration failed. Please try again.'
       };
     }
