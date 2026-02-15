@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     # Test endpoint
     path('test/', views.TestView.as_view(), name='test'),
+    path('test', views.TestView.as_view()), # Fix for 404
     
     # Authentication
     # Authentication
