@@ -78,8 +78,8 @@ export const AuthProvider = ({ children }) => {
 
   const testBackend = async () => {
     try {
-      console.log('📡 Testing backend connection at:', `${API_URL}/auth/test/`);
-      const response = await axios.get(`${API_URL}/auth/test/`, { timeout: 5000 });
+      console.log('📡 Testing backend connection at:', `${API_URL}/auth/test`);
+      const response = await axios.get(`${API_URL}/auth/test`, { timeout: 5000 });
       console.log('✅ Backend is running:', response.data);
       return { ok: true };
     } catch (error) {
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
         };
       }
 
-      const response = await axios.post(`${API_URL}/auth/login/`, {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });
@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }) => {
         };
       }
 
-      const response = await axios.post(`${API_URL}/auth/register/`, userData);
+      const response = await axios.post(`${API_URL}/auth/register`, userData);
 
       console.log('✅ Registration response received');
 
@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }) => {
 
       console.log('📡 Sending code to backend...');
 
-      const response = await axios.post(`${API_URL}/auth/google/`, {
+      const response = await axios.post(`${API_URL}/auth/google`, {
         code: code,
         redirect_uri: config.REDIRECT_URI,
       });
